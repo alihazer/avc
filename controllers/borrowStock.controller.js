@@ -145,6 +145,7 @@ const editBorrowItem = asyncHandler(async (req, res) => {
 });
 
 const renderReturnForm = asyncHandler(async (req, res) => {
+   try {
     let { id } = req.params;
     const reqUrl = req.originalUrl.split('/');
     const log = await BorrowLog.find({item: id, status: "borrowed"}).populate('item').select('-barcode');
@@ -155,6 +156,10 @@ const renderReturnForm = asyncHandler(async (req, res) => {
         return res.render('showBorrowLog', { item: log[0], log: log[0], moment });
     }
     return res.render('returnBorrowedItem', {item: log[0], log: log[0], moment });
+   } catch (error) {
+        console.log(error);
+        return res.status(400).render('error', { message: "Error fetching log" });
+   }
 });
 
 const returnBorrowedItem = asyncHandler(async (req, res) => {
