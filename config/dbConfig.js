@@ -1,5 +1,6 @@
 
 import mongoose from "mongoose";
+import BorrowLog from "../models/BorrowLog.js";
 
 const connectDB = async () => {
     try {

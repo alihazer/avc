@@ -90,10 +90,7 @@ const borrowItem = asyncHandler(async (req, res) => {
             res.status(200).redirect(`/borrowed-items/category/${category._id}/items`);
         }catch (error) {
         console.log(error);
-        res.status(400).json({
-            status: false,
-            message: "Item borrow failed" 
-        });
+        res.status(400).render('error', { message: "Item borrow failed" });
     }
 });
 
