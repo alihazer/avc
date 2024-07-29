@@ -185,7 +185,7 @@ const returnBorrowedItem = asyncHandler(async (req, res) => {
         }
         const borrowedItems = await BorrowLog.find({ category: item.category ,status: "borrowed" });
 
-        
+
         category.borrowedQuantity = borrowedItems.length;
         item.status = "available";
         log.status = "returned";
@@ -284,4 +284,19 @@ const renderPrintPage = asyncHandler(async(req, res) => {
     res.render('printBarCode', { item });
 });
 
-export { createBorrowItem, getBorrowItems, renderCreateBorrowItem, borrowItem, renderBorrowForm, renderEditBorrowItem, editBorrowItem, renderReturnForm, returnBorrowedItem, getBorrowedItemsCount, createBorrowCategory, renderCreateBorrowCategory, showEditCategory, getBorrowItemsOfCategory, generateBarcode, renderPrintPage };
+const getAllLogs = asyncHandler(async(req, res) => {
+    const logs = await BorrowLog.find()
+    .populate('item')
+    .sort({
+        createdAt: -1
+    });
+    res.render('logHistory', { logs, moment });
+});
+
+const getBorrowLog = asyncHandler(async(req, res) => {
+    const id = req.params.id;
+    const log = await BorrowLog.findById(id).populate('item');
+    res.render('viewBorrowLog', { item: log, log, moment });
+});
+
+export { createBorrowItem, getBorrowItems, renderCreateBorrowItem, borrowItem, renderBorrowForm, renderEditBorrowItem, editBorrowItem, renderReturnForm, returnBorrowedItem, getBorrowedItemsCount, createBorrowCategory, renderCreateBorrowCategory, showEditCategory, getBorrowItemsOfCategory, generateBarcode, renderPrintPage , getAllLogs, getBorrowLog };

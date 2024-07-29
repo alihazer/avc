@@ -1,0 +1,47 @@
+<div class="container">
+    <div>
+        <a href="/borrowed-items" class="back-arrow1"><i class="fa-solid fa-arrow-left"></i></a>
+    </div>
+    <div class="card">
+        <div class="card-header">
+            Borrow Logs
+        </div>
+        <div class="card-body">
+           <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Image</th>
+                        <th>Item</th>
+                        <th>Borrower</th>
+                        <th>Borrow Date</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% logs.forEach(log => { %>
+                        <tr>
+                            <%console.log(log)%>
+                            <td style="display: flex; align-items: center; justify-content: center;"><img src="<%= log.item.image %>" alt="" class="img-thumbnail"></td>
+                            <td><%= log.item.name %></td>
+                            <td><%= log.borrower %></td>
+                            <td><%= moment(log.createdAt).format('MMMM Do YYYY, h:mm:ss a') %></td>
+                            <%if(log.status == 'returned'){ %>
+                                <td style="background-color: rgba(17, 190, 17, 0.47);"><%= log.status %></td>
+                            <% }else if(log.status == 'borrowed'){ %>
+                                <td style="background-color: rgba(195, 8, 8, 0.491);"><%= log.status %></td>
+                            <% } else{%>
+                                <td><%= log.status %></td>
+                            <% } %>
+                            <td>
+                                <a href="/borrowed-items/logs/<%= log._id %>/view" class="btn btn-primary">View</a>
+                            </td>
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+           </div>
+        </div>
+    </div>
+</div>

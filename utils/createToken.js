@@ -1,12 +1,12 @@
 import jwt from 'jsonwebtoken';
 
-export default function createToken(id, role) {
+export default function createToken(id, role, username) {
     try {
         if (!id || !role) {
             throw new Error('Some required fields are missing');
         }
 
-        const token = jwt.sign({ id, role }, process.env.JWT_SECRET, {
+        const token = jwt.sign({ id, role, username }, process.env.JWT_SECRET, {
             expiresIn: process.env.JWT_EXPIRES_IN
         });
 

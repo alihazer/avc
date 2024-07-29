@@ -61,7 +61,7 @@ export const login = asyncHandler(async (req, res) => {
         }
         // unsign the password from the user object
         user.password = undefined;
-        const token = createToken(user._id, user.role);
+        const token = createToken(user._id, user.role, user.username);
         const isProduction = process.env.NODE_ENV === 'production';
 
         // Set the token cookie
