@@ -253,7 +253,7 @@ const getBorrowItemsOfCategory = asyncHandler(async (req, res) => {
         const items = await BorrowItem.find({ category : id });
 
     // Filter out the logs where the populated item is null (i.e., it didn't match the category)
-        res.render('allborrowitems', { items, category });
+        res.render('allborrowItems', { items, category });
     } catch (error) {
         console.log(error);
         res.status(400).render('error', { message: "Error fetching items" });
