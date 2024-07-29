@@ -1,0 +1,61 @@
+<div class="container">
+    <div class="add-moi">
+        <label for="add">Add Moi: </label>
+        <form action="/moi" method="POST">
+            <input type="text" id="moi" name="name" placeholder="Name" required>
+            <button type="submit" class="btn btn-primary">Add</button>
+        </form>
+    </div>
+    <br>
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">MOI list:</h3>
+        </div>
+
+            <!-- MOI table -->
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>MOI</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% for (let i = 0; i < mois.length; i++) { %>
+                            <tr>
+                                <td><%= i + 1 %></td>
+                                <td><%= mois[i].name %></td>
+                                <td>
+                                    <button onclick="deleteMoi(`<%=mois[i]._id%>`)" class="btn btn-danger">Delete</button>
+                                </td>
+                            </tr>
+                        <% } %>
+                    </tbody>
+                </table>
+            </div>
+    </div>
+</div>
+
+<script type="module">
+    import confirmDelete from '/js/confirmDelete.js';
+    async function deleteMoi(id) {
+        if(await confirmDelete('Are you sure you want to delete this MOI?')){
+            fetch(`/moi/${id}/delete`, {
+                method: 'DELETE'
+            }).then(res => {
+                if (res.ok) {
+                    window.location.reload();
+                }
+            });
+            return;
+        }
+        else{
+            console.log('Delete cancelled!')
+            return;
+        }
+
+    }
+    window.deleteMoi = deleteMoi;
+</script>

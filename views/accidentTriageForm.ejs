@@ -1,0 +1,22 @@
+<div class="container">
+    <div class="card triage" style="padding: 20px;">
+        <h1>Triage</h1>
+        <br>
+        <br>
+        <form action="/triage/emergency?car=<%=car%>" method="POST" class="triageForm">
+            <%-include('partials/commun/mainFields', {type: 'accident'}) %>
+            <%-include('partials/commun/avpu') %>
+            <%-include('partials/commun/dcap_btls') %>
+            <%-include('partials/commun/moi') %>
+            <%-include('partials/commun/vitals') %>
+            <%-include('partials/commun/histories') %>
+            <%-include('partials/commun/usage') %>
+            <%-include('partials/commun/footer') %>
+            <input type="hidden" name="dcap_btls" id="dcap_btls">
+        </form>
+    </div>
+</div>
+<script src="/js/usage.js"></script>
+<script src="/js/dcap_btls.js"></script>
+<script src="/js/toggleOtherInput.js"></script>
+

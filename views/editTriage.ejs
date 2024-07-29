@@ -1,0 +1,54 @@
+
+    <div class="container">
+        <h1 class="card-header">Edit</h1>
+        <div class="card triage"  style="padding: 20px;">
+            
+            <form class="triageForm">
+                <div class="triage-form-group">
+                    <input type="hidden" value="<%=triage._id%>" id="id">
+                    <label for="time">:الوقت </label>
+                    <div class="field">
+                        <input type="text" disabled id="time" name="time" value="<%=triage.time%>">
+                    </div>
+                </div>
+                <div class="triage-form-group">
+                    <label>اسم الحالة</label>
+                    <div class="field">
+                        <input type="text" disabled id="patient_name" name="patient_name" value="<%=triage.patient_name%>">
+                    </div>
+                </div>
+                <div class="triage-form-group">
+                    <label>رقم الموافقة</label>
+                    <div class="field">
+                        <input type="number" id="approval_number" name="approval_number" value="<%=triage.approval_number%>">
+                    </div>
+                </div>
+                <div class="btns">
+                    <button type="submit" class="btn btn-primary">Save</button>
+                    <a href="/triage" class="btn btn-danger">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+<script>
+    const form2 = document.querySelector('form');
+    form2.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const id = document.getElementById('id').value;
+        const approval_number = document.getElementById('approval_number').value;
+        console.log(approval_number);
+        const res = await fetch(`/triage/edit/${id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                approval_nb: approval_number
+            })
+        });
+        if (res.status === 200) {
+            window.location.href = '/triage/generate-pdf/' + id;
+        }
+    });
+</script>

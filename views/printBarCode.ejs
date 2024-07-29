@@ -1,0 +1,12 @@
+<div class="container">
+    <img style="width: 100%;" src="data:image/png;base64,<%= item.barCode.barCode %>" alt="Barcode">
+
+    <center>
+        <p style="font-size: 60px;"> <%= item.code %></p>
+        <img src="<%= item.image %>" alt="" style="width: 200px;height: 200px;">
+        <br>
+        <button id="print" class="btn btn-primary" onclick="window.print()">Print</button>
+        <!-- Home -->
+        <a class="btn btn-primary" href="/borrowed-items">Home</a>
+    </center>
+</div>

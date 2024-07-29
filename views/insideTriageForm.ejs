@@ -1,0 +1,47 @@
+<div class="container">
+    <div class="card triage" style="padding: 20px;">
+        <h1>Triage</h1>
+        <br>
+        <br>
+        <form action="/triage/emergency?car=<%=car%>" method="POST" class="triageForm">
+            <div class="triage-form-group">
+                <label for="time">:الوقت </label>
+                <div class="field">
+                    <input type="time" id="time" name="time" required>
+                </div>
+            </div>
+            <div class="triage-form-group">
+                <input type="hidden" value="<%=type%>" name="type">
+                <label for="from">المكان:</label>
+                <div class="field">
+                    <select name="from" id="from" required>
+                        <option value="في المركز">داخل المركز</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="triage-form-group">
+                <label for="rescuer">:اسم المسعفون</label>
+                <select id="rescuer" class="rescuer-select" name="paramedics" multiple required>
+                    <% paramedics.forEach(function(paramedic) { %>
+                        <option value="<%= paramedic.id %>"><%= paramedic.username %></option>
+                    <% }) %>
+                </select>
+            </div>
+
+            <div class="triage-form-group">
+                <label for="patient_name">:اسم المريض</label>
+                <div class="field">
+                    <input type="text" id="patient_name" name="patient_name" required>
+                </div>
+            </div>
+            <%-include('partials/commun/avpu') %>
+            <%-include('partials/commun/moi') %>
+            <%-include('partials/commun/vitals') %>
+            <%-include('partials/commun/histories') %>
+            <%-include('partials/commun/usage') %>
+            <%-include('partials/commun/footer') %>
+        </form>
+    </div>
+</div>
+<script src="/js/usage.js"></script>

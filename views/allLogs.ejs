@@ -1,0 +1,47 @@
+<div class="container">
+    <div>
+        <a href="/cars/<%=logs[0].carId._id%>" class="back-arrow1"><i class="fa-solid fa-arrow-left"></i></a>
+    </div>
+    <div class="card">
+        <div class="card-header">
+            All Logs
+        </div>
+        <div class="card-body">
+           <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Action</th>
+                        <th>User</th>
+                        <th>Time</th>
+                        <th>Materials</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% logs.forEach(log => { %>
+                        <tr>
+                            <% if(log.action == 'Added'){ %>
+                            <td style="background-color: rgba(17, 190, 17, 0.47);"><%= log.action %></td>
+                            <% }else if(log.action == 'Used'){ %>
+                            <td style="background-color: rgba(195, 8, 8, 0.491);"><%= log.action %></td>
+                            <% } else{%>
+                            <td><%= log.action %></td>
+                            <% } %>
+                            <td><%= log.user.username %></td>
+                            <td>
+                                <!-- Humanized created at -->
+                                <%= moment(log.createdAt).fromNow() %>
+                            </td>
+                            <td>
+                                <% log.materials_added.forEach(material => { %>
+                                    <p><%= material._id.name %> - <%= material.quantity %></p>
+                                <% }) %>
+                            </td>
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+           </div>
+        </div>
+    </div>
+</div>

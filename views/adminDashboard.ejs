@@ -1,0 +1,141 @@
+<h1 class="title">Dashboard</h1>
+<!-- <ul class="breadcrumbs">
+    <li><a href="#">Home</a></li>
+    <li class="divider">/</li>
+    <li><a href="#" class="active">Dashboard</a></li>
+</ul> -->
+<br>
+
+<div>
+    <a href="/triage/create" class="primary-btn">Add New Triage</a>
+</div>
+<div class="info-data">
+    <div class="card">
+        <div class="head">
+                <div class="db-data">
+                    <h2><%=data.count%></h2>
+                    <p>My triages</p>
+                </div>
+                <div class="db-icon">
+                    <i class="fa-regular fa-newspaper"></i>
+                </div>
+        </div>
+        <div>
+            <a href="/triage/get" class="primary-btn">View all</a>
+        </div>
+    </div>
+    <div class="card">
+        <div class="head">
+            <div class="db-data">
+                <h2><%=data.thisMonth%></h2>
+                <p>Month triages</p>
+            </div>
+            <div class="db-icon">
+                <i class="fa-regular fa-calendar-check"></i>
+            </div>
+            
+        </div>
+        <div>
+            <a href="/triage/get/this-month" class="primary-btn">View all</a>
+        </div>
+
+    </div>
+    <div class="card">
+        <div class="head">
+            <div class="db-data">
+                <h2><%=borrowedItems%></h2>
+                <p>Borrowed items</p>
+            </div>
+            <div class="db-icon">
+                <i class="fa-solid fa-hand-holding-hand"></i>
+            </div>
+        </div>
+        <div>
+            <a href="/borrowed-items" class="primary-btn">View all</a>
+        </div>
+    </div>
+    <div class="card">
+        <div class="head">
+            <div class="db-data">
+                <h2><%= items%> </h2>
+                <p>Items used</p>
+            </div>
+            <div class="db-icon">
+                <i class="fa-solid fa-briefcase-medical"></i>
+            </div>
+        </div>
+        <div>
+            <a href="/materials/used/all" class="primary-btn">View all</a>
+        </div>
+    </div>
+</div>
+
+<br>
+<h1 class="title">Cases Analytics</h1>
+<div class="info-data">
+    <div class="card">
+        <div class="head">
+            <div class="db-data">
+                <h2><%=mostCasesCar[0]._id %></h2>
+                <p>Car of the month:  <span><%=mostCasesCar[0].caseCount %> cases</span> </p>
+            </div>
+            <div class="db-icon">
+                <i class="fa-solid fa-truck-medical"></i>
+            </div>
+        </div>
+        <div>
+            <a href="#" class="primary-btn">View all</a>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="head">
+            <div class="db-data">
+                <h2><%=mostParamedic.user %></h2>
+                <p>Paramedic of the month:  <span><%=mostParamedic.caseCount %> cases</span></p>
+            </div>
+            <div class="db-icon">
+                <i class="fa-solid fa-crown"></i>
+            </div>
+        </div>
+        <div>
+            <a href="#" class="primary-btn">View all</a>
+        </div>
+    </div>
+    
+    <div class="card">
+        <div class="head">
+            <div class="db-data">
+                <h2><%=triageOfTheMonth._id.dayOfWeek %></h2>
+                <p>Shift Of the Month  <span><%=triageOfTheMonth.count %> cases</span> </p>
+            </div>
+            <div class="db-icon">
+                <i class="fa-solid fa-people-group"></i>
+            </div>
+        </div>
+        <div>
+            <a href="#" class="primary-btn">View all</a>
+        </div>
+    </div>
+
+</div>
+</div>
+<!-- <div class="data">
+    <div class="content-data">
+        <div class="head">
+            <h3>Sales Report</h3>
+            <div class="menu">
+                <i class='bx bx-dots-horizontal-rounded icon'></i>
+                <ul class="menu-link">
+                    <li><a href="#">Edit</a></li>
+                    <li><a href="#">Save</a></li>
+                    <li><a href="#">Remove</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="chart">
+            <div id="chart"></div>
+        </div>
+    </div>
+        
+</div> -->

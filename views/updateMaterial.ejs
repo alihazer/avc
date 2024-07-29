@@ -1,0 +1,115 @@
+<section>
+    <div class="container">
+        <!-- Back arrow -->
+        <div>
+            <a href="/materials" class="back-arrow1"><i class="fa-solid fa-arrow-left"></i></a>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="alert" id="alert" style="display: none;">
+                    <div><span class="close-btn" id="closeBtn">&times;</span></div>
+                    <div><p id="alertMessage"></p></div>
+                </div>
+                <br>
+                
+                <div class="card">
+                    <div class="card-header">
+                        Update Material
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group">
+                            <img src="<%= material.image %>" alt="" width="100px">
+                        </div>
+                        <form id="materialForm">
+                            <div class="form-group">
+                                <label for="name">Name:</label>
+                                <input type="text" value="<%= material.name %>" name="name" id="name" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label for="quantity">Quantity:</label>
+                                <input type="number" value="<%= material.quantity %>" name="quantity" id="quantity" class="form-control" min="0">
+                            </div>
+
+                            
+                            <input style="display: none;" id="image1" name="image">
+                            <button type="submit" class="btn btn-primary">Save</button>
+                            <a class="btn btn-primary" href="/materials">Cancel</a>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<script>
+    // Name input
+    const name = document.getElementById('name');
+    // Quantity input
+    const quantity = document.getElementById('quantity');
+    // error alert
+    const alert = document.getElementById('alert');
+    // alert message
+    const alertMessage = document.getElementById('alertMessage');
+    // Validate form
+    const validateForm = () => {
+        if (name.value === '') {
+            showAlert('Name is required');
+            return false;
+        }
+        if (quantity.value === '') {
+            showAlert('Quantity is required');
+            return false;
+        }
+        // Check if quantity is a number
+        if (isNaN(quantity.value)) {
+            showAlert('Quantity must be a number');
+            return false;
+        }
+        // Check if the quantity is greater than 0
+        if(quantity.value <= 0) {
+            showAlert('Quantity must be greater than 0');
+            return false;
+        }
+        // Check if the old data is the same as the new data
+        if (name.value === '<%= material.name %>' && quantity.value === '<%= material.quantity %>') {
+            showAlert('No changes made');
+            return false;
+        }
+        return true;
+    }
+    // Show alert
+    const showAlert = (message) => {
+        alertMessage.innerHTML = message;
+        alert.style.display = 'block';
+    }
+
+    // Call validateForm function on form submit
+    document.getElementById('materialForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+    if (validateForm()) {
+        const data = {
+            name: document.getElementById('name').value,
+            quantity: document.getElementById('quantity').value
+        };
+        
+        fetch(`/materials/edit/<%=material.id%>`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                window.location.href = '/materials';
+            } else {
+                showAlert(data.message);
+            }
+        });
+        }
+    });
+
+</script>

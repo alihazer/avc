@@ -1,0 +1,97 @@
+<section>
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="alert" id="alert" style="display: none;">
+                    <div><span class="close-btn" id="closeBtn">&times;</span></div>
+                    <div><p id="alertMessage"></p></div>
+                </div>
+                <br>
+                <div class="card">
+                    <div class="card-header">
+                        Edit Borrowing Item
+                    </div>
+                    <div class="card-body">
+                        <form id="materialForm">
+                            <div class="form-group">
+                                <label for="name">Name</label>
+                                <input type="text" name="name" id="name" class="form-control" value="<%=item.name%>">
+                            </div>
+                            <div class="form-group">
+                                <label for="quantity">Quantity</label>
+                                <input type="number" name="quantity" id="quantity" class="form-control" min="0" value="<%=item.quantity%>">
+                            </div>
+                            <input style="display: none;" id="image1" name="image">
+                            <button type="submit" class="btn btn-primary">Edit Item</button>
+                            <a class="btn btn-primary" href="/borrowed-items">Cancel</a>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<script>
+    const name = document.getElementById('name');
+    const quantity = document.getElementById('quantity');
+    const alert = document.getElementById('alert');
+    const alertMessage = document.getElementById('alertMessage');
+    const validateForm = () => {
+        if (name.value === '') {
+            showAlert('Name is required');
+            return false;
+        }
+        if (quantity.value === '') {
+            showAlert('Quantity is required');
+            return false;
+        }
+        if (isNaN(quantity.value)) {
+            showAlert('Quantity must be a number');
+            return false;
+        }
+        if(quantity.value <= 0) {
+            showAlert('Quantity must be greater than 0');
+            return false;
+        }
+        if (name.value === '<%= item.name %>' && quantity.value === '<%= item.quantity %>') {
+            showAlert('No changes made');
+            return false;
+        }
+        return true;
+    }
+    // Show alert
+    const showAlert = (message) => {
+        alertMessage.innerHTML = message;
+        alert.style.display = 'block';
+    }
+
+    // Call validateForm function on form submit
+    document.getElementById('materialForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+    if (validateForm()) {
+        const data = {
+            name: document.getElementById('name').value,
+            quantity: document.getElementById('quantity').value
+        };
+        
+        fetch(`/borrowed-items/edit/<%=item.id%>`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log(data);
+            if (data.status) {
+                window.location.href = '/borrowed-items';
+            } else {
+                showAlert(data.message);
+            }
+        });
+        }
+    });
+
+</script>

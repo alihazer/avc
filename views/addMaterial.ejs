@@ -1,0 +1,39 @@
+<section>
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="alert" id="alert" style="display: none;">
+                    <div><span class="close-btn" id="closeBtn">&times;</span></div>
+                    <div><p id="alertMessage"></p></div>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        Add Material
+                    </div>
+                    <div class="card-body">
+                        <form id="materialForm">
+                            <div class="form-group">
+                                <label for="name">Name</label>
+                                <input type="text" name="name" id="name" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label for="quantity">Quantity</label>
+                                <input type="number" name="quantity" id="quantity" class="form-control" min="0">
+                            </div>
+                            <div class="form-group">
+                                <label for="image">Image</label>
+                                <input type="file" id="image" class="form-control">
+                            </div>
+                            
+                            <input style="display: none;" id="image1" name="image">
+                            <button type="submit" class="btn btn-primary">Add Material</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<script type="module" src="/firebase/firebaseConfig.js"></script>
+<script type="module" src="/firebase/imageUpload.js"></script>
+<script  type="module" src="/firebase/addMaterialSubmission.js"></script>

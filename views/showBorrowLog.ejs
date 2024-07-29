@@ -1,0 +1,76 @@
+<section>
+    <div class="container">
+        <!-- Back arrow -->
+        <div>
+            <a href="/borrowed-items" class="back-arrow1"><i class="fa-solid fa-arrow-left"></i></a>
+        </div>
+        <div class="row">
+            <div class="col-12">    
+                <div class="alert" id="alert" style="display: none;">
+                    <div><span class="close-btn" id="closeBtn">&times;</span></div>
+                    <div><p id="alertMessage"></p></div>
+                </div>
+                <br>
+                <div class="card">
+                    <div class="card-header">
+                        <h1>View</h1>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group" style="width: 100%;">
+                            <input id="id" type="hidden" name="id" value="<%=log._id%>">
+                            <center><img  src="<%= item.item.image %>" alt="" style="width: 30%; height: 30%;"></center>
+                            <h1><%=item.item.name%></h1>
+                        </div>
+                        <form id="materialForm">
+                            <div class="form-group">
+                                <label for="name">Full Name:</label>
+                                <input type="text" name="name" id="name" class="form-control" disabled value="<%=item.borrower%>">
+                            </div>
+                            <div class="form-group">
+                                <label for="phone_nb">Phone Number:</label>
+                                <input type="text" name="phone_nb" id="phone_nb" disabled value="<%=item.phoneNumber%>" class="form-control" >
+                            </div>      
+                            <div class="form-group">
+                                <label for="age">Age:</label>
+                                <input type="number" name="age" id="age" class="form-control" disabled value="<%=item.age%>">
+                            </div>    
+                            <div class="form-group">
+                                <label for="difficulty">Difficulty:</label>
+                                <select name="difficulty" id="difficulty" class="form-control" disabled>
+                                    <option value="<%= item.dificulty %>" selected><%= item.difficulty %></option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="responsiblePerson">:اسم الوسيط</label>
+                                <%console.log(item.responsiblePerson.name)%>
+                                <%if(item.responsiblePerson !== '' ) { %>
+                                    <input type="text" name="responsiblePerson" id="responsiblePerson" class="form-control" disabled value="<%=item.responsiblePerson.name%>">
+                                    <label for="responsiblePersonNumber">:رقم الهاتف</label>
+                                    <input type="text" name="responsiblePersonNumber" id="responsiblePersonNumber" class="form-control" value="<%=item.responsiblePerson.phoneNumber%>">
+                                <% } %>
+                            </div>
+                            <div class="form-group">
+                                <label for="expectedReturnDate">Expected Return Date:</label>
+                                <input type="text" name="expectedReturnDate" id="expectedReturnDate" class="form-control" value="<%=moment(item.expectedReturnDate).format('DD-MM-YYYY')%>" disabled>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="">:صورة عند الاعارة </label>
+                                <img style="width: 200px;height: 200px;" src="<%= item.imageOnBorrow%>" alt="" width="100px">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="notes">Notes:</label>
+                                <textarea name="notes" id="notes" class="form-control" value="<%item.note%>" disabled></textarea>
+                            </div>  
+                                        
+                        </form>
+                        
+                        <a href="/borrowed-items/category/<%=item.item.category%>/items" class="btn btn-primary">Back</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

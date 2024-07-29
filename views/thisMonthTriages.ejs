@@ -1,0 +1,54 @@
+<div class="container">
+    <a href="/dashboard" class="back-arrow1"><i class="fas fa-arrow-left"></i></a>
+    <div class="card">
+        <div class="card-header">
+            <h1>This Month's Triages</h1>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        
+                        <th>Type</th>
+                        <th>Car Nb</th>
+                        <th>From</th>
+                        <th>To</th>
+                        <th>Patient Name</th>
+                        <th>MOI</th>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% triages.forEach(triage => { %>
+                        <tr>
+                           
+                            <td><%= triage.case_type %></td>
+                            <td><%= triage.car_nb %></td>
+                            <td><%= triage.from %></td>
+                            <td><%= triage.to %></td>
+                            <td><%= triage.patient_name %></td>
+                            <td>
+                                <%if(triage.moi == null){ %>
+                                    <li>None</li>
+                                <% }else{ %>
+                                    <% triage.moi.forEach((moi)=>{ %>
+                                        <li><%= moi.name %></li>
+                                    <% }) %>
+                                <% } %>
+                            
+                            </td>
+                            <td style="width: 150px"><%= moment(triage.createdAt).format('DD-MM-YYYY') %></td>
+                            <td><%= triage.time %></td>
+                            <td>
+                                <a href="/triage/edit/<%= triage.id %>" class="btn btn-primary">Edit</a>
+                                <a href="/triage/view/<%= triage.id %>" class="btn btn-primary">View</a>
+                            </td>
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

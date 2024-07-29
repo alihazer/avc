@@ -1,0 +1,17 @@
+<div class="triage-form-group">
+    <label for="medical-history">:أمراض مزمنة</label>
+    <select name="medicalHistory" id="medical-history" class="moi-select" multiple>
+        <% medicalHistories.forEach(function(medicalHistory){ %>
+            <option value="<%= medicalHistory.id %>"><%= medicalHistory.name %></option>
+        <% }) %>
+    </select>
+</div>
+
+<div class="triage-form-group">
+    <label for="surgical-history">:عمليات سابقة</label>
+    <select name="surgicalHistory" id="surgical-history" class="moi-select" multiple>
+        <% surgicalHistories.forEach(function(medicalHistory){ %>
+            <option value="<%= medicalHistory.id %>"><%= medicalHistory.name %></option>
+        <% }) %>
+    </select>
+</div>

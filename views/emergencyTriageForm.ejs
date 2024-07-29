@@ -1,0 +1,17 @@
+<div class="container">
+    <div class="card triage" style="padding: 20px;">
+        <h1>Triage</h1>
+        <br>
+        <br>
+        <form action="/triage/emergency?car=<%=car%>" method="POST" class="triageForm">
+            <%-include('partials/commun/mainFields', {type: 'emergency'}) %>
+            <%-include('partials/commun/avpu') %>
+            <%-include('partials/commun/moi') %>
+            <%-include('partials/commun/vitals') %>
+            <%-include('partials/commun/histories') %>
+            <%-include('partials/commun/footer') %>
+        </form>
+    </div>
+</div>
+<script src="/js/usage.js"></script>
+<script src="/js/toggleOtherInput.js"></script>

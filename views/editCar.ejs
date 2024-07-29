@@ -1,0 +1,163 @@
+
+<div class="card">
+    <div class="card-header">
+        Car Details:
+    </div>
+    <div class="card-body">
+        <% const types = ['Ambulance', 'Fire truck', 'Van', 'ٌRescue'] %>
+        <p>Type:  </p>
+        <select name="type" id="type" class="form-control">
+            <% types.forEach(type => { %>
+                <option value="<%= type %>" <% if(car.type === type) { %> selected <% } %>><%= type %></option>
+            <% }) %>
+        </select>
+        <br>
+        <br>
+        <!-- Materials select  -->
+        <div class="form-group">
+            <label for="materials">Materials</label>
+            <div class="select-multiple-con">
+                <select name="materials" id="materials" class="form-control">
+                    <% materials.forEach(material => { %>
+                        <option value="<%= material._id %>" <% if(car.materials.includes(material._id)) { %> selected <% } %>><%= material.name %></option>
+                    <% }) %>
+                </select>
+                <label for="quantity">Quantity:</label>
+                <input id="quantity" type="number" min="0" name="qunatity">
+                <button class="btn btn-primary" id="add">Add</button>
+            </div>
+            <div class="added-con">
+
+            </div>
+            
+        </div>  
+        <a href="/cars" class="btn btn-primary">Back</a>
+        <a class="btn btn-primary" id="edit">Edit</a>
+
+    </div>
+</div>
+<script>
+    // Add material to car
+    const addBtn = document.getElementById('add');
+    const materialsSelect = document.getElementById('materials');
+    const quantityInput = document.getElementById('quantity');
+    const addedCon = document.querySelector('.added-con');
+    const type = document.getElementById('type').value;
+    const materials = [];
+
+    // Add event listener to add button
+    addBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        const type = document.getElementById('type').value;
+        const materialId = materialsSelect.value;
+        const materialName = materialsSelect.options[materialsSelect.selectedIndex].text;
+        const quantity = quantityInput.value;
+        // Validation checks
+        if(quantity === ''){
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Please enter a quantity!',
+            });
+            return;
+        }
+        if(quantity < 0){
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Quantity must be greater than 0!',
+            });
+            return;
+        }
+
+        // Check if the material is already added and increment the quantity
+        const addedItems = document.querySelectorAll('.added-item');
+        let itemExists = false;
+        addedItems.forEach(item => {
+            const material = item.querySelector('input[name="materials"]').value;
+            if(material === materialId){
+                const quantityInput = item.querySelector('input[name="quantity"]');
+                quantityInput.value = parseInt(quantityInput.value) + parseInt(quantity);
+                // Update the displayed quantity
+                item.querySelector('p').textContent = `${materialName} - ${quantityInput.value}`;
+                itemExists = true;
+            }
+        });
+
+        // If the material is not already added, create a new div element
+        if(!itemExists){
+            const div = document.createElement('div');
+            div.classList.add('added-item');
+            div.innerHTML = `
+                <p>${materialName} - ${quantity}</p>
+                <input type="hidden" name="materials" value="${materialId}">
+                <input type="hidden" name="quantity" value="${quantity}">
+                <button class="btn btn-danger remove">Remove</button>
+            `;
+            // Append the div to the addedCon
+            addedCon.appendChild(div);
+            // Add the item to the materials array
+            materials.push({_id: materialId, quantity: quantity});
+            // Add event listener to remove button
+            const removeBtn = div.querySelector('.remove');
+            removeBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                div.remove();
+            });
+        }
+
+        // Clear the quantity input
+        quantityInput.value = '';
+    });
+    // Add event listener to edit button
+    const editBtn = document.getElementById('edit');
+    editBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        const carId = '<%= car._id %>';
+        const type = document.getElementById('type').value;
+        // If no materials are added, show an error message
+        if(materials.length === 0 && type == '<%= car.type %>'){
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Please add materials to the car!',
+            });
+            return;
+        }
+        fetch(`/cars/${carId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({type, materials})
+        })
+        .then(res => res.json())
+        .then(data => {
+            if(data.status === true){
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success',
+                    text: 'Car updated successfully!',
+                })
+                .then(() => {
+                    window.location.href = '/cars';
+                });
+            }
+            else{
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: data.message,
+                });
+            }
+        })
+        .catch(err => {
+            console.error(err);
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Something went wrong!',
+            });
+        });
+    });
+</script>

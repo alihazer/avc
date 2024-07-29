@@ -1,0 +1,256 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update user</title>
+    <style>
+
+.card-registration .select-input.form-control[readonly]:not([disabled]) {
+    font-size: 1rem;
+    line-height: 2.15;
+    padding-left: .75em;
+    padding-right: .75em;
+}
+.card-registration .select-arrow {
+    top: 13px;
+}
+a{
+  text-decoration: none !important;
+}
+  </style>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+</head>
+<body>
+    <section class="gradient-custom">
+        <div >
+          <div class="row justify-content-center align-items-center h-100">
+            <div>
+              <div class="card shadow-2-strong card-registration" style="border-radius: 15px;">
+                <div class="card-body p-4 p-md-5">
+                  <!-- Back arrow -->
+                  <a href="/users" class="back-arrow"><i class="fas fa-arrow-left"></i></a>
+                  <h3 class="mb-4 pb-2 pb-md-0 mb-md-3">Update user</h3>
+
+                  <form>
+                    <!-- Validation message -->
+                    <div class="alert alert-danger" style="display: none;" id="alert" role="alert">
+                        
+                    </div>
+                    <div class="row">
+                      <div class="col-md-6 mb-4">
+                        <label class="form-label" for="username">Username</label>
+                        <div data-mdb-input-init class="form-outline">
+                          <input type="text" name="username" value="<%=user.username%>" id="username" class="form-control form-control-lg" />
+                          
+                        </div>
+      
+                      </div>
+                      <div class="col-md-6 mb-4">
+                        <label class="form-label" for="password">Password</label>
+                        <div data-mdb-input-init class="form-outline">
+                          <input type="password" id="password" name="password" class="form-control form-control-lg" />
+                        </div>
+      
+                      </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-4 pb-2">
+                            <label class="form-label" for="phoneNumber">Phone Number</label>
+                          <div data-mdb-input-init class="form-outline">
+                            <input type="tel" value="<%=user.phone%>" name="phone" id="phoneNumber" class="form-control form-control-lg" />
+                          </div>
+                        </div>  
+                        <div class="col-md-6 mb-4 pb-2">
+                            <div><label class="form-label select-label">Role</label></div>
+                                <select class="select form-control-lg" name="role">
+                                  <% roles.forEach(role => { %>
+                                      <%if(role.name == user.role.name){ %>
+                                          <option value="<%= role.id %>" selected><%= role.name %></option>
+                                      <% }else{ %>
+                                      <option value="<%= role.id %>"><%= role.name %></option>
+                                      <% } %>
+                                  <% }); %>
+                                </select>
+                        </div> 
+                      </div>
+                      <div class="row">
+                        <div class="col-md-6 mb-4 pb-2">
+                            <div><label class="form-label select-label">Status</label></div>
+                                <select class="select form-control-lg" name="status">
+                                  <% const status = ['active', 'inactive']; %>
+                                  <% status.forEach(stat => { %>
+                                      <%if(stat == user.status){ %>
+                                          <option value="<%= stat %>" selected><%= stat %></option>
+                                      <% }else{ %>
+                                      <option value="<%= stat %>"><%= stat %></option>
+                                      <% } %>
+                                  <% }); %>
+                                </select>
+                        </div> 
+                      </div>
+
+                      <div class="row">
+                        <div><label class="form-label select-label">Shift days</label></div>
+                        <!-- First row with checkboxes -->
+                        <div class="col-md-6">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="monday" value="monday">
+                                <label class="form-check-label" for="monday">Monday</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="tuesday" value="tuesday">
+                                <label class="form-check-label" for="tuesday">Tuesday</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="wednesday" value="wednesday">
+                                <label class="form-check-label" for="wednesday">Wednesday</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="thursday" value="thursday">
+                                <label class="form-check-label" for="thursday">Thursday</label>
+                            </div>
+                        </div>
+                    
+                        <!-- Second row with checkboxes -->
+                        <div class="col-md-6 mb-4 pb-2">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="friday" value="friday">
+                                <label class="form-check-label" for="friday">Friday</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="saturday" value="saturday">
+                                <label class="form-check-label" for="saturday">Saturday</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="sunday" value="sunday">
+                                <label class="form-check-label" for="sunday">Sunday</label>
+                            </div>
+                        </div>
+                    </div>
+    
+                    <div class="mt-4 pt-2">
+                        <input data-mdb-ripple-init class="btn btn-success btn-lg" type="submit" value="Update" />
+                        <!-- Back btn -->
+                        <a href="/users" class="btn btn-success btn-lg">Cancel</a>
+                      </div>
+                    <input type="hidden" name="shiftDays" id="shifDays">
+                  </form>
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <script>
+            // Function to initialize checkboxes and handle selected days
+            function initializeCheckboxes() {
+            // Select all checkboxes
+            const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+            
+            // Function to update selectedDays array
+            function updateSelectedDays() {
+                let selectedDays = []; // Reset array
+                checkboxes.forEach(function(checkbox) {
+                    if (checkbox.checked) {
+                        selectedDays.push(checkbox.value); // Add checked value to array
+                    }
+                });
+                return selectedDays;
+            }
+            
+            // Add event listener to each checkbox
+            checkboxes.forEach(function(checkbox) {
+                checkbox.addEventListener('change', function() {
+                    const selectedDays = updateSelectedDays();
+                    console.log(selectedDays);
+                });
+            });
+    
+            // Return updateSelectedDays function for accessibility
+            return updateSelectedDays;
+        }
+    
+        // Function to validate form inputs
+        function validateForm() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const phoneNumber = document.getElementById('phoneNumber').value;
+            const role = document.querySelector('.select').value;
+            const shifDays = document.getElementById('shifDays');
+            const form = document.querySelector('form');
+            const alert = document.getElementById('alert');
+
+            
+            // Get selected days using updateSelectedDays function
+            const updateSelectedDays = initializeCheckboxes(); // Initialize checkboxes and get updateSelectedDays function
+            let selectedDays = updateSelectedDays(); // Call updateSelectedDays to get selected days array
+            selectedDays = selectedDays.join(', '); // Convert array to string
+            if(selectedDays === ''){
+                selectedDays = '<%=user.shiftDays%>';
+            }
+            shifDays.value = selectedDays; // Set value of hidden input to selected days    
+            if (username === "" || phoneNumber === "" || role === "") {
+                alert.innerHTML = "All fields are required";
+                alert.style.display = "block";
+                return false;
+            }
+            if(username == "<%=user.username%>" && password == "" && phoneNumber == "<%=user.phone%>" && role == "<%=user.role.id%>" && selectedDays == "<%=user.shiftDays%>" && form.status.value == "<%=user.status%>"){
+                alert.innerHTML = "No changes made";
+                alert.style.display = "block";
+                return false;
+            }
+            updateUser(`<%=user._id%>`, form);
+        }
+    
+        // Function to initialize form validation
+        function initializeFormValidation() {
+            const form = document.querySelector('form');
+            form.addEventListener('submit', function(event) {
+                event.preventDefault(); // Prevent form submission for demo
+                validateForm();
+            });
+        }
+    
+        // Wait for the DOM to fully load
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeCheckboxes(); // Initialize checkboxes and updateSelectedDays
+            initializeFormValidation(); // Initialize form validation
+        });
+        async function updateUser(id, form) {
+          console.log(form.role.value);
+            fetch(`/users/edit/${id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'  
+                },
+                body: JSON.stringify({
+                    username: form.username.value,
+                    password: form.password.value,
+                    phone: form.phoneNumber.value,
+                    role: form.role.value,
+                    status: form.status.value,
+                    shiftDays: form.shifDays.value
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    alert(data.error);
+                } else {
+                    window.location.href = '/users';
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+      </script>
+
+    
+</body>
+</html>

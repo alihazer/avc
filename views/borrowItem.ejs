@@ -1,0 +1,76 @@
+<section>
+    <div class="container">
+        <!-- Back arrow -->
+        <div>
+            <a href="/borrowed-items" class="back-arrow1"><i class="fa-solid fa-arrow-left"></i></a>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <input id="id" type="hidden" value="<%=item._id%>">
+                <div class="alert" id="alert" style="display: none;">
+                    <div><span class="close-btn" id="closeBtn">&times;</span></div>
+                    <div><p id="alertMessage"></p></div>
+                </div>
+                <br>
+                <div class="card">
+                    <div class="card-header">
+                        <h1>اعارة</h1>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group">
+                            <img src="<%= item.image %>" alt="" width="100px">
+                            <h1><%=item.name%> </h1>
+                        </div>
+                        <form id="materialForm" method="POST" action="/borrowed-items/category/<%=item.category%>/item/<%=item._id%>/borrow">
+                            <div class="form-group">
+                                <label for="name">Full Name:</label>
+                                <input type="text" name="name" id="name" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="phone_nb">Phone Number:</label>
+                                <input type="text" name="phone_nb" id="phone_nb" class="form-control" required>
+                            </div>      
+                            <div class="form-group">
+                                <label for="age">Age:</label>
+                                <input type="number" name="age" id="age" class="form-control" required>
+                            </div>    
+                            <div class="form-group">
+                                <label for="difficulty">Difficulty:</label>
+                                <select name="difficulty" id="difficulty" class="form-control" required>
+                                    <option value="عملية">عملية</option>
+                                    <option value="عجز">عحز</option>
+                                    <option value="كسر">كسر</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="responsiblePerson">:اسم الوسيط</label>
+                                <input type="text" name="responsiblePerson" id="responsiblePerson" class="form-control">
+                                <label for="responsiblePersonNumber">:رقم الهاتف</label>
+                                <input type="text" name="responsiblePersonNumber" id="responsiblePersonNumber" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label for="expectedReturnDate">Expected Return Date:</label>
+                                <input type="date" name="expectedReturnDate" id="expectedReturnDate" class="form-control">
+                            </div>
+                            <!-- Image on borrow -->
+                            <div class="form-group">
+                                <label for="image">:صورة عند الاعارة</label>
+                                <input type="file" id="image" class="form-control" accept="image/*" capture="environment" required>
+                                <input type="hidden" name="imageOnBorrow" id="hidden">
+                            </div>
+                            <div class="form-group">
+                                <label for="notes">Notes:</label>
+                                <textarea name="notes" id="notes" class="form-control"></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Save</button>
+                            <a class="btn btn-primary" href="/borrowed-items">Cancel</a>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<script src="/firebase/borrowItem.js" type="module"></script>

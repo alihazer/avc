@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Users</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f9fa;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 50px auto;
+            padding: 0 15px;
+        }
+
+        .card {
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .card-header {
+            background-color: #378746;
+            color: #fff;
+            padding: 15px 20px;
+            font-size: 1.5rem;
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 0;
+        }
+
+        table thead {
+            background-color: #343a40;
+            color: #fff;
+        }
+
+        table th, table td {
+            padding: 12px 15px;
+            border: 1px solid #dee2e6;
+            text-align: left;
+        }
+
+        table tbody tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        img {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 6px 12px;
+            font-size: 0.875rem;
+            font-weight: 400;
+            color: #fff;
+            text-align: center;
+            text-decoration: none;
+            vertical-align: middle;
+            cursor: pointer;
+            border: none;
+            border-radius: 4px;
+            margin-right: 5px;
+            margin-bottom: 10px; /* Added margin-bottom for all buttons */
+        }
+
+        .btn-primary {
+            background-color: #378746
+        }
+
+        .btn-danger {
+            background-color: #dc3545;
+        }
+
+        .btn-primary:hover {
+            background-color: #30773d;
+        }
+
+        .btn-danger:hover {
+            background-color: #c82333;
+        }
+    </style>
+</head>
+<body>
+    <!-- All users table -->
+    <div class="container">
+        <!-- Add users btn -->
+        <%if(addUser) { %>
+            <a href="/users/add" class="btn btn-primary">Add User</a>
+        <% } %>
+        <div class="card">
+            <div class="card-header">
+                All Users
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Image</th>
+                                <th>Username</th>
+                                <th>Role</th>
+                                <th>Phone</th>
+                                <th>Status</th>
+                                <th>Shift Days</th>
+                                <th>Blood Type</th>
+                                <%if(addUser) {%>
+                                    <th>Actions</th>
+                                <%} %>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% users.forEach(user => { %>
+                                <tr>
+                                    <td>
+                                        <%if(user.profileImage) { %>
+                                            <img src="<%= user.profileImage %>" alt="<%= user.username %>">
+                                        <% } else { %>
+                                            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSLXo6LfQJxT7rwfxICo-bv78lud6UdSxlVvA&s" alt="<%= user.username %>">
+                                        <% } %>
+                                    </td>
+                                    <td><%= user.username %></td>
+                                    <td><%= user.role.name %></td>
+                                    <td><%= user.phone %></td>
+                                    <% if (user.status === 'active') { %>
+                                        <td style="background-color: #378746; color: white;"><%= user.status %></td>
+                                    <% } else { %>
+                                        <td style="background-color: rgb(229, 68, 68); color: white;"><%= user.status %></td>
+                                    <% } %>
+                                    <td><%= user.shiftDays %></td>
+                                    <td><%= user.bloodType %></td>
+                                    <%if(addUser) {%>
+                                        <td>
+                                            <a href="/users/view/<%= user._id %>" class="btn btn-primary">View</a>
+                                            <a href="/users/edit/<%= user._id %>" class="btn btn-primary">Edit</a>
+                                            <button onclick="deleteUser('<%= user._id %>')" class="btn btn-danger">Delete</button>
+                                        </td>
+                                    <%} %>
+                                </tr>
+                            <% }) %>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script type="module">
+        import confirmDelete from '/js/confirmDelete.js';
+        const deleteUser = async (id) => {
+            try {
+                const confirmed = await confirmDelete('Are you sure you want to delete this user?');
+                if(confirmed){
+                    const response = await fetch(`/users/delete/${id}`, {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                        'method': 'DELETE'
+                    });
+                    const data = await response.json();
+                    if (response.status === 200) {
+                        console.log("deleted successfully");
+                        window.location.href = '/users';
+                    }
+                    else{
+                        console.log("error deleting user");
+                    }
+                }
+                else{
+                    console.log("user not deleted");
+                }
+            }catch (error) {
+                console.log(error);
+            }    
+        }
+        window.deleteUser = deleteUser;
+    </script>
+    </body>
+</html>

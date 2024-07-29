@@ -1,0 +1,87 @@
+
+<div id="content1">
+    <div class="tables-container">
+        <div class="common-fields-table">
+            <table>
+                <tr>
+                    <th>Type</th>
+                    <td>حريق</td>
+                </tr>
+                <tr>
+                    <th>Time</th>
+                    <td><%= moment(triage.createdAt).format('DD-MM-YYYY')%> - <%= triage.time %></td>
+                </tr>
+
+                <tr>
+                    <th>Car Number</th>
+                    <td><%= triage.car_nb %></td>
+                </tr>
+                <tr>
+                    <th>From</th>
+                    <td><%= triage.from %></td>
+                </tr>
+                <tr>
+                    <th>To</th>
+                    <td><%= triage.to %></td>
+                </tr>
+                <tr>
+                    <th>Driver Name</th>
+                    <td><%= triage.driver.username %></td>
+                </tr>
+                <tr>
+                    <th>Paramedics</th>
+                    <td>
+                        <ul>
+                            <li>
+                            <% triage.paramedics.forEach(paramedic => { %>
+                                <%= paramedic.username %>,
+                            <% }); %>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+                
+                    <tr>
+                        <th>Approval Number:</th>
+                        <td>
+                            <%if(triage.approval_nb === null){ %>
+                                <span style="color: red;">No Approval Number</span>
+                            <%} else { %>
+                                <%=triage.approval_nb %>
+                            <%} %>
+                        </td>
+                    </tr>
+                </tr>
+            </table>
+        </div>
+
+    </div>
+    <button class="btn btn-primary" onclick="downloadPdf(`<%=triage.patient_name%>`,`<%=moment(triage.createdAt).format('DD-MM-YYYY') %>`)">Download PDF</button>
+</div>
+
+<script>
+    function downloadPdf(name, date) {
+        const content = document.getElementById('content1');
+        // Replace space with _
+        const options = {
+            margin: [0, 0, 0, 0], // Set margins for top, right, bottom, left
+            filename: 'حريق', // Custom filename
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { scale: 2 }, // Increase scale for better resolution
+            jsPDF: { unit: 'in', format: [8.5, 14], orientation: 'portrait' } // Change format and orientation as needed
+        };
+        const container = document.querySelector('.tables-container');
+        container.style.display = 'block';
+        
+        html2pdf()
+            .from(content).set(options)
+            .toPdf()
+            .get('pdf')
+            .then(pdf => {
+                pdf.save('حريق_' + date + '.pdf');
+                window.location.href = '/dashboard';
+            })
+           
+    }
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>

@@ -1,0 +1,93 @@
+<!-- add car section -->
+<section>
+    <div class="container">
+        <!-- Back arrow -->
+         <a href="/cars" class="back-arrow1" ><i class='bx bx-arrow-back'></i></a>
+            <% if(message.length > 0) { %>
+                <div id="alert">
+                <div class="alert" >
+                    <div>
+                        <span class="close-btn" id="closeBtn">&times;</span>
+                    </div>
+                    <p id="alertMessage"><%=message%></p>
+                </div>
+            </div>
+            <% } else{ %>
+                <div style="display: none;" id="alert">
+                <div class="alert" >
+                    <div>
+                        <span class="close-btn" id="closeBtn">&times;</span>
+                    </div>
+                    <p id="alertMessage"></p>
+                </div>
+            </div>
+            <% } %>
+                
+            <div style="display: none;" id="alert">
+                <div class="alert" >
+                    <div>
+                        <span class="close-btn" id="closeBtn">&times;</span>
+                    </div>
+                    
+                    <p id="alertMessage"></p>
+                </div>
+            </div>
+                
+        <br>
+        <div class="card">
+            <div class="card-header">
+                Add Car
+            </div>
+            <div class="card-body">
+                <form id="carForm">
+                    <div class="form-group">
+                        <label for="number">Number</label>
+                        <input type="text" name="number" id="number" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="type">Type</label>
+                        <% const types = ['Ambulance', 'Fire truck', 'Van', 'Rescue'] %>
+                        <select name="type" id="type" class="form-control">
+                            <% types.forEach(type => { %>
+                                <option value="<%= type %>"><%= type %></option>
+                            <% }) %>
+                        </select>
+                    </div>
+                    
+                        <button type="submit" class="btn btn-primary">Add Car</button>
+                        <a href="/cars" class="btn btn-primary">Cancel</a>
+                </form>
+</section>
+<script>
+
+    const form = document.getElementById('carForm');
+    // Make sure the DOM is loaded before we start adding event listeners
+    document.addEventListener('DOMContentLoaded', () => {
+        form.addEventListener('submit', (e) => {
+        const number = document.getElementById('number').value;
+        const type = document.getElementById('type').value;
+       
+        if (!number || !type) {
+            e.preventDefault();
+            document.getElementById('alert').style.display = 'block';
+            document.getElementById('alertMessage').innerText = 'Please fill in all fields';
+            console.log(document.getElementById('alertMessage').innerHTML);
+            return;
+        }
+        const types = ['Ambulance', 'Fire truck', 'Van','Rescue'];
+        if(!types.includes(type)){
+            e.preventDefault();
+            document.getElementById('alert').style.display = 'block';
+            document.getElementById('alertMessage').innerText = 'Invalid type';
+            console.log(document.getElementById('alertMessage').innerHTML);
+            return;
+        }
+        // Submit form
+        e.target.action = `/cars/`;
+        e.target.method = 'POST'
+        e.target.submit();
+        
+    });
+    });
+
+</script>

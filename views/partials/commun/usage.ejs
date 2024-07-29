@@ -1,0 +1,21 @@
+<div class="section-title"><label for="usage">:الأدوات المستخدمة</label></div>
+<div class="triage-form-group">
+    <div class="usage">
+        <div class="select-multiple-con">
+            <select name="usage" id="usage">
+                <% materials.forEach(function(material){ %>
+                    <option value="<%= material._id._id %>"><%= material._id.name %></option>
+                <% }) %>
+            </select>
+            <label id="q1" for="quantity">:الكمية</label>
+            <input id="quantity" placeholder="الكمية" type="number" min="1" value="1" name="quantity">
+            <div class="p-btn">
+                <a class="btn btn-primary b" id="add">Add</a>
+            </div>
+        </div>
+        <div class="added-con">
+            <!-- Added items will be displayed here -->
+        </div>
+        <input type="hidden" name="usage" id="materials">
+    </div>
+</div>

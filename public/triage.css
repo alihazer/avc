@@ -1,0 +1,48 @@
+.tables-container {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+.common-fields-table, .emergency-table {
+    flex: 1;
+    margin-right: 10px; /* Adjust space between tables */
+    box-sizing: border-box; /* Include padding and border in element's total width and height */
+}
+
+.common-fields-table tr{
+    width: 100% !important;
+}
+
+.emergency-table tr{
+    width: 100% !important;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+/* Mobile styles */
+@media (max-width: 768px) {
+    .tables-container {
+        display: none;
+    }
+}
+
+#img{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#im{
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+}

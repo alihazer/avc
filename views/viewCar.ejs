@@ -1,0 +1,81 @@
+<div class="container">
+    
+    <div class="card">
+        <div>
+            <a href="/cars" class="back-arrow1"><i class="fa-solid fa-arrow-left"></i></a>
+        </div>
+        <div class="card-header">
+            Car Details:
+        </div>
+        <div class="card-body">
+            <p>Type: <%= car.type %></p>
+            <p>Total Cases: <%= car.totalCases %></p>
+            <% if (car.materials.length > 0) { %>
+                <h3>Materials:</h3>
+                <!-- Table -->
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Material</th>
+                            <th>Quantity</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% car.materials.forEach(material => { %>
+                            <tr>
+                                <td><%= material._id.name %></td>
+                                <td><%= material.quantity %></td>
+                            </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+            <% } else { %>
+                <p>No materials found</p>
+            <% } %>
+        </div>
+        <div class="card-body">
+            <% if (logs.length > 0) { %>
+                <h3>Logs:</h3>
+                <!-- Table -->
+                <table class="table-responsive">
+                    <thead>
+                        <tr>
+                            <th>Action</th>
+                            <th>User</th>
+                            <th>Time</th>
+                            <th>Materials</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% logs.forEach(log => { %>
+                            <tr>
+                                <% if(log.action == 'Added'){ %>
+                                <td style="background-color: rgba(17, 190, 17, 0.47);"><%= log.action %></td>
+                                <% }else if(log.action == 'Used'){ %>
+                                <td style="background-color: rgba(195, 8, 8, 0.491);"><%= log.action %></td>
+                                <% } else{%>
+                                <td><%= log.action %></td>
+                                <% } %>
+                                <td><%= log.user.username %></td>
+                                <td>
+                                    <!-- Humanized created at -->
+                                    <%= moment(log.createdAt).fromNow() %>
+                                </td>
+                                <td>
+                                    <% log.materials_added.forEach(material => { %>
+                                        <p><%= material._id.name %> - <%= material.quantity %></p>
+                                    <% }) %>
+                                </td>
+                            </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+                <!-- View all btn-->
+                 <br>
+                <a href="/logs/<%= car._id %>" class="btn btn-primary">View all Logs</a>
+            <% } else { %>
+                <p>No logs found</p>
+            <% } %>
+        </div>
+    </div>
+</div>

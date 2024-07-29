@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Material Management</title>
+    <style>
+        .alert-close-to-return {
+        background-color: rgba(255, 0, 0, 0.3); /* Light red background */
+        }
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f9fa;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 50px auto;
+            padding: 0 15px;
+        }
+
+        .card {
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .card-header {
+            background-color: #378746;
+            color: #fff;
+            padding: 15px 20px;
+            font-size: 1.5rem;
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 0;
+        }
+
+        table thead {
+            background-color: #343a40;
+            color: #fff;
+        }
+
+        table th, table td {
+            padding: 12px 15px;
+            border: 1px solid #dee2e6;
+            text-align: left;
+        }
+
+
+        img.img-thumbnail {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 6px 12px;
+            font-size: 0.875rem;
+            font-weight: 400;
+            color: #fff;
+            text-align: center;
+            text-decoration: none;
+            vertical-align: middle;
+            cursor: pointer;
+            border: none;
+            border-radius: 4px;
+            margin-right: 5px;
+        }
+
+
+        .btn-danger {
+            background-color: #dc3545;
+        }
+
+        .btn-danger:hover {
+            background-color: #c82333;
+        }
+
+        @media (max-width: 600px) {
+            .btn {
+                margin-bottom: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <section>
+        <div class="container">
+            <div style="margin-bottom: 15px">
+                <a class="primary-btn" href="/borrowed-items/category/create">Add Category</a>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            Categories
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>Image</th>
+                                            <th>Name</th>
+                                            
+                                            <th>Quantity</th>
+                                            <th>Currently Borrowed</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <% items.forEach(material => { %>
+                                            
+                                        <tr>
+                                            <td style="display: flex; align-items: center; justify-content: center;"><img src="<%= material.image %>" alt="" class="img-thumbnail"></td>
+                                            <td><%= material.name %></td>
+                                            
+                                            <td><%= material.quantity %></td>
+                                            <td><%= material.borrowedQuantity %></td>
+                                            <td>
+                                                <a href="/borrowed-items/category/<%= material._id %>/items" class="btn btn-primary">Items</a>
+                                                <a href="/borrowed-items/category/<%= material._id %>/edit" class="btn btn-primary">Edit</a>
+                                            </td>
+                                        </tr>
+                                        <% }) %>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section>
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            Borrowed Items
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            
+                                            <th>Image</th>
+                                            <th>Item</th>
+                                            <th>Name</th>
+                                            <th>Phone Number</th>
+                                            <th>Borrow Date</th>
+                                            <th>Expected Return Date</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <% const currentDate = new Date(); %>
+                                        <% borrowedItems.forEach(material => { %>
+                                            <% 
+                                                const expectedReturnDate = new Date(material.expectedReturnDate);
+                                                const timeDiff = expectedReturnDate - currentDate;
+                                                const dayDiff = timeDiff / (1000 * 3600 * 24);
+                                                const isCloseToReturn = dayDiff <= 3; // threshold of 3 days
+                                                
+                                            %>
+                                            
+                                            <tr class="<%= isCloseToReturn ? 'alert-close-to-return' : '' %>">
+                                                
+                                                <td style="display: flex; align-items: center; justify-content: center;"><img src="<%= material.item.image %>" alt="" class="img-thumbnail"></td>
+                                                <td><%= material.item.name %></td>
+                                                <td><%= material.borrower %></td>
+                                                
+                                                <td><%= material.phoneNumber %></td>
+                                                <td><%= moment(material.borrowDate).format('DD-MM-YYYY' ) %></td>
+                                                <td><%= moment(material.expectedReturnDate).format('DD-MM-YYYY' ) %></td>
+                                                <td>
+                                                    <a href="/borrowed-items/category/<%=material.item.category%>/item/<%= material.item._id %>/return" class="btn btn-danger">ارجاع</a>
+                                                    <a href="/borrowed-items/category/<%=material.category%>/item/<%= material.item._id %>/view" class="btn btn-primary">عرض</a>
+                                                </td>
+                                            </tr>
+                                        <% }) %>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</body>
+</html>
