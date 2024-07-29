@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken';
 export default function isLoggedIn(req, res, next) {
     const token = req?.cookies?.token;
     if (!token) {
-        return res.status(401).render('login', { message: 'Please Login' });
+        return res.status(401).redirect('/login');
     }
     try{
         // Verify token
@@ -12,7 +12,8 @@ export default function isLoggedIn(req, res, next) {
         next();
     }
     catch(error){
-        return res.status(401).render('login', { message: 'Please Login' });
+        console.error(error);
+        return res.status(401).redirect('/login');
     }
 
 };

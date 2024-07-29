@@ -1,7 +1,11 @@
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700&display=swap');
 
+@import url('https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@100..900&family=Noto+Sans+Arabic:wght@100..900&display=swap');
+
+
 * {
 	font-family: 'Open Sans', sans-serif;
+	font-family: 'Noto Kufi Arabic', sans-serif;;
 	margin: 0;
 	padding: 0;
 	box-sizing: border-box;
@@ -910,6 +914,7 @@ img {
     align-items: center;
     justify-content: flex-end; /* Align label to the right */
     width: 100px;
+	font-size: 12px;
 }
 
 .triage-form-group input {
@@ -920,6 +925,7 @@ img {
     border-radius: 4px;
     box-sizing: border-box;
     text-align: right;
+	margin-top: 10px;
 }
 
 .triage-form-group input:focus {
@@ -1258,3 +1264,35 @@ textarea:focus {
     height: auto; /* Maintain aspect ratio */
     object-fit: contain; /* Ensure the image scales to fit within the container without cropping */
 }
+
+footer {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background-color: var(--blue);
+	color: var(--light);
+	position: relative;
+	bottom: 0;
+	height: 55px;
+}
+
+
+footer .foot-info a{
+	color: #093911;
+	text-decoration: underline;
+	transition: all .3s ease;
+	
+}
+
+footer .foot-info a:hover{
+	color: var(--dark);
+}
+
+footer .foot-info .foot-details{
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 15px;
+}
+
+
