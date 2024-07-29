@@ -10,6 +10,7 @@ import Triage from "../models/Triage.js";
 import { getBorrowedItemsCount } from "./borrowStock.controller.js";
 import getLayoutName from "../utils/getLayoutName.js";
 import { getItemsThisMonth } from "./materials.controller.js";
+import moment from "moment";
 
 export const register = asyncHandler(async (req, res) => {
     try { 
@@ -63,6 +64,8 @@ export const login = asyncHandler(async (req, res) => {
         user.password = undefined;
         const token = createToken(user._id, user.role, user.username);
         const isProduction = process.env.NODE_ENV === 'production';
+        const date = new Date();
+        console.log('Hello', user.username, 'Logged in at: ', moment(date).format('MMMM Do YYYY, h:mm:ss a'));
 
         // Set the token cookie
         res.cookie('token', token, {
