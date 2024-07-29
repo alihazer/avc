@@ -281,7 +281,7 @@ const renderPrintPage = asyncHandler(async(req, res) => {
     const id = req.params.id;
     const item = await BorrowItem.findById(id).populate('barCode');
     console.log(item);
-    res.render('printBarcode', { item });
+    res.render('printBarCode', { item });
 });
 
 export { createBorrowItem, getBorrowItems, renderCreateBorrowItem, borrowItem, renderBorrowForm, renderEditBorrowItem, editBorrowItem, renderReturnForm, returnBorrowedItem, getBorrowedItemsCount, createBorrowCategory, renderCreateBorrowCategory, showEditCategory, getBorrowItemsOfCategory, generateBarcode, renderPrintPage };
