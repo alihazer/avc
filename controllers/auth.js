@@ -141,7 +141,6 @@ export const getDashboard = asyncHandler(async (req, res) => {
     const data = await getMyTriagesCount(req, res);
     if(accessibles.includes(roleName.name)){
         const items = await getItemsThisMonth();
-        console.log(items);
         const borrowedItems = await getBorrowedItemsCount(true);
         const triageOfTheMonth = await getTheMostDayTriagesInTheMonth();
         let mostCasesCar = await getMostCasesCar(true);
