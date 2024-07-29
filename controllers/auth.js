@@ -62,8 +62,21 @@ export const login = asyncHandler(async (req, res) => {
         // unsign the password from the user object
         user.password = undefined;
         const token = createToken(user._id, user.role);
-        res.cookie('token', token, { httpOnly: true });
-        res.cookie('user', user, { httpOnly: (process.env.NODE_ENV) === 'production' });
+        const isProduction = process.env.NODE_ENV === 'production';
+
+        // Set the token cookie
+        res.cookie('token', token, {
+            httpOnly: true,
+            secure: isProduction, // Ensures the cookie is only sent over HTTPS in production
+            sameSite: isProduction ? 'Strict' : 'Lax', // Strict in production, Lax in development
+        });
+        
+        // Set the user cookie
+        res.cookie('user', user, {
+            httpOnly: true, // Consistent with the token cookie
+            secure: isProduction,
+            sameSite: isProduction ? 'Strict' : 'Lax',
+        });
         res.status(200).redirect('/dashboard')
     } catch (error) {
         console.log(error);
