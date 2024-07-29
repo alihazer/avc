@@ -2,7 +2,6 @@ import jwt from 'jsonwebtoken';
 
 export default function isLoggedIn(req, res, next) {
     const token = req?.cookies?.token;
-    console.log("Token: ", token);
     if (!token) {
         return res.status(401).render('login', { message: 'Please Login' });
     }

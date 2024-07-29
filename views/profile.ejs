@@ -7,32 +7,40 @@
     <div class="profile-card">
         
         <div class="profile-img" id="prof-img">
+                
+                <%if(user.profileImage == undefined){ %>
+                    <i class="fa-solid fa-user"></i>
+                <%}else{ %>
+                    <img src="<%= user.profileImage %>" alt="<%= user.username %>">
+                <% } %>
         </div>
         <div class="profile-info">
             <div class="profile-info-item">
                 <i class="fa-solid fa-envelope"></i>
-                <p class="username"></p>
+                <p class="username"><%=user.username%></p>
             </div>
             <!-- item -->
             <div class="profile-info-item">
                 <i class="fa-solid fa-user"></i>
-                <p class="role"></p>
+                <p class="role"><%=user.role.name%></p>
             </div>
             <!-- Phone -->
             <div class="profile-info-item">
                 <i class="fa-solid fa-phone"></i>
-                <p class="phone"></p>
+                <p class="phone"><%=user.phone%></p>
             </div>
             <!-- Shift Days -->
             <div class="profile-info-item">
                 <i class="fa-solid fa-calendar"></i>
-                <p class="shiftDays"></p>
+                <p class="shiftDays">
+                    <%=user.shiftDays.join(',') %>
+                </p>
             </div>
             <!-- Blood type -->
             
             <div class="profile-info-item">
                     <i class="fa-solid fa-heart"></i>
-                    <p class="bloodType"></p>
+                    <p class="bloodType"><%=user.bloodType%></p>
             </div>
 
             <div class="profile-info-item">
@@ -47,4 +55,3 @@
     </div>
 </section>
 </div>
-<script type="module" src="/js/profile.js"></script>

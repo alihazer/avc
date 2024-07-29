@@ -167,6 +167,7 @@ export const getUserProfile = asyncHandler(async (req, res) => {
     const noAccess = ['driver', 'stockmanager', 'shiftmanager']
     const role = req.user.role.name;
     let totalCases = 0;
+    const user = await User.findById(req.user.id).populate('role').select('-password');
     if(role == 'driver'){
         totalCases = await Triage.find({
             driver: req.user.id
@@ -178,10 +179,10 @@ export const getUserProfile = asyncHandler(async (req, res) => {
         });
     }
     if(accessibles.includes(role)){
-        return res.status(200).render('profile', {totalCases: totalCases.length});
+        return res.status(200).render('profile', {totalCases: totalCases.length, user});
     }
     else if(noAccess.includes(role)){
-        return res.status(200).render('profile', { layout: 'layouts/noAccessLayout', totalCases: totalCases.length });
+        return res.status(200).render('profile', { layout: 'layouts/noAccessLayout', totalCases: totalCases.length, user});
     }
     return res.status(200).render('profile', { layout: 'layouts/userLayout', totalCases: totalCases.length });
 });

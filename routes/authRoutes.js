@@ -5,6 +5,9 @@ import checkPermission from '../middlewares/checkPermission.js';
 import isLoggedIn from '../middlewares/isLoggedIn.js';
 import isActive from '../middlewares/isActive.js';
 
+router.get('/', (req, res) => {
+    res.redirect('/login');
+});
 router.get('/login', getLoginPage);
 router.get('/users', isLoggedIn, getUsers);
 router.get('/users/add', isLoggedIn, checkPermission("manage_users"), getRegisterPage);

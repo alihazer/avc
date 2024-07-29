@@ -4,6 +4,7 @@
         <span class="divider"></span>
         <div class="profile">
             <div id="pro-img" class="profile-img">
+                <img src="https://cdn-icons-png.flaticon.com/256/6522/6522516.png" id="img" alt="profile image">
             </div>
             <ul class="profile-link">
                 <li><a href="/profile"><i class='bx bxs-user-circle icon'></i> Profile</a></li>
@@ -11,19 +12,3 @@
             </ul>
         </div>
 </nav>
-<script type="module">
-    import  getUserFromCookie  from '/getUserFromCookie.js';
-    const user = getUserFromCookie();
-    if(!user) {
-        window.location.href = '/login';
-    }
-    
-    const profileImg = document.getElementById('pro-img');
-    const profileImageUrl = user.profileImage;
-    if(profileImageUrl) {
-        profileImg.innerHTML = `<img src="${profileImageUrl}" id="img" alt="profile image">`;
-    } else {
-        profileImg.innerHTML = `<img src="https://cdn-icons-png.flaticon.com/256/6522/6522516.png" id="img" alt="profile image">`;
-    }
-    
-</script>
