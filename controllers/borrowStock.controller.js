@@ -184,7 +184,8 @@ const returnBorrowedItem = asyncHandler(async (req, res) => {
             });
         }
         const borrowedItems = await BorrowLog.find({ category: item.category ,status: "borrowed" });
-        console.log(borrowedItems.length);
+
+        
         category.borrowedQuantity = borrowedItems.length;
         item.status = "available";
         log.status = "returned";
@@ -280,7 +281,6 @@ const generateBarcode = asyncHandler(async(req, res) => {
 const renderPrintPage = asyncHandler(async(req, res) => {
     const id = req.params.id;
     const item = await BorrowItem.findById(id).populate('barCode');
-    console.log(item);
     res.render('printBarCode', { item });
 });
 
