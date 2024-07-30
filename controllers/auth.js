@@ -187,7 +187,7 @@ export const getUserProfile = asyncHandler(async (req, res) => {
     else if(noAccess.includes(role)){
         return res.status(200).render('profile', { layout: 'layouts/noAccessLayout', totalCases: totalCases.length, user});
     }
-    return res.status(200).render('profile', { layout: 'layouts/userLayout', totalCases: totalCases.length });
+    return res.status(200).render('profile', { layout: 'layouts/userLayout', totalCases: totalCases.length, user });
 });
 
 // get edit profile page
