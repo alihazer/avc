@@ -37,5 +37,5 @@ const CarCostSchema = new mongoose.Schema({
     }
 });
 
-const CarCost = mongoose.model("CarCost", CarCostSchema);
-export default CarCost;
+const Cost = mongoose.model("CarCost", CarCostSchema);
+export default Cost;

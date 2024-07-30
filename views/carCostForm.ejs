@@ -12,7 +12,7 @@
                         <label for="carId">رقم السيارة </label>
                         <select name="carId" id="car">
                             <% cars.forEach(car => { %>
-                                <option value="<%= car.id %>"><%= car.number %></option>
+                                <option value="<%= car._id %>"><%= car.number %></option>
                             <% }); %>
                         </select>
                     </div>
