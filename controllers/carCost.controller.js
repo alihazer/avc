@@ -49,8 +49,8 @@ const getCostById = asyncHandler(async (req, res) => {
 });
 
 const getCostByCar = asyncHandler(async (id) => {
-    const usdCosts = await CarCost.find({ carId: id, currency: "usd" });
-    const lbpCosts = await CarCost.find({ carId: id, currency: "lbp" });
+    const usdCosts = await Cost.find({ carId: id, currency: "usd" });
+    const lbpCosts = await Cost.find({ carId: id, currency: "lbp" });
 
     const costs =  { usdCosts, lbpCosts };
     const usdTotal = usdCosts.reduce((acc, cost) => acc + cost.cost, 0);
