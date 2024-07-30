@@ -1,72 +1,76 @@
-
-    <form class="profile-f">
-    <div class="profile-card">
-        <div class="profile-img">
-            <% if(user.profileImage) { %>
-                <img src="<%=user.profileImage%>"/>
-            <% } else { %>
-                <i class="fa-solid fa-user"></i>
-            <% } %>
-            <!-- add image btn -->
-        </div>
-        <!-- Alert error -->
-        
-        <p>Upload Profile:</p>
-        <div class="profile-info">
-            <div class="alert" id="alert" style="display: none;">
-                <div><span class="close-btn" id="closeBtn">&times;</span></div>
-                <div><p id="alertMessage"></p></div>
-            </div>
-            
-            <div class="profile-info-item">
-                <input type="file" name="profileImage" id="profileImage">
-            </div>
-            <div class="profile-info-item">
-                <i class="fa-solid fa-envelope"></i>
-                <h5><%= user.username %></h5>
-            </div>
-            <!-- item -->
-            <div class="profile-info-item">
-                <i class="fa-solid fa-user"></i>
-                <p><%= role %></p>
-            </div>
-            <!-- Phone -->
-            <div class="profile-info-item">
-                <i class="fa-solid fa-phone"></i>
-                <input type="text" name="phone" id="phone" value="<%= user.phone %>">
-            </div>
-            <!-- Blood type -->
-                <div class="profile-info-item">
-                    <i class="fa-solid fa-heart"></i>
-                    <!-- Select blood type -->
-                    <select name="bloodType" id="bloodType">
-                        <% if(user.bloodType) { %>
-                            <option value="<%= user.bloodType %>" selected><%= user.bloodType %></option>
-                        <% } %>
-                        <option value="A+">A+</option>
-                        <option value="A-">A-</option>
-                        <option value="B+">B+</option>
-                        <option value="B-">B-</option>
-                        <option value="AB+">AB+</option>
-                        <option value="AB-">AB-</option>
-                        <option value="O+">O+</option>
-                        <option value="O-">O-</option>
-                    </select>
+<div class="container">
+            <div class="profile-card">
+                <div class="profile-img">
+                    <% if(user.profileImage) { %>
+                        <img src="<%=user.profileImage%>"/>
+                    <% } else { %>
+                        <i class="fa-solid fa-user"></i>
+                    <% } %>
+                    <!-- add image btn -->
                 </div>
+                <!-- Alert error -->
+                
+                
+                <div class="profile-info">
+                    <div class="alert" id="alert" style="display: none;">
+                        <div><span class="close-btn" id="closeBtn">&times;</span></div>
+                        <div><p id="alertMessage"></p></div>
+                    </div>
+                    <p>Upload Profile:</p>
+                <form class="profile-f">
+                    <div class="profile-info-item">
+                        
+                        <input type="file" name="profileImage" id="profileImage">
+                    </div>
+                    <div class="profile-info-item">
+                        <i class="fa-solid fa-envelope"></i>
+                        <h5><%= user.username %></h5>
+                    </div>
+                    <!-- item -->
+                    <div class="profile-info-item">
+                        <i class="fa-solid fa-user"></i>
+                        <p><%= role %></p>
+                    </div>
+                    <!-- Phone -->
+                    <div class="profile-info-item">
+                        <i class="fa-solid fa-phone"></i>
+                        <input type="text" name="phone" id="phone" value="<%= user.phone %>">
+                    </div>
+                    <!-- Blood type -->
+                        <div class="profile-info-item">
+                            <i class="fa-solid fa-heart"></i>
+                            <!-- Select blood type -->
+                            <select name="bloodType" id="bloodType">
+                                <% if(user.bloodType) { %>
+                                    <option value="<%= user.bloodType %>" selected><%= user.bloodType %></option>
+                                <% } %>
+                                <option value="A+">A+</option>
+                                <option value="A-">A-</option>
+                                <option value="B+">B+</option>
+                                <option value="B-">B-</option>
+                                <option value="AB+">AB+</option>
+                                <option value="AB-">AB-</option>
+                                <option value="O+">O+</option>
+                                <option value="O-">O-</option>
+                            </select>
+                        </div>
+                
+                
+                <input style="display: none;" id="image" name="profileImage">
+                <!-- edit profile btn -->
         
-        </div>
-        <input style="display: none;" id="image" name="profileImage">
-        <!-- edit profile btn -->
+                <div>
+                    <!-- back -->
+                    <button class="primary-btn"><a style="color: white;" href="/profile">Back</a></button>
+                    <button type="submit" class="primary-btn">Save</button>
+                </div>
+            </form>
+                <!-- Hidden input -->
+                
+                </div>
+            </div>
 
-        <div>
-            <!-- back -->
-            <button class="primary-btn"><a style="color: white;" href="/profile">Back</a></button>
-            <button type="submit" class="primary-btn">Save</button>
-        </div>
-        <!-- Hidden input -->
-        
-    </div>
-</form>
+</div>
 <script type="module" src="/firebase/firebaseConfig.js"></script>
 <script type="module" src="/firebase/imageUpload.js"></script>
 <script type="module" src="/firebase/formSubmission.js"></script>
