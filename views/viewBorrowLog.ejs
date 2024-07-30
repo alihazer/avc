@@ -26,7 +26,7 @@
                                 <%if(item.status === 'returned') { %>
                                     <p>Status: <span style="color: green;"><%=item.status%></span></p>
                                 <% } else { %>
-                                    <p>Status: <span style="color: green;"><%=item.status%></span></p>
+                                    <p>Status: <span style="color: red;"><%=item.status%></span></p>
                                 <% } %>
                             </center>
                         </div>
@@ -64,22 +64,30 @@
                                 <input type="text" name="expectedReturnDate" id="expectedReturnDate" class="form-control" value="<%=moment(item.expectedReturnDate).format('DD-MM-YYYY')%>" disabled>
                             </div>
 
-                            <div class="form-group">
-                                <label for="">:صورة عند الاعارة </label>
-                                <img style="width: 200px;height: 200px;" src="<%= item.imageOnBorrow%>" alt="" width="100px">
-                            </div>
-
                             <%if (item.status === 'returned') { %>
                                 <div class="form-group">
                                     <label for="returnDate">Return Date:</label>
                                     <input type="text" name="returnDate" id="returnDate" class="form-control" value="<%=moment(item.returnDate).format('DD-MM-YYYY')%>" disabled>
                                 </div>
                             <% } %>
+
+                            <div class="form-group">
+                                <label for="">:صورة عند الاعارة </label>
+                                <img style="width: 200px;height: 200px;" src="<%= item.imageOnBorrow%>" alt="" width="100px">
+                            </div>
+
+                            <%if (item.status === 'returned') { %>
+                                <!-- صورة عند الارجاع -->
+                                <div class="form-group">
+                                    <label for="">:صورة عند الارجاع </label>
+                                    <img style="width: 200px;height: 200px;" src="<%= item.imageOnReturn%>" alt="" width="100px">
+                            <% } %>
+
                             
 
                             <div class="form-group">
                                 <label for="notes">Notes:</label>
-                                <textarea name="notes" id="notes" class="form-control" value="<%item.note%>" disabled></textarea>
+                                <input disabled type="text" value="<%=item.notes%>">
                             </div>  
                                         
                         </form>

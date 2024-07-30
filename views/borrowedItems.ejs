@@ -151,6 +151,9 @@
     </section>
     <section>
         <div class="container">
+            <a href="/borrowed-items/logs/all" class="btn btn-primary">View Log History</a>
+            <br>
+            
             <div class="row">
                 <div class="col-12">
                     <div class="card">
@@ -194,20 +197,21 @@
                                                 <td><%= moment(material.expectedReturnDate).format('DD-MM-YYYY' ) %></td>
                                                 <td>
                                                     <a href="/borrowed-items/category/<%=material.item.category%>/item/<%= material.item._id %>/return" class="btn btn-danger">ارجاع</a>
-                                                    <a href="/borrowed-items/category/<%=material.category%>/item/<%= material.item._id %>/view" class="btn btn-primary">عرض</a>
+                                                    <a href="/borrowed-items/logs/<%=material._id %>/view" class="btn btn-primary">عرض</a>
                                                 </td>
                                             </tr>
                                         <% }) %>
                                     </tbody>
                                 </table>
-                                <!-- View all log history -->
-                                <a href="/borrowed-items/logs/all" class="btn btn-primary">View Log History</a>
+
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+            
         </div>
+        
     </section>
 </body>
 </html>

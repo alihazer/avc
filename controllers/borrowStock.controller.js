@@ -4,7 +4,6 @@ import BorrowLog from "../models/BorrowLog.js";
 import BorrowItemCategory from "../models/BorrowItemCategory.js";
 import { generateBarcodeBuffer } from "../utils/generateBarcodeBuffer.js";
 import moment from "moment";
-import mongoose from "mongoose";
 import { v4 as uuidv4 } from 'uuid';
 import ItemBarCode from "../models/ItemBarCode.js";
 // @desc create a new item
@@ -55,6 +54,7 @@ const borrowItem = asyncHandler(async (req, res) => {
         const { name, phone_nb, age, difficulty, responsiblePerson, responsiblePersonNumber, expectedReturnDate, notes, imageOnBorrow } = req.body
         const { id } = req.params;
         const item = await BorrowItem.findById(id);
+        console.log(notes);
         if (!item) {
             return res.status(404).render('error', { message: "Item not found" });
         }
@@ -67,9 +67,6 @@ const borrowItem = asyncHandler(async (req, res) => {
         if(category.borrowedQuantity === category.quantity) {
             return res.status(400).render('error', { message: "All items in this category are borrowed" });
         }
-        const borrowedItems = await BorrowLog.find({ category: item.category ,status: "borrowed" });
-        category.borrowedQuantity = borrowedItems.length + 1;
-        await category.save();
             const log = new BorrowLog({
                 item: id,
                 borrower: name,
@@ -87,6 +84,10 @@ const borrowItem = asyncHandler(async (req, res) => {
             });
     
             await log.save();
+            const borrowedItems = await BorrowItem.find({ category: item.category, status: "borrowed" });
+            console.log(borrowedItems.length);
+            category.borrowedQuantity = borrowedItems.length;
+            await category.save();
             res.status(200).redirect(`/borrowed-items/category/${category._id}/items`);
         }catch (error) {
         console.log(error);
@@ -183,18 +184,17 @@ const returnBorrowedItem = asyncHandler(async (req, res) => {
                 message: "Item not found" 
             });
         }
-        const borrowedItems = await BorrowLog.find({ category: item.category ,status: "borrowed" });
-
-
-        category.borrowedQuantity = borrowedItems.length;
         item.status = "available";
         log.status = "returned";
         log.actualReturnDate = new Date();
         log.notes = notes;
 
-        await category.save();
+
         await item.save();
         await log.save();
+        const borrowedItems = await BorrowItem.find({ category: item.category, status: "borrowed" });
+        category.borrowedQuantity = borrowedItems.length;
+        await category.save();
         return res.status(200).json({
             status: true,
             message: "Item returned successfully" 
@@ -287,9 +287,7 @@ const renderPrintPage = asyncHandler(async(req, res) => {
 const getAllLogs = asyncHandler(async(req, res) => {
     const logs = await BorrowLog.find()
     .populate('item')
-    .sort({
-        createdAt: -1
-    });
+    .sort({borrowDate: -1});
     res.render('logHistory', { logs, moment });
 });
 

@@ -50,8 +50,11 @@ const BorrowLogSchema = new mongoose.Schema({
         type: String,
         enum: ["borrowed", "returned"],
         default: "borrowed"
-    }
-});
+    },
+    notes:{
+        type: String
+    },
+}, {timestamps: true});
 
 const BorrowLog = mongoose.model("BorrowLog", BorrowLogSchema);
 export default BorrowLog;
