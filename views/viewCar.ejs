@@ -10,6 +10,8 @@
         <div class="card-body">
             <p>Type: <%= car.type %></p>
             <p>Total Cases: <%= car.totalCases %></p>
+            <p>Total Costs: <%=usd%> $ , <%=lbp%> LBP</p>
+
             <% if (car.materials.length > 0) { %>
                 <h3>Materials:</h3>
                 <!-- Table -->

@@ -199,6 +199,14 @@ $(document).ready(function() {
 		allowClear: true
 	});
 
+	$('.person-select').select2({
+		placeholder: "Select..",
+		allowClear: true,
+		maximumSelectionLength: 1
+	});
+
+
+
 	$('#avpu').change(function() {
 		if ($(this).val() === 'Alert') {
 			$('.ppte-group').show();

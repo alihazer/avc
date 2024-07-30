@@ -5,6 +5,7 @@ import CarLog from "../models/CarLog.js";
 import moment from "moment";
 import Triage from "../models/Triage.js";
 import getLayoutName from "../utils/getLayoutName.js";
+import { getCostByCar } from "./carCost.controller.js";
 
 
 // Add new Car
@@ -73,6 +74,7 @@ const getCars = asyncHandler(async (req, res) => {
 const getCarById = asyncHandler(async (req, res) => {
     try {
         const car = await Car.findById(req.params.id).populate("materials._id").exec();
+        const costs = await getCostByCar(req.params.id);
         const logs = await CarLog.find({carId: car._id})
                                     .sort({createdAt: -1})
                                     .limit(10)
@@ -83,7 +85,7 @@ const getCarById = asyncHandler(async (req, res) => {
             res.status(404);
             throw new Error("Car not found");
         }
-        return res.render("viewCar", {car, logs, moment});
+        return res.render("viewCar", {car, logs, moment, usd: costs.usdTotal, lbp: costs.lbpTotal});
     } catch (error) {
         console.log(error);
         res.status(400);

@@ -1,0 +1,45 @@
+<section>
+    <div class="container">
+        <div>
+            <a href="/cars" class="back-arrow1"><i class="fa-solid fa-arrow-left"></i></a>
+        </div>
+        <div>
+            <a href="/cars/costs/add" class="btn btn-primary">اضافة تكلفة</a>
+        </div>
+        <div class="card">
+                <div class="card-header">
+                    <h4>تكاليف السيارات</h4>
+                </div>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>السيارة</th>
+                            <th>السبب</th>
+                            <th>المسؤول</th>
+                            <th>التكلفة</th>
+                            <th>العملة</th>
+                            <th>المؤسسة</th>
+                            <th>التاريخ</th>
+                            
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% carCosts.forEach(function(carCost){ %>
+                            <tr>
+                                <td><%= carCost.carId.number %></td>
+                                <td><%= carCost.cause %></td>
+                                <td><%= carCost.person.username %></td>
+                                <td><%= carCost.cost %></td>
+                                <td><%= carCost.currency %></td>
+                                <td><%= carCost.paidFor %></td>
+                                <td><%= moment(carCost.date).format('DD-MM-YYYY') %></td>
+                            
+                            </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    </div>
+</section>

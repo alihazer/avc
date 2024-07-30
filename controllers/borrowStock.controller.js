@@ -54,7 +54,7 @@ const borrowItem = asyncHandler(async (req, res) => {
         const { name, phone_nb, age, difficulty, responsiblePerson, responsiblePersonNumber, expectedReturnDate, notes, imageOnBorrow } = req.body
         const { id } = req.params;
         const item = await BorrowItem.findById(id);
-        console.log(notes);
+    
         if (!item) {
             return res.status(404).render('error', { message: "Item not found" });
         }
@@ -85,7 +85,6 @@ const borrowItem = asyncHandler(async (req, res) => {
     
             await log.save();
             const borrowedItems = await BorrowItem.find({ category: item.category, status: "borrowed" });
-            console.log(borrowedItems.length);
             category.borrowedQuantity = borrowedItems.length;
             await category.save();
             res.status(200).redirect(`/borrowed-items/category/${category._id}/items`);
