@@ -17,7 +17,7 @@ const renderCostForm = asyncHandler(async (req, res) => {
 const createCost = asyncHandler(async (req, res) => {
     try {
         const { carId, cost, currency, date, cause, paidFor, person, note } = req.body;
-        const car = await Car.find({number: carId});
+        const car = await Car.findById(carId);
         const newCost = new Cost({
             carId: car._id,
             cost: cost,
