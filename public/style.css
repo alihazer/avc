@@ -1313,3 +1313,37 @@ footer .foot-info .foot-details{
 }
 
 
+#filter-form {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+    margin-top: 10px;
+}
+
+#filter-form label {
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+#filter-form select {
+    padding: 5px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+}
+
+#filter-form .btn-primary {
+    padding: 5px 10px;
+    border: none;
+    background-color: var(--grey);
+    color: var(--blue);
+	margin-top: 5px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#filter-form .btn-primary:hover {
+    background-color: rgb(176, 173, 173);
+}
