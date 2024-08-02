@@ -145,7 +145,10 @@ export const getDashboard = asyncHandler(async (req, res) => {
     if(accessibles.includes(roleName.name)){
         const items = await getItemsThisMonth();
         const borrowedItems = await getBorrowedItemsCount(true);
-        const triageOfTheMonth = await getTheMostDayTriagesInTheMonth();
+        let triageOfTheMonth = await getTheMostDayTriagesInTheMonth();
+        if(triageOfTheMonth.length == 0){
+            triageOfTheMonth = [{ _id: { dayOfWeek: 'No shift' }, count: 0,  }];
+        }
         let mostCasesCar = await getMostCasesCar(true);
         if(!mostCasesCar){
             mostCasesCar = [{ _id: 'No car', caseCount: 0 }];

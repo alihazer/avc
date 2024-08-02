@@ -239,10 +239,12 @@ const getMyTriagesCount = asyncHandler(async(req, res)=>{
     try {
         const triages = await fetchMyTriages(req);
         const thisMonth = new Date().getMonth();
+        const allTriages = await Triage.find({}).exec();
         const thisMonthTriages = await Triage.find({createdAt: {$gte: new Date(new Date().getFullYear(), thisMonth, 1), $lt: new Date(new Date().getFullYear(), thisMonth + 1, 0)}}).exec();
         const data = {
             count: triages.length,
-            thisMonth: thisMonthTriages.length
+            thisMonth: thisMonthTriages.length,
+            allTriages: allTriages.length
         }
         if(!triages){
             return 0;
@@ -403,6 +405,64 @@ const editTriage = asyncHandler(async (req, res) => {
     }
 });
 
+const getTriageByMonth = async (year, month, page = 1, limit = 5) => {
+    const pageNum = parseInt(page);
+    const limitNum = parseInt(limit);
+    const skip = (pageNum - 1) * limitNum;
+
+    try {
+        const triages = await Triage.find({
+            createdAt: {
+                $gte: new Date(`${year}-${month}-01`),
+                $lt: new Date(`${year}-${parseInt(month) + 1}-01`)
+            }
+        })
+        .populate('moi')
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limitNum);
+
+        const totalTriages = await Triage.countDocuments({
+            createdAt: {
+                $gte: new Date(`${year}-${month}-01`),
+                $lt: new Date(`${year}-${parseInt(month) + 1}-01`)
+            }
+        });
+
+        return {
+            triages,
+            totalPages: Math.ceil(totalTriages / limitNum),
+            currentPage: pageNum
+        };
+    } catch (error) {
+        throw new Error('Error fetching triages');
+    }
+};
+
+const getTriageWithPagination = asyncHandler(async (req, res) => {
+    const { year, month } = req.query;
+
+    try {
+        const data = await getTriageByMonth(year, month, 1, 5);
+        if (req.xhr || req.headers.accept.indexOf('json') > -1) {
+            return res.json(data); 
+        }
+        else{
+            res.render('allTriagesWithFilter', {
+                triages: data.triages,
+                selectedYear: year,
+                selectedMonth: month,
+                currentPage: data.currentPage,
+                totalPages: data.totalPages,
+                moment
+            });
+        }
+
+    } catch (error) {
+        res.status(500).send('Error fetching triages');
+    }
+});
 
 
-export { renderFirstForm, createEmergencyTriage, getLoggedInUserTriages, getMyTriagesCount, getThisMonthsTriages, generatePdf, getTriage, getTheMostDayTriagesInTheMonth, renderEditTriage, editTriage};
+
+export { renderFirstForm, createEmergencyTriage, getLoggedInUserTriages, getMyTriagesCount, getThisMonthsTriages, generatePdf, getTriage, getTheMostDayTriagesInTheMonth, renderEditTriage, editTriage, getTriageByMonth, getTriageWithPagination};

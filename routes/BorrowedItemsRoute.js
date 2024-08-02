@@ -5,7 +5,7 @@ import checkPermission from '../middlewares/checkPermission.js';
 
 const router = express.Router();
 router.get('/', isLoggedIn, checkPermission('manage_stock') ,getBorrowItems);
-router.post('/category/:id/create-item', isLoggedIn, checkPermission('manage_stock') ,createBorrowItem);
+router.post('/category/:id/create-item', isLoggedIn, checkPermission('manage_stock'), createBorrowItem);
 router.get('/category/:id/create-item', isLoggedIn, checkPermission('manage_stock') ,renderCreateBorrowItem);
 router.get('/category/:catId/item/:id/borrow', isLoggedIn, checkPermission('manage_stock') ,renderBorrowForm);
 router.post('/category/:catId/item/:id/borrow', isLoggedIn, checkPermission('manage_stock') ,borrowItem);
