@@ -11,7 +11,7 @@ document.getElementById('materialForm').addEventListener('submit', async (event)
     const hidden = document.getElementById('hidden');
     const loadingSpinner = document.getElementById('loadingSpinner');
     // Show loading spinner
-    loadingSpinner.style.display = 'block';
+    loadingSpinner.style.display = 'flex';
     if (name === '') {
         showAlert('Name is required');
         loadingSpinner.style.display = 'none';
