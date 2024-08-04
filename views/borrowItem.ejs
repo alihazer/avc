@@ -61,12 +61,15 @@
                             </div>
                             <button type="submit" class="btn btn-primary">Save</button>
                             <a class="btn btn-primary" href="/borrowed-items">Cancel</a>
-
                         </form>
+                        <!-- Loading Spinner -->
+                        <div id="loadingSpinner" style="display:none;">
+                            <img src="/images/spinner.gif" alt="Loading...">
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </section>
-<script src="/firebase/borrowItem.js" type="module"></script>
+<script src="/firebase/borrowItem.js" type="module">

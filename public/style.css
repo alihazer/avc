@@ -1347,3 +1347,22 @@ footer .foot-info .foot-details{
 #filter-form .btn-primary:hover {
     background-color: rgb(176, 173, 173);
 }
+
+/* CSS for loading spinner */
+#loadingSpinner {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+	position: fixed;
+	top: 5px;
+	left: 0px;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.8); /* Semi-transparent background */
+    z-index: 9999; /* Ensure it's on top of other elements */
+}
+
+#loadingSpinner img {
+    width: 100px; /* Adjust the size of the spinner as needed */
+    height: 100px; /* Adjust the size of the spinner as needed */
+}
