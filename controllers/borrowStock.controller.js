@@ -296,4 +296,94 @@ const getBorrowLog = asyncHandler(async(req, res) => {
     res.render('viewBorrowLog', { item: log, log, moment });
 });
 
-export { createBorrowItem, getBorrowItems, renderCreateBorrowItem, borrowItem, renderBorrowForm, renderEditBorrowItem, editBorrowItem, renderReturnForm, returnBorrowedItem, getBorrowedItemsCount, createBorrowCategory, renderCreateBorrowCategory, showEditCategory, getBorrowItemsOfCategory, generateBarcode, renderPrintPage , getAllLogs, getBorrowLog };
+
+const getBorrowItemsStats = asyncHandler(async(req, res) => {
+    const year = parseInt(req.params.year);
+
+    try {
+        const pipeline = [
+            {
+                $match: {
+                    borrowDate: {
+                        $gte: new Date(`${year}-01-01`),
+                        $lt: new Date(`${year + 1}-01-01`)
+                    }
+                }
+            },
+            {
+                $lookup: {
+                    from: 'borrowitems',
+                    localField: 'item',
+                    foreignField: '_id',
+                    as: 'itemDetails'
+                }
+            },
+            {
+                $unwind: '$itemDetails'
+            },
+            {
+                $lookup: {
+                    from: 'borrowitemcategories',
+                    localField: 'itemDetails.category',
+                    foreignField: '_id',
+                    as: 'categoryDetails'
+                }
+            },
+            {
+                $unwind: '$categoryDetails'
+            },
+            {
+                $group: {
+                    _id: {
+                        category: '$categoryDetails.name',
+                        month: { $month: '$borrowDate' }
+                    },
+                    count: { $sum: 1 }
+                }
+            },
+            {
+                $group: {
+                    _id: '$_id.category',
+                    data: {
+                        $push: {
+                            month: '$_id.month',
+                            count: '$count'
+                        }
+                    }
+                }
+            },
+            {
+                $project: {
+                    _id: 0,
+                    category: '$_id',
+                    data: 1
+                }
+            }
+        ];
+
+        const result = await BorrowLog.aggregate(pipeline);
+        const totalCounts = await BorrowLog.aggregate([
+            {
+                $match: {
+                    borrowDate: {
+                        $gte: new Date(`${year}-01-01`),
+                        $lt: new Date(`${year + 1}-01-01`)
+                    }
+                }
+            },
+            {
+                $count: 'totalCases'
+            }
+        ]);
+
+        res.json({
+            borrowData: result,
+            totalCases: totalCounts.length > 0 ? totalCounts[0].totalCases : 0
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Failed to fetch borrow statistics' });
+    }
+});
+
+export { getBorrowItemsStats ,createBorrowItem, getBorrowItems, renderCreateBorrowItem, borrowItem, renderBorrowForm, renderEditBorrowItem, editBorrowItem, renderReturnForm, returnBorrowedItem, getBorrowedItemsCount, createBorrowCategory, renderCreateBorrowCategory, showEditCategory, getBorrowItemsOfCategory, generateBarcode, renderPrintPage , getAllLogs, getBorrowLog };

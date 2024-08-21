@@ -464,5 +464,72 @@ const getTriageWithPagination = asyncHandler(async (req, res) => {
 });
 
 
+const getTriageStats = asyncHandler(async (req, res) => {
+    const year = parseInt(req.params.year);
 
-export { renderFirstForm, createEmergencyTriage, getLoggedInUserTriages, getMyTriagesCount, getThisMonthsTriages, generatePdf, getTriage, getTheMostDayTriagesInTheMonth, renderEditTriage, editTriage, getTriageByMonth, getTriageWithPagination};
+
+    try {
+        const triageData = await Triage.aggregate([
+            {
+                $match: {
+                    createdAt: {
+                        $gte: new Date(`${year}-01-01`),
+                        $lt: new Date(`${year + 1}-01-01`)
+                    }
+                }
+            },
+            {
+                $group: {
+                    _id: { month: { $month: "$createdAt" }, case_type: "$case_type" },
+                    count: { $sum: 1 }
+                }
+            },
+            {
+                $group: {
+                    _id: "$_id.case_type",
+                    data: {
+                        $push: {
+                            month: "$_id.month",
+                            count: "$count"
+                        }
+                    }
+                }
+            },
+            {
+                $project: {
+                    _id: 0,
+                    case_type: "$_id",
+                    data: 1
+                }
+            }
+        ]);
+
+        const totalCases = await Triage.countDocuments({
+            createdAt: {
+                $gte: new Date(`${year}-01-01`),
+                $lt: new Date(`${year + 1}-01-01`)
+            }
+        });
+
+        return res.status(200).json({
+            status: true,
+            data: triageData,
+            totalCases
+        });
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({
+            status: false,
+            message: "Error fetching triage data"
+        });
+    }
+});
+
+const renderTriageStatsPage = asyncHandler(async (req, res) => {
+    const layout = getLayoutName(req);
+    return res.render('triageStats', { layout });
+});
+
+
+
+export { renderFirstForm, createEmergencyTriage, getLoggedInUserTriages, getMyTriagesCount, getThisMonthsTriages, generatePdf, getTriage, getTheMostDayTriagesInTheMonth, renderEditTriage, editTriage, getTriageByMonth, getTriageWithPagination, getTriageStats, renderTriageStatsPage};

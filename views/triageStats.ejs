@@ -1,0 +1,205 @@
+<div class="card">
+    <div class="card-header">
+        <h1>Statistics</h1>
+    </div>
+    <div class="card-body">
+        <div class="select">
+            <label for="yearSelect">Select Year:</label>
+            <select id="yearSelect">
+                <% for (let year = 2024; year <= new Date().getFullYear(); year++) { %>
+                    <option value="<%= year %>"><%= year %></option>
+                <% } %>
+            </select>
+        </div>
+
+        <div class="total">
+            <h2>Total Cases: <span id="totalCases"></span></h2>
+        </div>
+        <h1>Triage Statistics</h1>
+        <div id="chart"></div>
+
+        <h1>Borrowing Statistics</h1>
+        <h2>Total cases: <span id="borrowTotal"></span></h2>
+        <div id="borrowChart">
+            
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+<script>
+    let triageChart = null;
+    let borrowChart = null;
+
+    async function fetchTriageStats(year) {
+        const response = await fetch(`/triage/stats/${year}`);
+        return response.json();
+    }
+
+    async function fetchBorrowStats(year) {
+        const response = await fetch(`/borrowed-items/stats/${year}`);
+        return response.json();
+    }
+
+    function formatTriageData(data) {
+        const categories = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+        return data.map(item => {
+            const seriesData = new Array(12).fill(0);
+            item.data.forEach(d => {
+                seriesData[d.month - 1] = d.count;
+            });
+
+            return {
+                name: item.case_type,
+                data: seriesData
+            };
+        });
+    }
+
+    function formatBorrowData(data) {
+        const categories = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+        return data.map(item => {
+            const seriesData = new Array(12).fill(0);
+            item.data.forEach(d => {
+                seriesData[d.month - 1] = d.count;
+            });
+
+            return {
+                name: item.category,
+                data: seriesData
+            };
+        });
+    }
+
+    function renderTriageChart(data) {
+        const options = {
+            series: formatTriageData(data),
+            chart: {
+                height: 350,
+                type: 'area'
+            },
+            dataLabels: {
+                enabled: false
+            },
+            stroke: {
+                curve: 'smooth'
+            },
+            xaxis: {
+                categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+            },
+            tooltip: {
+                x: {
+                    format: 'MMM'
+                }
+            },
+            legend: {
+                position: 'bottom', // Ensures legend is at the bottom
+                horizontalAlign: 'center', // Center aligns the legend items
+                floating: false, // Keeps the legend in place
+                offsetY: 0 // Adjusts vertical position of the legend
+            }
+        };
+
+        if (triageChart) {
+            triageChart.destroy();  // Destroy the existing chart instance
+        }
+
+        triageChart = new ApexCharts(document.querySelector("#chart"), options);
+        triageChart.render();
+    }
+
+    function renderBorrowChart(data) {
+        const options = {
+            series: formatBorrowData(data),
+            chart: {
+                height: 350,
+                type: 'area'
+            },
+            dataLabels: {
+                enabled: false
+            },
+            stroke: {
+                curve: 'smooth'
+            },
+            xaxis: {
+                categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+            },
+            tooltip: {
+                x: {
+                    format: 'MMM'
+                }
+            },
+            legend: {
+                position: 'bottom', // Ensures legend is at the bottom
+                horizontalAlign: 'center', // Center aligns the legend items
+                floating: false, // Keeps the legend in place
+                offsetY: 0 // Adjusts vertical position of the legend
+            }
+        };
+
+        if (borrowChart) {
+            borrowChart.destroy();  // Destroy the existing chart instance
+        }
+
+        borrowChart = new ApexCharts(document.querySelector("#borrowChart"), options);
+        borrowChart.render();
+    }
+
+    document.getElementById('yearSelect').addEventListener('change', async function () {
+        const year = this.value;
+        
+        try {
+            const [triageResponse, borrowResponse] = await Promise.all([
+                fetchTriageStats(year),
+                fetchBorrowStats(year)
+            ]);
+
+            const data = triageResponse.data;
+            const borrowData = borrowResponse.borrowData;
+            const casesSpan = document.getElementById('totalCases');
+            const totalSpan = document.getElementById('borrowTotal');
+            console.log(totalSpan);
+            totalSpan.textContent = borrowResponse.totalCases;
+            casesSpan.textContent = triageResponse.totalCases;
+
+            // Update charts
+            const chartContainer = document.getElementById('chart');
+            chartContainer.innerHTML = '';  // Clear existing chart
+            renderTriageChart(data);
+
+            const borrowChartContainer = document.getElementById('borrowChart');
+            borrowChartContainer.innerHTML = '';  // Clear existing borrow chart
+            renderBorrowChart(borrowData);
+        } catch (error) {
+            console.error('Error fetching stats:', error);
+        }
+    });
+
+    // Load the current year's data on page load
+    (async function() {
+        const currentYear = new Date().getFullYear();
+        document.getElementById('yearSelect').value = currentYear;
+
+        try {
+            const [triageResponse, borrowResponse] = await Promise.all([
+                fetchTriageStats(currentYear),
+                fetchBorrowStats(currentYear)
+            ]);
+
+            const data = triageResponse.data;
+            const borrowData = borrowResponse.borrowData;
+            const casesSpan = document.getElementById('totalCases');
+            const totalSpan = document.getElementById('borrowTotal');
+            totalSpan.textContent = borrowResponse.totalCases;
+            casesSpan.textContent = triageResponse.totalCases;
+
+            // Render charts
+            renderTriageChart(data);
+            renderBorrowChart(borrowData);
+        } catch (error) {
+            console.error('Error fetching stats:', error);
+        }
+    })();
+</script>

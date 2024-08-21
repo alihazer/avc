@@ -1,5 +1,5 @@
 import express from 'express';
-import { createBorrowItem, getBorrowItems, renderCreateBorrowItem, borrowItem, renderBorrowForm, renderEditBorrowItem, editBorrowItem, renderReturnForm, returnBorrowedItem, renderCreateBorrowCategory, createBorrowCategory, getBorrowItemsOfCategory, generateBarcode, renderPrintPage, getAllLogs, getBorrowLog} from '../controllers/borrowStock.controller.js';
+import { createBorrowItem, getBorrowItems, renderCreateBorrowItem, borrowItem, renderBorrowForm, renderEditBorrowItem, editBorrowItem, renderReturnForm, returnBorrowedItem, renderCreateBorrowCategory, createBorrowCategory, getBorrowItemsOfCategory, generateBarcode, renderPrintPage, getAllLogs, getBorrowLog, getBorrowItemsStats} from '../controllers/borrowStock.controller.js';
 import isLoggedIn from '../middlewares/isLoggedIn.js';
 import checkPermission from '../middlewares/checkPermission.js';
 
@@ -21,4 +21,5 @@ router.get('/category/:catId/item/:id/view', isLoggedIn, checkPermission('manage
 router.get('/category/:catId/item/:id/print', isLoggedIn, checkPermission('manage_stock'),renderPrintPage);
 router.get('/logs/all', isLoggedIn, checkPermission('manage_stock') ,getAllLogs);
 router.get('/logs/:id/view', isLoggedIn, checkPermission('manage_stock') ,getBorrowLog);
+router.get('/stats/:year', isLoggedIn, checkPermission('view_analytics') ,getBorrowItemsStats);
 export default router;
