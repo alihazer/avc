@@ -51,7 +51,7 @@ const isMaterialAvailable = async (car, materials, userId) => {
     await CarLog.create(log);
     return materials;
 };
-
+    
 const assignValues = (allDetails) => {
     for(let i = 0; i < allDetails.length; i++){
         if(Array.isArray(allDetails[i]) && allDetails[i].length === 0){
@@ -185,7 +185,7 @@ const createEmergencyTriage = asyncHandler(async (req, res) => {
             heartRate: details.heartRate,
             spo2: details.spo2,
             temperature: details.temperature,
-            preassure: details.preassure
+            bloodPressure: details.preassure
         };
         const triage = await Triage.create({
             time: time12,
