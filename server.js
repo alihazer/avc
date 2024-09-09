@@ -55,7 +55,10 @@ app.use('/medical-histories', medicalHistoryRoutes);
 app.use('/surgical-histories', surgicalHistoryRoute);
 app.use('/triage', triageRoutes);
 app.use('/borrowed-items', BorrowItemRoutes);
-
+app.use('/api/hello', (req, res) => {
+    console.log('Hello World');
+    res.send('Hello World');
+});
 
 
 // Error handling
