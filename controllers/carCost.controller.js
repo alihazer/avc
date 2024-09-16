@@ -98,9 +98,14 @@ const getCarCostById = asyncHandler(async (req, res) => {
                 }
             }
         ]);
+
+        const totalCost = costs.reduce((acc, cost) => {
+            return acc + cost.data.reduce((acc, data) => acc + data.totalCost, 0);
+        }, 0);
+        console.log(totalCost);
         
 
-        res.json({ costs });
+        res.json({ costs, totalCost });
     } catch (error) {
         console.error(error);
         res.status(500).send('Server error');

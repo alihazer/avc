@@ -43,7 +43,8 @@
                 <div class="select">
                     <label for="yearSelect">Select Year:</label>
                     <select id="yearSelect">
-                        <% for (let year = 2024; year >= 2020; year--) { %>
+                        <% const currentYear = new Date().getFullYear() %>
+                        <% for (let year = currentYear; year >= 2024; year--) { %>
                             <option value="<%= year %>"><%= year %></option>
                         <% } %>
                     </select>
@@ -188,7 +189,8 @@
         try {
             const response = await fetchCarCostStats(carId, year);
             const data = response.costs;
-
+            const totalCost = response.totalCost;
+            document.getElementById('totalCost').innerText = totalCost + ' $';
             renderCarCostChart(data);
         } catch (error) {
             console.error('Error fetching car cost stats:', error);
@@ -204,6 +206,8 @@
         try {
             const response = await fetchCarCostStats(carId, currentYear);
             const data = response.costs;
+            const totalCost = response.totalCost;
+            document.getElementById('totalCost').innerText = totalCost + ' $';
 
             renderCarCostChart(data);
         } catch (error) {
