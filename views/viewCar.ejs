@@ -10,7 +10,6 @@
         <div class="card-body">
             <p>Type: <%= car.type %></p>
             <p>Total Cases: <%= car.totalCases %></p>
-            <p>Total Costs: <%=usd%> $ , <%=lbp%> LBP</p>
 
             <% if (car.materials.length > 0) { %>
                 <h3>Materials:</h3>
@@ -35,6 +34,29 @@
                 <p>No materials found</p>
             <% } %>
         </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h1>Car Costs Statistics</h1>
+            </div>
+            <div class="card-body">
+                <div class="select">
+                    <label for="yearSelect">Select Year:</label>
+                    <select id="yearSelect">
+                        <% for (let year = 2024; year >= 2020; year--) { %>
+                            <option value="<%= year %>"><%= year %></option>
+                        <% } %>
+                    </select>
+                </div>
+        
+                <div class="total">
+                    <h2>Total Cost: <span id="totalCost"></span></h2>
+                </div>
+        
+                <div id="costChart"></div>
+            </div>
+        </div>
+
         <div class="card-body">
             <% if (logs.length > 0) { %>
                 <h3>Logs:</h3>
@@ -82,4 +104,110 @@
             <% } %>
         </div>
     </div>
+    
 </div>
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+<script>
+    let costChart = null;
+
+    async function fetchCarCostStats(carId, year) {
+        const response = await fetch(`/cars/${carId}/costs/${year}`);
+        console.log(response);
+        return response.json();
+    }
+
+    function formatCarCostData(data) {
+        const categories = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+        return data.map(item => {
+            const seriesData = new Array(12).fill(0);
+            item.data.forEach(d => {
+                seriesData[d.month - 1] = d.totalCost;
+            });
+
+            // Map the cause to Arabic names
+            let causeName;
+            if (item._id === 'maintenance') {
+                causeName = 'صيانة';
+            } else if (item._id === 'benzine') {
+                causeName = 'بنزين';
+            } else if (item._id === 'change') {
+                causeName = 'غيار زيت';
+            } else {
+                causeName = item._id;  // Fallback to original name if not mapped
+            }
+
+            return {
+                name: causeName,  // Use the Arabic name
+                data: seriesData
+            };
+        });
+    }
+
+    function renderCarCostChart(data) {
+        const options = {
+            series: formatCarCostData(data),
+            chart: {
+                height: 350,
+                type: 'area'
+            },
+            dataLabels: {
+                enabled: false
+            },
+            stroke: {
+                curve: 'smooth'
+            },
+            xaxis: {
+                categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+            },
+            tooltip: {
+                x: {
+                    format: 'MMM'
+                }
+            },
+            legend: {
+                position: 'bottom',
+                horizontalAlign: 'center',
+                floating: false,
+                offsetY: 0
+            }
+        };
+
+        if (costChart) {
+            costChart.destroy();  // Destroy the existing chart instance
+        }
+
+        costChart = new ApexCharts(document.querySelector("#costChart"), options);
+        costChart.render();
+    }
+
+    document.getElementById('yearSelect').addEventListener('change', async function () {
+        const year = this.value;
+        const carId = '<%= car._id %>'; // Assuming you pass carId from your backend
+
+        try {
+            const response = await fetchCarCostStats(carId, year);
+            const data = response.costs;
+
+            renderCarCostChart(data);
+        } catch (error) {
+            console.error('Error fetching car cost stats:', error);
+        }
+    });
+
+    // Load the current year's data on page load
+    (async function() {
+        const currentYear = new Date().getFullYear();
+        const carId = '<%= car._id %>'; // Assuming you pass carId from your backend
+
+        document.getElementById('yearSelect').value = currentYear;
+        try {
+            const response = await fetchCarCostStats(carId, currentYear);
+            const data = response.costs;
+
+            renderCarCostChart(data);
+        } catch (error) {
+            console.error('Error fetching car cost stats:', error);
+        }
+    })();
+</script>

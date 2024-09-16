@@ -4,6 +4,7 @@ import Car from "../models/Car.js";
 import User from "../models/User.js";
 import moment from "moment";
 import Cost from "../models/Cost.js";
+import mongoose from "mongoose";
 
 // @desc getTheForm
 
@@ -59,4 +60,51 @@ const getCostByCar = asyncHandler(async (id) => {
     return { costs, usdTotal, lbpTotal };
 });
 
-export { renderCostForm, createCost, getAllCosts, getCostById, getCostByCar };
+const getCarCostById = asyncHandler(async (req, res) => {
+    const { carId, year } = req.params;
+
+    try {
+        const exchangeRate = 89000;  // 1 USD = 89000 LBP
+        const start = new Date(`${year}-01-01`);
+        const end = new Date(`${year}-12-31`);
+        const costs = await Cost.aggregate([
+            { $match: { carId: new mongoose.Types.ObjectId(carId), date: { $gte: start, $lte: end } } },
+            {
+                $group: {
+                    _id: {
+                        cause: "$cause",
+                        month: { $month: "$date" }
+                    },
+                    totalCost: {
+                        $sum: {
+                            $cond: [
+                                { $eq: ["$currency", "usd"] },
+                                "$cost",  // No conversion needed if currency is USD
+                                { $divide: ["$cost", exchangeRate] }  // Convert LBP to USD
+                            ]
+                        }
+                    }
+                }
+            },
+            {
+                $group: {
+                    _id: "$_id.cause",
+                    data: {
+                        $push: {
+                            month: "$_id.month",
+                            totalCost: { $round: ["$totalCost", 3] }  // Round to 3 decimal places
+                        }
+                    }
+                }
+            }
+        ]);
+        
+
+        res.json({ costs });
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Server error');
+    }
+});
+
+export { renderCostForm, createCost, getAllCosts, getCostById, getCostByCar, getCarCostById };
