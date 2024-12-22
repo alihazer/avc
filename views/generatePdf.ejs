@@ -73,7 +73,6 @@
                 doc.text(`الادوات المستخدمة: ${data.toolsUsed}`, 10, 210);
                 doc.text(`الملاحظات: ${data.notes}`, 10, 220);
                 doc.text(`رقم الموافقة: ${data.approvalNumber}`, 10, 230);
-
                 doc.save(`${caseType}_Triage.pdf`);
             } catch (error) {
                 console.error(error);

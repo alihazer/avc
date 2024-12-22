@@ -1,66 +1,70 @@
 import mongoose from "mongoose";
 
 const TriageSchema = new mongoose.Schema({
-    time:{
+    time: {
         type: String,
-        required: true
+        // removed required to make it nullable
     },
     case_type: {
         type: String,
-        required: true,
-        enum: ["emergency", "medical", "death", "accident", "change", "inside", "fire"]
+        // removed required to make it nullable
+        enum: ["emergency", "medical", "death", "accident", "change", "inside", "fire", "غارة"]
     },
-    car_nb:{
+    car_nb: {
         type: Number,
         default: null
     },
     from: {
         type: String,
+        default: null // explicitly set default to null
     },
-    to:{
+    to: {
         type: String,
+        default: null // explicitly set default to null
     },
-    driver:{
+    driver: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
         default: null
     },
-    paramedics:{
+    paramedics: {
         type: [mongoose.Schema.Types.ObjectId],
         ref: "User",
         default: null,
         max: 4,
     },
-    patient_name:{
+    patient_name: {
         type: String,
+        default: null // explicitly set default to null
     },
-    address:{
+    address: {
         type: String,
+        default: null // explicitly set default to null
     },
-    avpu:{
+    avpu: {
         type: String,
-        enum: ["Alert", "Verbal", "Pain", "Unresponsive"]
+        enum: ["Alert", "Verbal", "Pain", "Unresponsive", "null"],
+        default: null // explicitly set default to null
     },
-    ppte:{
+    ppte: {
         type: String,
-        required: false,
         enum: ["Positive", "Negative"],
-        default: null
+        default: null // default is null
     },
-    moi:{
+    moi: {
         type: [mongoose.Schema.Types.ObjectId],
         ref: "Moi",
         default: null
     },
-    dcap_btls:{
-        d: Boolean,
-        c: Boolean,
-        a: Boolean,
-        p: Boolean,
-        b: Boolean,
-        t: Boolean,
-        l: Boolean,
-        s: Boolean,
+    dcap_btls: {
+        d: { type: Boolean, default: null },
+        c: { type: Boolean, default: null },
+        a: { type: Boolean, default: null },
+        p: { type: Boolean, default: null },
+        b: { type: Boolean, default: null },
+        t: { type: Boolean, default: null },
+        l: { type: Boolean, default: null },
+        s: { type: Boolean, default: null },
     },
     vitals: {
         heartRate: {
@@ -80,17 +84,17 @@ const TriageSchema = new mongoose.Schema({
             default: null
         }
     },
-    medicalHistory:{
+    medicalHistory: {
         type: [mongoose.Schema.Types.ObjectId],
         ref: "MedicalHistory",
         default: null
     },
-    surgicalHistory:{
+    surgicalHistory: {
         type: [mongoose.Schema.Types.ObjectId],
         ref: "SurgicalHistory",
         default: null
     },
-    allergies:{
+    allergies: {
         type: [mongoose.Schema.Types.ObjectId],
         ref: "Allergies",
         default: null
@@ -102,30 +106,30 @@ const TriageSchema = new mongoose.Schema({
         },
         quantity: {
             type: Number,
+            default: null // explicitly set default to null
         }
     }],
     notes: {
         type: String,
+        default: null // explicitly set default to null
     },
-    approval_nb:{
+    approval_nb: {
         type: Number,
+        default: null // explicitly set default to null
     },
-    userId:{
+    userId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
-        required: true
+        default: null // explicitly set default to null
+    },
+    date: {
+        type: Date,
+        default: Date.now
     }
 }, { timestamps: true });
 
 // Indexes
 TriageSchema.index({ time: 1 }); // Index on time field
-TriageSchema.index({ case_type: 1 }); // Index on case_type field
-TriageSchema.index({ car_nb: 1 }); // Index on car_nb field
-TriageSchema.index({ driver: 1 }); // Index on driver field
-TriageSchema.index({ patient_name: 1 }); // Index on patient_name field
-TriageSchema.index({ avpu: 1 }); // Index on avpu field
-TriageSchema.index({ approval_nb: 1 }); // Index on approval_nb field
+TriageSchema.index({ case_type: 1 }); // Index o
 
-const Triage = mongoose.model("Triage", TriageSchema);
-
-export default Triage;
+export default mongoose.model("Triage", TriageSchema);

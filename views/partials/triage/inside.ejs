@@ -2,7 +2,6 @@
 
 <!-- Html2pdf -->
 <div id="content1">
-    
     <div class="tables-container">
         <div class="common-fields-table">
             <!-- Common Fields Table -->
@@ -10,162 +9,150 @@
                 <tr>
                     <th>Type</th>
                     <td>حالة داخل المركز</td>
+                </tr>
                 <tr>
                     <th>Time</th>
-                    <td><%= moment(triage.createdAt).format('DD-MM-YYYY')%> - <%= triage.time %></td>
+                    <td>
+                        <%= triage.createdAt ? moment(triage.createdAt).format('DD-MM-YYYY') : 'No Date' %> - 
+                        <%= triage.time || 'No Time' %>
+                    </td>
                 </tr>
-
                 <tr>
                     <th>Car Number</th>
-                    <td><%= triage.car_nb %></td>
+                    <td><%= triage.car_nb || 'No Car Number' %></td>
                 </tr>
                 <tr>
                     <th>From</th>
-                    <td><%= triage.from %></td>
+                    <td><%= triage.from || 'No Location' %></td>
                 </tr>
-
                 <tr>
                     <th>Paramedics</th>
                     <td>
-                        <ul>
-                            <li>
-                            <% triage.paramedics.forEach(paramedic => { %>
-                                <%= paramedic.username %>,
-                            <% }); %>
-                            </li>
-                        </ul>
+                        <% if (triage.paramedics && triage.paramedics.length) { %>
+                            <ul>
+                                <% triage.paramedics.forEach(paramedic => { %>
+                                    <li><%= paramedic.username || 'No Name' %></li>
+                                <% }); %>
+                            </ul>
+                        <% } else { %>
+                            <span>No Paramedics</span>
+                        <% } %>
                     </td>
                 </tr>
                 <tr>
                     <th>Patient Name</th>
-                    <td id="name"><%= triage.patient_name %></td>
+                    <td id="name"><%= triage.patient_name || 'No Patient Name' %></td>
                 </tr>
             </table>
         </div>
+
         <div class="emergency-table">
-                <!-- Emergency Table -->
-                <table>
-                    <tr>
-                        <th>AVPU</th>
-                        <td><%= triage.avpu %></td>
-                    </tr>
+            <!-- Emergency Table -->
+            <table>
+                <tr>
+                    <th>AVPU</th>
+                    <td><%= triage.avpu || 'No AVPU' %></td>
+                </tr>
                 <tr>
                     <th>MOI</th>
                     <td>
-                        <ul>
-                            <li>
-                            <% triage.moi.forEach(moi => { %>
-                                <%= moi.name %>,
-                            <% }); %>
-                            </li>
-                        </ul>
+                        <% if (triage.moi && triage.moi.length) { %>
+                            <ul>
+                                <% triage.moi.forEach(moi => { %>
+                                    <li><%= moi.name || 'No MOI Name' %></li>
+                                <% }); %>
+                            </ul>
+                        <% } else { %>
+                            <span>No MOI</span>
+                        <% } %>
                     </td>
                 </tr>
                 <tr>
                     <th>Vitals</th>
                     <td>
                         <ul>
-                            <li>Heart Rate: <%= triage.vitals.heartRate %></li>
-                            <li>Blood Pressure: <%= triage.vitals.bloodPressure %></li>
-                            <li>SPO2: <%= triage.vitals.spo2 %></li>
-                            <li>Temperature: <%= triage.vitals.temperature %></li>
+                            <li>Heart Rate: <%= triage.vitals?.heartRate || 'No Heart Rate' %></li>
+                            <li>Blood Pressure: <%= triage.vitals?.bloodPressure || 'No Blood Pressure' %></li>
+                            <li>SPO2: <%= triage.vitals?.spo2 || 'No SPO2' %></li>
+                            <li>Temperature: <%= triage.vitals?.temperature || 'No Temperature' %></li>
                         </ul>
                     </td>
                 </tr>
                 <tr>
                     <th>Medical History</th>
                     <td>
-                        <ul>
-                            <p>
-                                <%if(triage.medicalHistory){ %>
-                                    <% triage.medicalHistory.forEach(medicalHistory => { %>
-                                        <%= medicalHistory.name %>, 
-                                    <% }); %>
-                               <% } else { %>
-                                    No medical history
-                               <% } %>
-                            </p>
-                        </ul>
-                    </td>
-                
-                </tr>
-                <tr>
-                    <th>Surgical History</th>
-                    <td>
-                        <ul>
-                            <li>
-                                <%if(triage.surgicalHistory){ %>
-                                    <% triage.surgicalHistory.forEach(surgicalHistory => { %>
-                                        <%= surgicalHistory.name %>,
-                                    <% }); %>
-                                <% } else { %>
-                                    No surgical history
-                                <% } %>
-                            <li>
-                        </ul>
-                    </td>
-                <tr>
-                    <th>Usage</th>
-                    <td>
-                        <ul>
-                            <% triage.usage.forEach(usage => { %>
-                                <li><%= usage._id.name %> - Quantity: <%= usage.quantity %></li>
-                            <% }); %>
-                        </ul>
-                    </td>
-                </tr>
-                <tr>
-                    <th>Notes</th>
-                    <td>
-                        <% if(triage.notes) { %>
-                            <%= triage.notes %>
+                        <% if (triage.medicalHistory && triage.medicalHistory.length) { %>
+                            <ul>
+                                <% triage.medicalHistory.forEach(medicalHistory => { %>
+                                    <li><%= medicalHistory.name || 'No Medical History' %></li>
+                                <% }); %>
+                            </ul>
                         <% } else { %>
-                            No notes
+                            <span>No Medical History</span>
                         <% } %>
                     </td>
                 </tr>
                 <tr>
-                    <th>Approval Number:</th>
+                    <th>Surgical History</th>
                     <td>
-                        <%if(triage.approval_nb === null){ %>
-                            <span style="color: red;">No Approval Number</span>
-                        <%} else { %>
-                            <%=triage.approval_nb %>
-                        <%} %>
+                        <% if (triage.surgicalHistory && triage.surgicalHistory.length) { %>
+                            <ul>
+                                <% triage.surgicalHistory.forEach(surgicalHistory => { %>
+                                    <li><%= surgicalHistory.name || 'No Surgical History' %></li>
+                                <% }); %>
+                            </ul>
+                        <% } else { %>
+                            <span>No Surgical History</span>
+                        <% } %>
                     </td>
                 </tr>
+                <tr>
+                    <th>Usage</th>
+                    <td>
+                        <% if (triage.usage && triage.usage.length) { %>
+                            <ul>
+                                <% triage.usage.forEach(usage => { %>
+                                    <li><%= usage._id.name || 'No Usage Name' %> - Quantity: <%= usage.quantity || 'No Quantity' %></li>
+                                <% }); %>
+                            </ul>
+                        <% } else { %>
+                            <span>No Usage</span>
+                        <% } %>
+                    </td>
+                </tr>
+                <tr>
+                    <th>Notes</th>
+                    <td><%= triage.notes || 'No Notes' %></td>
+                </tr>
+                <tr>
+                    <th>Approval Number:</th>
+                    <td><%= triage.approval_nb || '<span style="color: red;">No Approval Number</span>' %></td>
+                </tr>
             </table>
-
-        
         </div>
     </div>
-    <button class="btn btn-primary" onclick="downloadPdf(`<%=triage.patient_name%>`,`<%=moment(triage.createdAt).format('DD-MM-YYYY') %>`)">Download PDF</button>
+    <button class="btn btn-primary" onclick="downloadPdf(`<%= triage.patient_name || 'Unknown' %>`, `<%= moment(triage.createdAt).format('DD-MM-YYYY') || 'No Date' %>`)">Download PDF</button>
 </div>
 
 <script>
     function downloadPdf(name, date) {
         const content = document.getElementById('content1');
-        // Replace space with _
         const sanitizedPatientName = name.replace(/\s/g, '_');
         const options = {
-            margin: [0, 0, 0, 0], // Set margins for top, right, bottom, left
-            filename: sanitizedPatientName, // Custom filename
+            margin: [0, 0, 0, 0],
+            filename: sanitizedPatientName,
             image: { type: 'jpeg', quality: 0.98 },
-            html2canvas: { scale: 2 }, // Increase scale for better resolution
-            jsPDF: { unit: 'in', format: [8.5, 14], orientation: 'portrait' } // Change format and orientation as needed
+            html2canvas: { scale: 2 },
+            jsPDF: { unit: 'in', format: [8.5, 14], orientation: 'portrait' }
         };
-        const container = document.querySelector('.tables-container');
-        container.style.display = 'block';
-        
         html2pdf()
             .from(content).set(options)
             .toPdf()
             .get('pdf')
             .then(pdf => {
-                pdf.save(sanitizedPatientName + '_' + date + '.pdf');
+                pdf.save(`${sanitizedPatientName}_${date}.pdf`);
                 window.location.href = '/dashboard';
-            })
-           
+            });
     }
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>

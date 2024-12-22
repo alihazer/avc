@@ -3,7 +3,7 @@ const getLayoutName = (req)=>{
     const noAccess = ['driver', 'stockmanager', 'shiftmanager'];
     const role = req?.cookies?.user?.role?.name;
     if(!role){
-        return 'layouts/userLayout';
+        return 'layouts/loginLayout';
     }
     if(accessibles.includes(role)){
         return 'layouts/layout';

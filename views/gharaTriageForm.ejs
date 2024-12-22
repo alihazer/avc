@@ -4,29 +4,37 @@
         <br>
         <br>
         <form action="/triage/emergency?car=<%=car%>" method="POST" class="triageForm">
+            <!-- Time -->
             <div class="triage-form-group">
                 <label for="time">:الوقت </label>
                 <div class="field">
                     <input type="time" id="time" name="time" required>
                 </div>
             </div>
+            <!-- Date -->
             <div class="triage-form-group">
                 <label for="date">:التاريخ</label>
                 <div class="field">
                     <input type="date" id="date" name="date" required>
                 </div>
             </div>
+
+            <!-- from -->
+
+
+
+            <!-- Driver -->
             <div class="triage-form-group">
-                <input type="hidden" value="<%=type%>" name="type">
-                <label for="from">المكان:</label>
+                <label for="driver">:اسم الشوفير</label>
                 <div class="field">
-                    <select name="from" id="from" required>
-                        <option value="في المركز">داخل المركز</option>
-                        <option value="في البلدة">في البلدة</option>
+                    <select name="driver" id="driver" required>
+                        <% drivers.forEach(function(driver){ %>
+                            <option value="<%= driver._id %>"><%= driver.username %></option>
+                        <% }) %>
                     </select>
                 </div>
             </div>
-
+            <!-- Paramedics -->
             <div class="triage-form-group">
                 <label for="rescuer">:اسم المسعفون</label>
                 <select id="rescuer" class="rescuer-select" name="paramedics" multiple required>
@@ -35,16 +43,13 @@
                     <% }) %>
                 </select>
             </div>
-
-            <div class="triage-form-group">
-                <label for="patient_name">:اسم المريض</label>
-                <div class="field">
-                    <input type="text" id="patient_name" name="patient_name" required>
-                </div>
-            </div>
-            <%-include('partials/commun/usage') %>
+            <!-- Patient name -->
+            <!-- MOI if found -->
+            <%-include('partials/commun/moi') %>
+            <!-- Aproval number -->
             <%-include('partials/commun/footer') %>
         </form>
     </div>
 </div>
 <script src="/js/usage.js"></script>
+<script src="/js/toggleOtherInput.js"></script>

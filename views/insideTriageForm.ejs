@@ -10,6 +10,13 @@
                     <input type="time" id="time" name="time" required>
                 </div>
             </div>
+            <!-- Date -->
+            <div class="triage-form-group">
+                <label for="date">:التاريخ</label>
+                <div class="field">
+                    <input type="date" id="date" name="date" required>
+                </div>
+            </div>
             <div class="triage-form-group">
                 <input type="hidden" value="<%=type%>" name="type">
                 <label for="from">المكان:</label>
@@ -22,7 +29,7 @@
 
             <div class="triage-form-group">
                 <label for="rescuer">:اسم المسعفون</label>
-                <select id="rescuer" class="rescuer-select" name="paramedics" multiple required>
+                <select id="rescuer" class="rescuer-select" name="paramedics" multiple>
                     <% paramedics.forEach(function(paramedic) { %>
                         <option value="<%= paramedic.id %>"><%= paramedic.username %></option>
                     <% }) %>

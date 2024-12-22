@@ -205,7 +205,7 @@ $(document).ready(function() {
 		maximumSelectionLength: 1
 	});
 
-
+	$('.ppte-group').hide();
 
 	$('#avpu').change(function() {
 		if ($(this).val() === 'Alert') {

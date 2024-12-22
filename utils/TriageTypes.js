@@ -26,6 +26,10 @@ const types = [
     {
         "name": "حريق",
         "code": "fire",
+    },
+    {
+        "name": "غارة",
+        "code": "غارة",
     }
 ]
 

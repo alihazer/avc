@@ -13,66 +13,99 @@ import moment from "moment";
 import getLayoutName from "../utils/getLayoutName.js";
 
 
-
 const isMaterialAvailable = async (car, materials, userId) => {
-    const selectedCar = await Car.findOne({number: parseInt(car)}).populate('materials._id').exec();
-    const materialsInCar = selectedCar.materials;
+    const selectedCar = await Car.findOne({ number: parseInt(car) }).populate('materials._id').exec();
+    if (!selectedCar) return false;
+
     materials = JSON.parse(materials);
     const materialsUsed = [];
+    const materialsInCar = selectedCar.materials;
 
-    materials.forEach(material => {
-        // Check if the material is already added and update the quantity if it is
-        const materialInCar = materialsInCar.find((mat)=>{
-            return mat._id._id.toString() === material._id;
-        });
-        // If the material is not in the car
-        if(!materialInCar){
-            return false;
-        }
-        // If the quantity is greater than the quantity in the car
-        if(materialInCar.quantity < material.quantity){
-            return false;
-        }
-        // Update the quantity of the material in the car
+    for (const material of materials) {
+        const materialInCar = materialsInCar.find(mat => mat._id._id.toString() === material._id);
+
+        if (!materialInCar || materialInCar.quantity < material.quantity) return false;
+
         materialInCar.quantity -= material.quantity;
-        // Add the material to the materials used
         materialsUsed.push({ _id: material._id, quantity: material.quantity });
-    });
+    }
+
     selectedCar.totalCases += 1;
     await selectedCar.save();
-    // Create Log for the materials used
-    const log = {
+
+    await CarLog.create({
         action: "Used",
         carId: selectedCar._id,
         materials_added: materialsUsed,
         user: userId,
+    });
+
+    return materialsUsed;
+};
+
+const assignValues = (details) => {
+    const [
+        from, to, driver, paramedics, patient_name, avpu, ppte, moi, preassure,
+        heartRate, spo2, temperature, medicalHistory, surgicalHistory, fromOther, toOther
+    ] = details.map(detail => detail || null);
+
+    return {
+        from: from === "Other" ? fromOther : from,
+        to: to === "Other" ? toOther : to,
+        driver, paramedics, patient_name,
+        avpu, ppte: avpu === "Alert" ? ppte : null,
+        moi, preassure, heartRate, spo2, temperature,
+        medicalHistory, surgicalHistory
     };
-    materials = materialsUsed;
-    await CarLog.create(log);
-    return materials;
 };
-    
-const assignValues = (allDetails) => {
-    for(let i = 0; i < allDetails.length; i++){
-        if(Array.isArray(allDetails[i]) && allDetails[i].length === 0){
-            allDetails[i] = [];
+
+const createEmergencyTriage = asyncHandler(async (req, res) => {
+    try {
+        const { time, type, from, to, driver, paramedics, patient_name, avpu, ppte, moi, preassure, heartRate, spo2, temperature, medicalHistory, surgicalHistory, approval_nb, usage, dcap_btls, toOther, fromOther } = req.body;
+        const layout = getLayoutName(req);
+
+        if (!time) return res.render("error", { message: "Time is required", layout });
+
+        const [hours, minutes] = time.split(':').map(Number);
+        if (hours > 23 || minutes > 59) return res.render("error", { message: "Invalid time", layout });
+
+        const time12 = moment().hours(hours).minutes(minutes).format('h:mm A');
+        const car = req.query.car;
+        const allDetails = [from, to, driver, paramedics, patient_name, avpu, ppte, moi, preassure, heartRate, spo2, temperature, medicalHistory, surgicalHistory, fromOther, toOther];
+        const details = assignValues(allDetails);
+
+        let materials = [];
+        if (Array.isArray(usage) && usage[1]) {
+            materials = await isMaterialAvailable(car, usage[1], req.user.id);
+            if (!materials) return res.status(400).render("error", { message: "No enough materials in the car", layout });
         }
-        if(!allDetails[i]){
-            allDetails[i] = null;
-        }
+
+        const vitals = {
+            heartRate: details.heartRate,
+            spo2: details.spo2,
+            temperature: details.temperature,
+            bloodPressure: details.preassure
+        };
+
+        const triage = await Triage.create({
+            time: time12,
+            case_type: type,
+            car_nb: car,
+            ...details,
+            vitals,
+            usage: materials,
+            dcap_btls: dcap_btls ? JSON.parse(dcap_btls) : null,
+            userId: req.user.id,
+            approval_nb
+        });
+        console.log(triage);
+        return triage ? res.status(201).redirect(`/triage/generate-pdf/${triage._id}`) : res.status(400).render("error", { message: "An error occurred", layout });
+    } catch (error) {
+        console.error(error);
+        const layout = getLayoutName(req);
+        return res.status(400).render("error", { message: "An error occurred", layout });
     }
-    let [from, to, driver, paramedics, patient_name, avpu, ppte, moi, preassure, heartRate, spo2, temperature, medicalHistory, surgicalHistory, fromOther, toOther] = allDetails;
-    if(avpu !== "Alert"){
-        ppte = null;
-    }
-    if(from === "Other"){
-        from = fromOther;
-    }
-    if(to === "Other"){
-        to = toOther;
-    }
-    return {from, to, driver, paramedics, patient_name, avpu, ppte, moi, preassure, heartRate, spo2, temperature, medicalHistory, surgicalHistory};
-};
+});
 
 
 // @desc render the first form
@@ -144,71 +177,13 @@ const renderFirstForm = asyncHandler(async (req, res) => {
     if(type === "fire"){
         return res.status(200).render("fireTriageForm", { type, car, materials, paramedics, layout, drivers, locations });
     }
+    if(type === "غارة"){
+        return res.status(200).render("gharaTriageForm", { type, car, materials, paramedics, layout, drivers, locations, mois });
+    }
 
 
 });
 
-
-
-const createEmergencyTriage = asyncHandler(async (req, res) => {
-    try {
-        let { time, type, from, to, driver, paramedics, patient_name, avpu, ppte, moi, preassure, heartRate, spo2, temperature, medicalHistory, surgicalHistory ,approval_nb, usage, dcap_btls, toOther, fromOther } = req.body;
-        const layout = getLayoutName(req);
-        if(!time){
-            return res.render("error", {message: "Time is required", layout});
-        }
-        if(dcap_btls){
-            dcap_btls = JSON.parse(dcap_btls);
-        }
-        else{
-            dcap_btls = null;
-        }
-        console.log(approval_nb);
-        const [hours, minutes] = time.split(':').map(Number);
-        if (hours > 23 || minutes > 59) {
-            return res.render("error", {message: "Invalid time"});
-        }
-        const time12 = moment().hours(hours).minutes(minutes).format('h:mm A');
-        const car = req.query.car;
-        let allDetails = [from, to, driver, paramedics, patient_name, avpu, ppte, moi, preassure, heartRate, spo2, temperature ,medicalHistory, surgicalHistory, fromOther, toOther];
-        let materials = [];
-        if(Array.isArray(usage) && usage.length > 0){
-            if(usage[1] !== ''){
-                materials = await isMaterialAvailable(car, usage[1], req.user.id);
-                if(!materials){
-                    return res.status(400).render("error", {message: "No enough materials in the car", layout});
-                }
-            }
-        }
-        const details = assignValues(allDetails);
-        const vitals = {
-            heartRate: details.heartRate,
-            spo2: details.spo2,
-            temperature: details.temperature,
-            bloodPressure: details.preassure
-        };
-        const triage = await Triage.create({
-            time: time12,
-            case_type: type,
-            car_nb: car,
-            ...details,
-            vitals,
-            usage: materials,
-            dcap_btls,
-            userId: req.user.id,
-            approval_nb
-        });
-        
-        if(triage){
-            return res.status(201).redirect(`/triage/generate-pdf/${triage._id}`);
-        }
-        return res.status(400).render("error", {message: "An error occured", layout});
-    } catch (error) {
-        const layout = getLayoutName(req);
-        console.log(error);
-        return res.status(400).render("error", {message: "An error occured", layout});
-    }
-    });
 
 const fetchMyTriages = async (req) => {
     let triages = await Triage.find({userId: req.user.id})
@@ -222,9 +197,6 @@ const fetchMyTriages = async (req) => {
         .exec();
     return triages;
 };
-
-
-
 const getLoggedInUserTriages = asyncHandler(async(req, res)=>{
     const triages = await fetchMyTriages(req);
     const layout = getLayoutName(req);
@@ -233,7 +205,6 @@ const getLoggedInUserTriages = asyncHandler(async(req, res)=>{
     }
     return res.status(200).render("triages", {triages, moment, layout});
 })
-
 
 const getMyTriagesCount = asyncHandler(async(req, res)=>{
     try {
@@ -307,6 +278,8 @@ const getTriage = asyncHandler(async(req, res)=>{
                 return res.status(200).render("partials/triage/inside", {triage, moment, type: "داخل", layout});
             case "fire":
                 return res.status(200).render("partials/triage/fire", {triage, moment, type: "حريق", layout});
+            case "غارة":
+                return res.status(200).render("partials/triage/ghara", {triage, moment, type: "غارة", layout});
             default:
                 return res.status(200).render("error", {message: "Something went wrong", layout});
         }
@@ -467,12 +440,11 @@ const getTriageWithPagination = asyncHandler(async (req, res) => {
 const getTriageStats = asyncHandler(async (req, res) => {
     const year = parseInt(req.params.year);
 
-
     try {
         const triageData = await Triage.aggregate([
             {
                 $match: {
-                    createdAt: {
+                    date: {
                         $gte: new Date(`${year}-01-01`),
                         $lt: new Date(`${year + 1}-01-01`)
                     }
@@ -480,7 +452,7 @@ const getTriageStats = asyncHandler(async (req, res) => {
             },
             {
                 $group: {
-                    _id: { month: { $month: "$createdAt" }, case_type: "$case_type" },
+                    _id: { month: { $month: "$date" }, case_type: "$case_type" },
                     count: { $sum: 1 }
                 }
             },
@@ -505,7 +477,7 @@ const getTriageStats = asyncHandler(async (req, res) => {
         ]);
 
         const totalCases = await Triage.countDocuments({
-            createdAt: {
+            date: {
                 $gte: new Date(`${year}-01-01`),
                 $lt: new Date(`${year + 1}-01-01`)
             }
@@ -524,6 +496,7 @@ const getTriageStats = asyncHandler(async (req, res) => {
         });
     }
 });
+
 
 const renderTriageStatsPage = asyncHandler(async (req, res) => {
     const layout = getLayoutName(req);

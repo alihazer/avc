@@ -1,6 +1,6 @@
 <div class="triage-form-group">
     <label for="moi">:MOI</label>
-    <select id="moi" class="moi-select" name="moi" multiple required>
+    <select id="moi" class="moi-select" name="moi" multiple>
         <% mois.forEach(function(moi) { %>
             <option value="<%= moi.id %>"><%= moi.name %></option>
         <% }) %>
