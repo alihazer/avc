@@ -3,6 +3,7 @@ import BorrowItem from "../models/BorrowItem.js";
 import BorrowLog from "../models/BorrowLog.js";
 import BorrowItemCategory from "../models/BorrowItemCategory.js";
 import { generateBarcodeBuffer } from "../utils/generateBarcodeBuffer.js";
+import getLayoutName from "../utils/getLayoutName.js";
 import moment from "moment";
 import { v4 as uuidv4 } from 'uuid';
 import ItemBarCode from "../models/ItemBarCode.js";
@@ -54,18 +55,18 @@ const borrowItem = asyncHandler(async (req, res) => {
         const { name, phone_nb, age, difficulty, responsiblePerson, responsiblePersonNumber, expectedReturnDate, notes, imageOnBorrow } = req.body
         const { id } = req.params;
         const item = await BorrowItem.findById(id);
-    
+        const layout = getLayoutName(req);
         if (!item) {
-            return res.status(404).render('error', { message: "Item not found" });
+            return res.status(404).render('error', { message: "Item not found", layout });
         }
         if(item.status === "borrowed") {
-            return res.status(400).render('error', { message: "Item is already borrowed" });
+            return res.status(400).render('error', { message: "Item is already borrowed", layout });
         }
         item.status = "borrowed";
         await item.save();
         const category = await BorrowItemCategory.findById(item.category);
         if(category.borrowedQuantity === category.quantity) {
-            return res.status(400).render('error', { message: "All items in this category are borrowed" });
+            return res.status(400).render('error', { message: "All items in this category are borrowed", layout });
         }
             const log = new BorrowLog({
                 item: id,
@@ -90,7 +91,7 @@ const borrowItem = asyncHandler(async (req, res) => {
             res.status(200).redirect(`/borrowed-items/category/${category._id}/items`);
         }catch (error) {
         console.log(error);
-        res.status(400).render('error', { message: "Item borrow failed" });
+        res.status(400).render('error', { message: "Item borrow failed", layout });
     }
 });
 
@@ -101,18 +102,20 @@ const renderBorrowForm = asyncHandler(async (req, res) => {
 });
 
 const getBorrowItems = asyncHandler(async (req, res) => {
+    const layout = getLayoutName(req);
     const items = await BorrowItemCategory.find();
     const borrowedItems = await BorrowLog.find({ status: "borrowed" }).populate('item');
     
-    res.render('borrowedItems', { items, borrowedItems, moment });
+    res.render('borrowedItems', { items, borrowedItems, moment, layout });
 });
 
 
 const renderEditBorrowItem = asyncHandler(async (req, res) => {
     const { id } = req.params;
+    const layout = getLayoutName(req);
     const item = await BorrowItemCategory.findById(id);
     if(!item) {
-        return res.status(404).render('error', { message: "Item not found" });
+        return res.status(404).render('error', { message: "Item not found" , layout});
     }
     res.render('editBorrowCategory', { item });
 });
@@ -121,6 +124,7 @@ const renderEditBorrowItem = asyncHandler(async (req, res) => {
 const editBorrowItem = asyncHandler(async (req, res) => {
     try {
         const { id } = req.params;
+        
         const { name, quantity } = req.body;
         const item = await BorrowItemCategory.findById(id);
         if(!item) {
@@ -146,19 +150,20 @@ const editBorrowItem = asyncHandler(async (req, res) => {
 
 const renderReturnForm = asyncHandler(async (req, res) => {
    try {
+    const layout = getLayoutName(req);
     let { id } = req.params;
     const reqUrl = req.originalUrl.split('/');
     const log = await BorrowLog.find({item: id, status: "borrowed"}).populate('item').select('-barcode');
     if(!log) {
-        return res.status(404).render('error', { message: "Log not found" });
+        return res.status(404).render('error', { message: "Log not found", layout });
     }
     if(reqUrl[reqUrl.length - 1] === 'view') {
-        return res.render('showBorrowLog', { item: log[0], log: log[0], moment });
+        return res.render('showBorrowLog', { item: log[0], log: log[0], moment, layout });
     }
-    return res.render('returnBorrowedItem', {item: log[0], log: log[0], moment });
+    return res.render('returnBorrowedItem', {item: log[0], log: log[0], moment, layout });
    } catch (error) {
         console.log(error);
-        return res.status(400).render('error', { message: "Error fetching log" });
+        return res.status(400).render('error', { message: "Error fetching log", layout });
    }
 });
 
@@ -236,41 +241,45 @@ const createBorrowCategory = asyncHandler(async (req, res) => {
 });
 
 const renderCreateBorrowCategory = asyncHandler(async (req, res) => {
-    res.render('createBorrowCategory');
+    const layout = getLayoutName(req);
+    res.render('createBorrowCategory', {layout});
 });
 
 const showEditCategory = asyncHandler(async (req, res) => {
     const { id } = req.params;
+    const layout = getLayoutName(req);
     const category = await BorrowItemCategory.findById(id);
     if (!category) {
-        return res.status(404).render('error', { message: "Category not found" });
+        return res.status(404).render('error', { message: "Category not found", layout });
     }
-    res.render('editBorrowCategory', { category });
+    res.render('editBorrowCategory', { category, layout });
 });
 
 const getBorrowItemsOfCategory = asyncHandler(async (req, res) => {
     try {
+        const layout = getLayoutName(req);
         const { id } = req.params;
         const category = await BorrowItemCategory.findById(id);
         const items = await BorrowItem.find({ category : id });
 
     // Filter out the logs where the populated item is null (i.e., it didn't match the category)
-        res.render('allborrowItems', { items, category });
+        res.render('allborrowItems', { items, category, layout});
     } catch (error) {
         console.log(error);
-        res.status(400).render('error', { message: "Error fetching items" });
+        res.status(400).render('error', { message: "Error fetching items", layout });
     }
 });
 
 
 const generateBarcode = asyncHandler(async(req, res) => {
     try {
+        const layout = getLayoutName(req);
         const { logId } = req.params;
         const log = await BorrowLog.findById(logId).populate('item');
         if (!log) {
             return res.status(404).render('error', { message: "Log not found" });
         }
-        return res.render('printBarcode', { logInfo: log });
+        return res.render('printBarcode', { logInfo: log, layout });
     } catch (error) {
         console.error(error);
         res.status(500).send('Server error');
@@ -278,22 +287,25 @@ const generateBarcode = asyncHandler(async(req, res) => {
 });
 
 const renderPrintPage = asyncHandler(async(req, res) => {
+    const layout = getLayoutName(req);
     const id = req.params.id;
     const item = await BorrowItem.findById(id).populate('barCode');
-    res.render('printBarCode', { item });
+    res.render('printBarCode', { item, layout});
 });
 
 const getAllLogs = asyncHandler(async(req, res) => {
+    const layout = getLayoutName(req);
     const logs = await BorrowLog.find()
     .populate('item')
     .sort({borrowDate: -1});
-    res.render('logHistory', { logs, moment });
+    res.render('logHistory', { logs, moment, layout });
 });
 
 const getBorrowLog = asyncHandler(async(req, res) => {
+    const layout = getLayoutName(req);
     const id = req.params.id;
     const log = await BorrowLog.findById(id).populate('item');
-    res.render('viewBorrowLog', { item: log, log, moment });
+    res.render('viewBorrowLog', { item: log, log, moment, layout });
 });
 
 

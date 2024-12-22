@@ -39,6 +39,21 @@ const userSchema = new mongoose.Schema({
     dob:{
         type: Date,
     },
+    badleSize:{
+        type: String,
+        enum: ['s', 'm', 'l', 'xl', 'xxl', 'xxxl'],
+        default: 'xl'
+    },
+    kanzeSize: {
+        type: String,
+        enum: ['s', 'm', 'l', 'xl', 'xxl', 'xxxl'],
+        default: 'xl'
+    },
+    rangerSize: {
+        type: Number,
+        enum: [38, 39, 40, 41, 42, 43, 44, 45, 46],
+        default: 40
+    }
 
 },{timestamps: true});
 

@@ -80,12 +80,13 @@ export const deleteMaterial = asyncHandler(async (req, res) => {
 });
 
 export const getMaterialForm = asyncHandler(async (req, res) => {
-    res.status(200).render('addMaterial');
+    const layout = getLayoutName(req);
+    res.status(200).render('addMaterial', {layout});
 });
 
 export const getUpdateMaterialForm = asyncHandler(async (req, res) => {
     const { id } = req.params;
-    const layout = await getLayoutName(req);
+    const layout = getLayoutName(req);
     try {
         const material = await Material.findById(id);
         if (!material) {

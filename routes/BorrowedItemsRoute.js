@@ -13,7 +13,7 @@ router.get('/category/:id/edit', isLoggedIn, checkPermission('manage_stock') ,re
 router.put('/category/:id/edit', isLoggedIn, checkPermission('manage_stock') ,editBorrowItem);
 router.get('/category/:catId/item/:id/return', isLoggedIn, checkPermission('manage_stock') ,renderReturnForm);
 router.put('/return/:id', isLoggedIn, checkPermission('manage_stock') ,returnBorrowedItem);
-router.get('/category/create', isLoggedIn, checkPermission('manage_stock') ,renderCreateBorrowCategory);
+router.get('/category/create', isLoggedIn, checkPermission('manage_stock') ,checkPermission('add_borrow_category'),renderCreateBorrowCategory);
 router.post('/category', isLoggedIn, checkPermission('manage_stock') ,createBorrowCategory);
 router.get('/category/:id/items', isLoggedIn, checkPermission('manage_stock') ,getBorrowItemsOfCategory);
 router.get('/barcode/:logId', isLoggedIn, checkPermission('manage_stock') ,generateBarcode);

@@ -2,47 +2,47 @@
 
 <!-- Html2pdf -->
 <div id="content1">
-    
     <div class="tables-container">
         <div class="common-fields-table">
             <!-- Common Fields Table -->
             <table>
                 <tr>
                     <th>Time</th>
-                    <td><%= moment(triage.createdAt).format('DD-MM-YYYY')%> - <%= triage.time %></td>
+                    <td><%= triage.createdAt ? moment(triage.createdAt).format('DD-MM-YYYY') : 'N/A' %> - <%= triage.time || 'N/A' %></td>
                 </tr>
-
                 <tr>
                     <th>Car Number</th>
-                    <td><%= triage.car_nb %></td>
+                    <td><%= triage.car_nb || 'N/A' %></td>
                 </tr>
                 <tr>
                     <th>From</th>
-                    <td><%= triage.from %></td>
+                    <td><%= triage.from || 'N/A' %></td>
                 </tr>
                 <tr>
                     <th>To</th>
-                    <td><%= triage.to %></td>
+                    <td><%= triage.to || 'N/A' %></td>
                 </tr>
                 <tr>
                     <th>Driver Name</th>
-                    <td><%= triage.driver.username %></td>
+                    <td><%= triage.driver?.username || 'N/A' %></td>
                 </tr>
                 <tr>
                     <th>Paramedics</th>
                     <td>
                         <ul>
-                            <li>
-                            <% triage.paramedics.forEach(paramedic => { %>
-                                <%= paramedic.username %>,
-                            <% }); %>
-                            </li>
+                            <% if (triage.paramedics?.length) { %>
+                                <% triage.paramedics.forEach(paramedic => { %>
+                                    <li><%= paramedic.username || 'N/A' %></li>
+                                <% }); %>
+                            <% } else { %>
+                                <li>N/A</li>
+                            <% } %>
                         </ul>
                     </td>
                 </tr>
                 <tr>
                     <th>Patient Name</th>
-                    <td id="name"><%= triage.patient_name %></td>
+                    <td id="name"><%= triage.patient_name || 'N/A' %></td>
                 </tr>
             </table>
         </div>
@@ -52,72 +52,65 @@
                 <tr>
                     <th>AVPU</th>
                     <td>
-                        <%if(triage.avpu === "Alert"){ %>
-                            
-                            <span style="color: green;"><%= triage.avpu %>-> PPTE -> <%=triage.ppte %></span>
-                            <%} else if(triage.avpu === "Verbal"){
-                            %>
-                            <span style="color: orange;"><%= triage.avpu %></span>
-                            <%} else if(triage.avpu === "Pain"){
-                            %>
-                            <span style="color: red;"><%= triage.avpu %></span>
-                            <%} else if(triage.avpu === "Unresponse"){
-                            %>
-                            <span style="color: black;"><%= triage.avpu %></span>
-                            <%} else {
-                            %>
-                            <%= triage.avpu %>
-                            <%} %>
-                
+                        <% if (triage.avpu) { %>
+                            <% if (triage.avpu === "Alert") { %>
+                                <span style="color: green;"><%= triage.avpu %> -> PPTE -> <%= triage.ppte || 'N/A' %></span>
+                            <% } else if (triage.avpu === "Verbal") { %>
+                                <span style="color: orange;"><%= triage.avpu %></span>
+                            <% } else if (triage.avpu === "Pain") { %>
+                                <span style="color: red;"><%= triage.avpu %></span>
+                            <% } else if (triage.avpu === "Unresponse") { %>
+                                <span style="color: black;"><%= triage.avpu %></span>
+                            <% } else { %>
+                                <%= triage.avpu %>
+                            <% } %>
+                        <% } else { %>
+                            N/A
+                        <% } %>
+                    </td>
                 </tr>
                 <tr>
                     <th>MOI</th>
                     <td>
                         <ul>
-                            <li>
-                            <% triage.moi.forEach(moi => { %>
-                                <%= moi.name %>,
-                            <% }); %>
-                            </li>
+                            <% if (triage.moi?.length) { %>
+                                <% triage.moi.forEach(moi => { %>
+                                    <li><%= moi.name || 'N/A' %></li>
+                                <% }); %>
+                            <% } else { %>
+                                <li>N/A</li>
+                            <% } %>
                         </ul>
                     </td>
                 </tr>
                 <!-- DCAP_BTLS -->
                 <tr>
                     <th>DCAP_BTLS</th>
-                    <% 
-                    const letters = {
-                        d: 'Deformation',
-                        c: 'Contusion',
-                        a: 'Abrasion',
-                        p: 'Pentration',
-                        b: 'Burn',
-                        t: 'Tenderness',
-                        l: 'Laceration',
-                        s: 'Swelling'
-                    }; 
-                    const dcapBtls = triage.dcap_btls; 
-                    //  get the true values based on the keys
-
-                    const trueLetters = Object.entries(dcapBtls).filter(([key, value]) => value).map(([key]) => letters[key]);                    %>
+                    <% const trueLetters = triage.dcap_btls
+                        ? Object.entries(triage.dcap_btls)
+                              .filter(([key, value]) => value)
+                              .map(([key]) => letters[key])
+                        : []; %>
                     <td>
                         <ul>
-                            <li>
-                            <% trueLetters.forEach(letter => { %>
-                                <%=letter%>,
-                            <% }); %>
-                            
-                            </li>
+                            <% if (trueLetters.length) { %>
+                                <% trueLetters.forEach(letter => { %>
+                                    <li><%= letter %></li>
+                                <% }); %>
+                            <% } else { %>
+                                <li>N/A</li>
+                            <% } %>
                         </ul>
                     </td>
+                </tr>
                 <tr>
                     <th>Vitals</th>
                     <td>
                         <ul>
-                            <li>Heart Rate: <%= triage.vitals.heartRate %></li>
-                            <li>Blood Pressure: <%= triage.vitals.bloodPressure %></li>
-                            <li>SPO2: <%= triage.vitals.spo2 %></li>
-                            <li>Temperature: <%= triage.vitals.temperature %></li>
+                            <li>Heart Rate: <%= triage.vitals?.heartRate || 'N/A' %></li>
+                            <li>Blood Pressure: <%= triage.vitals?.bloodPressure || 'N/A' %></li>
+                            <li>SPO2: <%= triage.vitals?.spo2 || 'N/A' %></li>
+                            <li>Temperature: <%= triage.vitals?.temperature || 'N/A' %></li>
                         </ul>
                     </td>
                 </tr>
@@ -125,93 +118,80 @@
                     <th>Medical History</th>
                     <td>
                         <ul>
-                            <p>
-                                <%if(triage.medicalHistory){ %>
-                                    <% triage.medicalHistory.forEach(medicalHistory => { %>
-                                        <%= medicalHistory.name %>, 
-                                    <% }); %>
-                               <% } else { %>
-                                    No medical history
-                               <% } %>
-                            </p>
+                            <% if (triage.medicalHistory?.length) { %>
+                                <% triage.medicalHistory.forEach(history => { %>
+                                    <li><%= history.name || 'N/A' %></li>
+                                <% }); %>
+                            <% } else { %>
+                                <li>N/A</li>
+                            <% } %>
                         </ul>
                     </td>
                 </tr>
                 <tr>
                     <th>Surgical History</th>
-                    <ul>
-                            <li>
-                                <%if(triage.surgicalHistory){ %>
-                                    <% triage.surgicalHistory.forEach(surgicalHistory => { %>
-                                        <%= surgicalHistory.name %>,
-                                    <% }); %>
-                                <% } else { %>
-                                    No surgical history
-                                <% } %>
-                            <li>
+                    <td>
+                        <ul>
+                            <% if (triage.surgicalHistory?.length) { %>
+                                <% triage.surgicalHistory.forEach(history => { %>
+                                    <li><%= history.name || 'N/A' %></li>
+                                <% }); %>
+                            <% } else { %>
+                                <li>N/A</li>
+                            <% } %>
                         </ul>
+                    </td>
                 </tr>
                 <tr>
                     <th>Usage</th>
                     <td>
                         <ul>
-                            <% triage.usage.forEach(usage => { %>
-                                <li><%= usage._id.name %> - Quantity: <%= usage.quantity %></li>
-                            <% }); %>
+                            <% if (triage.usage?.length) { %>
+                                <% triage.usage.forEach(usage => { %>
+                                    <li><%= usage._id?.name || 'N/A' %> - Quantity: <%= usage.quantity || 'N/A' %></li>
+                                <% }); %>
+                            <% } else { %>
+                                <li>N/A</li>
+                            <% } %>
                         </ul>
                     </td>
                 </tr>
                 <tr>
                     <th>Notes</th>
-                    <td>
-                        <% if(triage.notes) { %>
-                            <%= triage.notes %>
-                        <% } else { %>
-                            No notes
-                        <% } %>
-                    </td>
+                    <td><%= triage.notes || 'N/A' %></td>
                 </tr>
                 <tr>
-                    <th>Approval Number:</th>
-                    <td>
-                        <%if(triage.approval_nb === null){ %>
-                            <span style="color: red;">No Approval Number</span>
-                        <%} else { %>
-                            <%=triage.approval_nb %>
-                        <%} %>
-                    </td>
+                    <th>Approval Number</th>
+                    <td><%= triage.approval_nb || 'N/A' %></td>
                 </tr>
             </table>
-        
         </div>
     </div>
-    <button class="btn btn-primary" onclick="downloadPdf(`<%=triage.patient_name%>`,`<%=moment(triage.createdAt).format('DD-MM-YYYY') %>`)">Download PDF</button>
+    <button class="btn btn-primary" onclick="downloadPdf(`<%= triage.patient_name || 'N/A' %>`, `<%= triage.createdAt ? moment(triage.createdAt).format('DD-MM-YYYY') : 'N/A' %>`)">
+        Download PDF
+    </button>
 </div>
 
 <script>
     function downloadPdf(name, date) {
         const content = document.getElementById('content1');
-        // Replace space with _
         const sanitizedPatientName = name.replace(/\s/g, '_');
         const options = {
-            margin: [-1, 0, 0, 0], // Set margins for top, right, bottom, left
-            filename: sanitizedPatientName, // Custom filename
+            margin: [-1, 0, 0, 0],
+            filename: `${sanitizedPatientName}_${date || 'N/A'}.pdf`,
             image: { type: 'jpeg', quality: 0.98 },
-            html2canvas: { scale: 2 }, // Increase scale for better resolution
-            jsPDF: { unit: 'in', format: [8.5, 14], orientation: 'portrait' } // Change format and orientation as needed
+            html2canvas: { scale: 2 },
+            jsPDF: { unit: 'in', format: [8.5, 14], orientation: 'portrait' }
         };
-        const container = document.querySelector('.tables-container');
-        container.style.display = 'block';
-        
         html2pdf()
-            .from(content).set(options)
+            .from(content)
+            .set(options)
             .toPdf()
             .get('pdf')
             .then(pdf => {
-                pdf.save(sanitizedPatientName + '_' + date + '.pdf');
+                pdf.save(options.filename);
                 window.location.href = '/dashboard';
-            })
-           
+            });
     }
 </script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
