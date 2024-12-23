@@ -57,9 +57,11 @@ const getAddCarForm = asyncHandler(async (req, res) => {
 
 const getCars = asyncHandler(async (req, res) => {
     try {
+        const role = req.user.role.name;
+        const haveAccess = (role === 'admin' || role === 'superadmin');
         const cars = await Car.find();
         const layout = getLayoutName(req);
-        res.render("allCars", {cars, layout});
+        res.render("allCars", {cars, layout, haveAccess});
     } catch (error) {
         console.log(error);
         res.status(400);

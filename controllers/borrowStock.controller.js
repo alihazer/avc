@@ -47,7 +47,7 @@ const createBorrowItem = asyncHandler(async (req, res) => {
 
 const renderCreateBorrowItem = asyncHandler(async (req, res) => {
     const { id } = req.params;
-    res.render('createBorrowItem', { id });
+    res.render('createBorrowItem', { id, haveAccess });
 });
 
 const borrowItem = asyncHandler(async (req, res) => {
@@ -102,11 +102,15 @@ const renderBorrowForm = asyncHandler(async (req, res) => {
 });
 
 const getBorrowItems = asyncHandler(async (req, res) => {
+    const role = req.user.role.name;
+    const haveAccess = (role === 'admin' || role === 'superadmin');
+    console.log(haveAccess);
+    console.log(role);
     const layout = getLayoutName(req);
     const items = await BorrowItemCategory.find();
     const borrowedItems = await BorrowLog.find({ status: "borrowed" }).populate('item');
     
-    res.render('borrowedItems', { items, borrowedItems, moment, layout });
+    res.render('borrowedItems', { items, borrowedItems, moment, layout, haveAccess });
 });
 
 

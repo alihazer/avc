@@ -103,9 +103,9 @@
 <body>
     <section>
         <div class="container">
-            <div style="margin-bottom: 15px">
-                <a class="primary-btn" href="/borrowed-items/category/create">Add Category</a>
-            </div>
+            <%if(haveAccess) { %>
+                <a href="/borrowed-items/category/add" class="btn btn-primary">Add Category</a>
+            <% } %>
             <div class="row">
                 <div class="col-12">
                     <div class="card">
