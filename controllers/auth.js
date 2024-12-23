@@ -169,8 +169,7 @@ export const getDashboard = asyncHandler(async (req, res) => {
 
 // render user profile
 export const getUserProfile = asyncHandler(async (req, res) => {
-    const accessibles = ['admin', 'superadmin'];
-    const noAccess = ['driver', 'stockmanager', 'shiftmanager']
+    const layout = getLayoutName(req);
     const role = req.user.role.name;
     let totalCases = 0;
     const user = await User.findById(req.user.id).populate('role').select('-password');
@@ -184,13 +183,10 @@ export const getUserProfile = asyncHandler(async (req, res) => {
             paramedics: { $in: [req.user.id] }
         });
     }
-    if(accessibles.includes(role)){
-        return res.status(200).render('profile', {totalCases: totalCases.length, user});
-    }
-    else if(noAccess.includes(role)){
-        return res.status(200).render('profile', { layout: 'layouts/noAccessLayout', totalCases: totalCases.length, user});
-    }
-    return res.status(200).render('profile', { layout: 'layouts/userLayout', totalCases: totalCases.length, user });
+
+    return res.status(200).render('profile', {totalCases: totalCases.length, user, layout, moment});
+
+
 });
 
 // get edit profile page
@@ -204,7 +200,6 @@ export const getEditProfile = asyncHandler(async (req, res) => {
         const accessibles = ['admin', 'superadmin'];
         const noAccess = ['driver', 'stockmanager', 'shiftmanager']
         
-
         const role = user.role.name;
         if(accessibles.includes(role)){
             return res.status(200).render('editProfile', { user, role });
@@ -228,7 +223,7 @@ export const editProfile = asyncHandler(async (req, res) => {
         if (!user) {
             return res.status(404).render('error', { message: 'User not found' });
         }
-        const { profileImage, bloodType, phone } = req.body;
+        const { profileImage, bloodType, phone, dob, badleSize, kanzeSize } = req.body;
         if (profileImage[1] !== '') {
             user.profileImage = profileImage[1];
         }
@@ -237,6 +232,15 @@ export const editProfile = asyncHandler(async (req, res) => {
         }
         if (phone) {
             user.phone = phone;
+        }
+        if(dob){
+            user.dob = dob;
+        }
+        if(badleSize){
+            user.badleSize = badleSize;
+        }
+        if(kanzeSize){
+            user.kanzeSize = kanzeSize;
         }
         await user.save();
         res.cookie('user', user, { httpOnly: (process.env.NODE_ENV) === 'production' });
@@ -361,7 +365,6 @@ export const getMostParamedic = asyncHandler(async(thisMonth = false)=>{
         endOfMonth = new Date(new Date().getFullYear() + 1, 0, 1);
     }
 
-
     const result = await Triage.aggregate([
         {
             $match: {
@@ -389,7 +392,6 @@ export const getMostParamedic = asyncHandler(async(thisMonth = false)=>{
     ]);
     if(result.length > 0){
         const user = await User.findById(result[0]._id).select('username');
-        
         return { user: user.username, caseCount: result[0].caseCount }; ;
     }
     return null;
@@ -420,4 +422,52 @@ export const getUser = asyncHandler(async (req, res) => {
         error.statusCode = 400;
         throw err;
     }
+});
+
+export const getMostParamedicByYear = asyncHandler(async (year) => {
+    const currentYear = new Date().getFullYear();
+    const maxMonth = year === currentYear ? new Date().getMonth() : 11; // If current year, up to last completed month
+    const results = [];
+
+    for (let month = 0; month <= maxMonth; month++) {
+        const startOfMonth = new Date(year, month, 1);
+        const endOfMonth = new Date(year, month + 1, 1);
+
+        const result = await Triage.aggregate([
+            {
+                $match: {
+                    createdAt: {
+                        $gte: startOfMonth,
+                        $lt: endOfMonth,
+                    },
+                },
+            },
+            {
+                $unwind: "$paramedics",
+            },
+            {
+                $group: {
+                    _id: "$paramedics",
+                    caseCount: { $sum: 1 },
+                },
+            },
+            {
+                $sort: { caseCount: -1 },
+            },
+            {
+                $limit: 1,
+            },
+        ]);
+
+        if (result.length > 0) {
+            const user = await User.findById(result[0]._id).select('username');
+            results.push({
+                month: month + 1,
+                paramedic: user.username,
+                caseCount: result[0].caseCount,
+            });
+        }
+    }
+
+    return results;
 });

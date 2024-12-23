@@ -41,18 +41,18 @@ const userSchema = new mongoose.Schema({
     },
     badleSize:{
         type: String,
-        enum: ['s', 'm', 'l', 'xl', 'xxl', 'xxxl'],
-        default: 'xl'
+        enum: ['', 's', 'm', 'l', 'xl', 'xxl', 'xxxl'],
+        default: ''
     },
     kanzeSize: {
         type: String,
-        enum: ['s', 'm', 'l', 'xl', 'xxl', 'xxxl'],
-        default: 'xl'
+        enum: ['','s', 'm', 'l', 'xl', 'xxl', 'xxxl'],
+        default: ''
     },
     rangerSize: {
         type: Number,
-        enum: [38, 39, 40, 41, 42, 43, 44, 45, 46],
-        default: 40
+        enum: [0,38, 39, 40, 41, 42, 43, 44, 45, 46],
+        default: 0
     }
 
 },{timestamps: true});

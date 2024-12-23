@@ -24,6 +24,23 @@
             
         </div>
     </div>
+
+    <h1>Most Active Paramedics by Month</h1>
+<div id="paramedicStats">
+    <table>
+        <thead>
+            <tr>
+                <th>Month</th>
+                <th>Paramedic</th>
+                <th>Cases</th>
+            </tr>
+        </thead>
+        <tbody id="paramedicStatsBody">
+            <!-- Dynamic content will be inserted here -->
+        </tbody>
+    </table>
+</div>
+
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
@@ -147,59 +164,93 @@
         borrowChart.render();
     }
 
+
     document.getElementById('yearSelect').addEventListener('change', async function () {
-        const year = this.value;
-        
-        try {
-            const [triageResponse, borrowResponse] = await Promise.all([
-                fetchTriageStats(year),
-                fetchBorrowStats(year)
-            ]);
+    const year = this.value;
 
-            const data = triageResponse.data;
-            const borrowData = borrowResponse.borrowData;
-            const casesSpan = document.getElementById('totalCases');
-            const totalSpan = document.getElementById('borrowTotal');
-            console.log(totalSpan);
-            totalSpan.textContent = borrowResponse.totalCases;
-            casesSpan.textContent = triageResponse.totalCases;
+    try {
+        const [triageResponse, borrowResponse] = await Promise.all([
+            fetchTriageStats(year),
+            fetchBorrowStats(year),
+        ]);
 
-            // Update charts
-            const chartContainer = document.getElementById('chart');
-            chartContainer.innerHTML = '';  // Clear existing chart
-            renderTriageChart(data);
+        const data = triageResponse.data;
+        const borrowData = borrowResponse.borrowData;
+        const casesSpan = document.getElementById('totalCases');
+        const totalSpan = document.getElementById('borrowTotal');
 
-            const borrowChartContainer = document.getElementById('borrowChart');
-            borrowChartContainer.innerHTML = '';  // Clear existing borrow chart
-            renderBorrowChart(borrowData);
-        } catch (error) {
-            console.error('Error fetching stats:', error);
-        }
-    });
+        totalSpan.textContent = borrowResponse.totalCases;
+        casesSpan.textContent = triageResponse.totalCases;
+
+        renderTriageChart(data);
+        renderBorrowChart(borrowData);
+
+        // Render the paramedic stats
+        await renderMostParamedic(year);
+    } catch (error) {
+        console.error('Error fetching stats:', error);
+    }
+});
+
 
     // Load the current year's data on page load
-    (async function() {
-        const currentYear = new Date().getFullYear();
-        document.getElementById('yearSelect').value = currentYear;
+    (async function () {
+    const currentYear = new Date().getFullYear();
+    document.getElementById('yearSelect').value = currentYear;
 
-        try {
-            const [triageResponse, borrowResponse] = await Promise.all([
-                fetchTriageStats(currentYear),
-                fetchBorrowStats(currentYear)
-            ]);
+    try {
+        const [triageResponse, borrowResponse] = await Promise.all([
+            fetchTriageStats(currentYear),
+            fetchBorrowStats(currentYear),
+        ]);
 
-            const data = triageResponse.data;
-            const borrowData = borrowResponse.borrowData;
-            const casesSpan = document.getElementById('totalCases');
-            const totalSpan = document.getElementById('borrowTotal');
-            totalSpan.textContent = borrowResponse.totalCases;
-            casesSpan.textContent = triageResponse.totalCases;
+        const data = triageResponse.data;
+        const borrowData = borrowResponse.borrowData;
+        const casesSpan = document.getElementById('totalCases');
+        const totalSpan = document.getElementById('borrowTotal');
 
-            // Render charts
-            renderTriageChart(data);
-            renderBorrowChart(borrowData);
-        } catch (error) {
-            console.error('Error fetching stats:', error);
+        totalSpan.textContent = borrowResponse.totalCases;
+        casesSpan.textContent = triageResponse.totalCases;
+
+        renderTriageChart(data);
+        renderBorrowChart(borrowData);
+
+        // Render the paramedic stats
+        await renderMostParamedic(currentYear);
+    } catch (error) {
+        console.error('Error fetching stats:', error);
+    }
+})();
+
+
+    async function fetchMostParamedic(year) {
+    const response = await fetch(`/most-paramedic/${year}`);
+    return response.json();
+}
+
+async function renderMostParamedic(year) {
+    try {
+        const data = await fetchMostParamedic(year);
+        const tbody = document.getElementById('paramedicStatsBody');
+        tbody.innerHTML = '';
+
+        if (data.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="3">No data available</td></tr>';
+            return;
         }
-    })();
+
+        data.forEach((item) => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${item.month}</td>
+                <td>${item.paramedic}</td>
+                <td>${item.caseCount}</td>
+            `;
+            tbody.appendChild(row);
+        });
+    } catch (error) {
+        console.error('Error fetching paramedic stats:', error);
+    }
+}
+
 </script>

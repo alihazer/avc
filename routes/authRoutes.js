@@ -1,6 +1,6 @@
 import express from 'express';
 const router = express.Router();
-import { login, register, getLoginPage, getRegisterPage, logout, getDashboard, getUserProfile, getEditProfile, editProfile, getUsers, deleteUser, getEditUser, editUser, getUser } from '../controllers/auth.js';
+import { login, register, getLoginPage, getRegisterPage, logout, getDashboard, getUserProfile, getEditProfile, editProfile, getUsers, deleteUser, getEditUser, editUser, getUser, getMostParamedicByYear  } from '../controllers/auth.js';
 import checkPermission from '../middlewares/checkPermission.js';
 import isLoggedIn from '../middlewares/isLoggedIn.js';
 import isActive from '../middlewares/isActive.js';
@@ -22,5 +22,6 @@ router.get('/users/view/:id', isLoggedIn, checkPermission("manage_users"), getUs
 router.delete('/users/delete/:id', isLoggedIn, checkPermission("manage_users"), deleteUser);
 router.get('/users/edit/:id', isLoggedIn, checkPermission("manage_users"), getEditUser);
 router.put('/users/edit/:id', isLoggedIn, checkPermission("manage_users"), editUser);
+router.get('/most-paramedic/:year', isLoggedIn , getMostParamedicByYear);
 
 export default router;

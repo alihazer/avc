@@ -5,7 +5,6 @@
 
     <!-- Profile card -->
     <div class="profile-card">
-        
         <div class="profile-img" id="prof-img">
                 
                 <%if(user.profileImage == undefined){ %>
@@ -46,11 +45,37 @@
             <div class="profile-info-item">
                 <i class="fa-solid fa-id-card"></i>
                 <p class="bloodType"><%=totalCases%> cases</p>
-        </div>
+            </div>
+
+            <div class="profile-info-item">
+                <i class="fa-solid fa-calendar-days"></i>
+                <p class="bloodType">
+                    <%=user.dob ? moment(user.dob).format('DD-MM-YYYY') : 'N/A'%>
+                </p>
+            </div>
+
+            <div class="profile-info-item">
+                <i style="font-size: 23px;" class="fa-solid fa-person"></i>
+                <p class="bloodType"><%=user.badleSize == '' ? 'N/A' : user.badleSize %> </p>
+            </div>
+
+            <div class="profile-info-item" style=" margin-right: 5px;">
+                <i class="fa-solid fa-shirt"></i>
+                <p class="bloodType"><%=user.kanzeSize == '' ? 'N/A' : user.kanzeSize%> </p>
+            </div>
+            
+            <!-- ranger size -->
+            <div class="profile-info-item" style=" margin-right: 5px;">
+                <i class="fa-solid fa-shoe-prints"></i>
+                
+                <p class="bloodType"><%=user.rangerSize == 0 ? 'N/A' : user.rangerSize%> </p>
+            </div>
+
+            
         
         </div>
-        <!-- edit profile btn -->
         <a href="/profile/edit" class="primary-btn">Edit Profile</a>
+
         
     </div>
 </section>
