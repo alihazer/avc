@@ -51,7 +51,7 @@ const userSchema = new mongoose.Schema({
     },
     rangerSize: {
         type: Number,
-        enum: [0,38, 39, 40, 41, 42, 43, 44, 45, 46],
+        enum: [0,38, 39, 40, 41, 42, 43, 44, 45, 46, 47],
         default: 0
     }
 
