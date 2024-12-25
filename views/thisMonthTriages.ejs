@@ -42,8 +42,8 @@
                             <td style="width: 150px"><%= moment(triage.createdAt).format('DD-MM-YYYY') %></td>
                             <td><%= triage.time %></td>
                             <td>
-                                <a href="/triage/edit/<%= triage.id %>" class="btn btn-primary">Edit</a>
-                                <a href="/triage/view/<%= triage.id %>" class="btn btn-primary">View</a>
+                                <a href="/triage/edit/<%= triage._id %>" class="btn btn-primary">Edit</a>
+                                <a href="/triage/get/<%= triage._id %>" class="btn btn-primary">View</a>
                             </td>
                         </tr>
                     <% }) %>

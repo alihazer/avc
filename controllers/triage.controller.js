@@ -387,46 +387,41 @@ const getTriageByMonth = async (year, month, page = 1, limit = 5) => {
     const skip = (pageNum - 1) * limitNum;
 
     try {
-        // Validate and ensure the year and month are valid
-        if (isNaN(year) || isNaN(month) || month < 1 || month > 12) {
-            throw new Error("Invalid year or month");
+        let startDate = null;
+        let endDate = null;
+
+        // Only apply date filter if year and month are provided and valid
+        if (year && month && !isNaN(year) && !isNaN(month) && month >= 1 && month <= 12) {
+            // Ensure the year and month are zero-padded correctly
+            startDate = new Date(`${year}-${month.toString().padStart(2, '0')}-01`);
+            
+            // Handle the case when the month is December (12) to avoid invalid month
+            const nextMonth = parseInt(month) === 12 ? 1 : parseInt(month) + 1;
+            const nextYear = parseInt(month) === 12 ? parseInt(year) + 1 : year;
+
+            endDate = new Date(`${nextYear}-${nextMonth.toString().padStart(2, '0')}-01`);
+
+            // Check if the dates are valid
+            if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
+                throw new Error("Invalid date range");
+            }
         }
 
-        // Ensure the year and month are zero-padded correctly
-        const startDate = new Date(`${year}-${month.toString().padStart(2, '0')}-01`);
-        
-        // Handle the case when the month is December (12) to avoid invalid month
-        const nextMonth = parseInt(month) === 12 ? 1 : parseInt(month) + 1;
-        const nextYear = parseInt(month) === 12 ? parseInt(year) + 1 : year;
-
-        const endDate = new Date(`${nextYear}-${nextMonth.toString().padStart(2, '0')}-01`);
-
-        // Log the date values for debugging
-        console.log('startDate:', startDate);
-        console.log('endDate:', endDate);
-
-        // Check if the dates are valid
-        if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
-            throw new Error("Invalid date range");
-        }
-
-        const triages = await Triage.find({
+        // Build the query based on the date range
+        const query = startDate && endDate ? {
             date: {
                 $gte: startDate,
                 $lt: endDate
             }
-        })
-        .populate('moi')
-        .sort({ createdAt: -1 })
-        .skip(skip)
-        .limit(limitNum);
+        } : {};  // If no date range, fetch all triages
 
-        const totalTriages = await Triage.countDocuments({
-            date: {
-                $gte: startDate,
-                $lt: endDate
-            }
-        });
+        const triages = await Triage.find(query)
+            .populate('moi')
+            .sort({ createdAt: -1 })
+            .skip(skip)
+            .limit(limitNum);
+
+        const totalTriages = await Triage.countDocuments(query);
 
         return {
             triages,
@@ -438,6 +433,7 @@ const getTriageByMonth = async (year, month, page = 1, limit = 5) => {
         return null;
     }
 };
+
 
 
 const getTriageWithPagination = asyncHandler(async (req, res) => {
