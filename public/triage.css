@@ -1,48 +1,107 @@
-.tables-container {
-    display: flex;
-    justify-content: space-between;
-    flex-wrap: wrap;
-}
-.common-fields-table, .emergency-table {
-    flex: 1;
-    margin-right: 10px; /* Adjust space between tables */
-    box-sizing: border-box; /* Include padding and border in element's total width and height */
-}
-
-.common-fields-table tr{
-    width: 100% !important;
-}
-
-.emergency-table tr{
-    width: 100% !important;
-}
-
-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-bottom: 20px;
-}
-th, td {
-    border: 1px solid #ddd;
-    padding: 8px;
-    text-align: left;
-}
-
-/* Mobile styles */
-/* @media (max-width: 768px) {
-    .tables-container {
-        display: none;
+    /* General styling */
+    #content1 {
+        font-family: Arial, sans-serif;
+        color: #333;
+        line-height: 1.6;
+        margin: 20px;
     }
-} */
 
-#img{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
+    .tables-container {
+        display: block; /* Changed from flex to block for stacking tables */
+        margin-bottom: 30px;
+    }
 
-#im{
-    width: 100px;
-    height: 100px;
-    border-radius: 50%;
-}
+    .common-fields-table, .emergency-table {
+        width: 100%; /* Ensure each table takes full width */
+        margin-bottom: 20px; /* Add spacing between tables */
+        box-sizing: border-box;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+        border: 1px solid #ddd;
+    }
+
+    th, td {
+        padding: 10px;
+        text-align: left;
+        border: 1px solid #ddd;
+    }
+
+    th {
+        background-color: #949494;
+        font-weight: bold;
+    }
+
+    td {
+        background-color: #f9f9f9;
+    }
+
+    tr:nth-child(even) td {
+        background-color: #f1f1f1;
+    }
+
+    /* Add some margin to the button */
+    .btn {
+        margin-top: 20px;
+        text-align: center;
+    }
+
+    /* Adjust the button appearance */
+    .btn button {
+        padding: 10px 20px;
+        font-size: 16px;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    .btn button:hover {
+        background-color: #45a049;
+    }
+
+    /* Medical details section */
+    h2 {
+        font-size: 20px;
+        font-weight: bold;
+        color: #333;
+    }
+
+    /* Additional styling for lists */
+    ul {
+        list-style-type: none;
+        padding-left: 0;
+    }
+
+    li {
+        padding-left: 10px;
+    }
+
+    /* Style the image */
+    #im {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        margin: 10px auto;
+    }
+
+    #img {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+
+
+    /* If you want to make sure the table starts after a break (e.g., between sections), you can use the following: */
+    .common-fields-table {
+        page-break-before: always;
+    }
+
+    .emergency-table {
+        page-break-before: always;
+    }

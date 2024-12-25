@@ -127,12 +127,14 @@
         
         </div>
     </div>
-    <button class="btn btn-primary" onclick="downloadPdf(`<%=triage.patient_name%>`,`<%=moment(triage.createdAt).format('DD-MM-YYYY') %>`)">Download PDF</button>
+    <button id="download" class="btn btn-primary" onclick="downloadPdf(`<%=triage.patient_name%>`,`<%=moment(triage.createdAt).format('DD-MM-YYYY') %>`)">Download PDF</button>
 </div>
 
 <script>
     function downloadPdf(name, date) {
         const content = document.getElementById('content1');
+        const downloadBtn = document.getElementById('download');
+        downloadBtn.style.display = 'none';
         // Replace space with _
         const sanitizedPatientName = name.replace(/\s/g, '_');
         const options = {

@@ -131,7 +131,7 @@
             </table>
         </div>
     </div>
-    <button class="btn btn-primary" onclick="downloadPdf(`<%= triage.patient_name || 'Unknown' %>`, `<%= moment(triage.createdAt).format('DD-MM-YYYY') || 'No Date' %>`)">Download PDF</button>
+    <button id="download" class="btn btn-primary" onclick="downloadPdf(`<%= triage.patient_name || 'Unknown' %>`, `<%= moment(triage.createdAt).format('DD-MM-YYYY') || 'No Date' %>`)">Download PDF</button>
 </div>
 
 <script>
