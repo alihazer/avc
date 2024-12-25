@@ -1229,6 +1229,13 @@ textarea:focus {
 	justify-content: center;
 	align-items: flex-end;
 	flex-direction: column;
+	
+}
+
+@media (max-width: 768px) {
+	.dcap-btls-letter label{
+		font-size: 12px;
+	}
 }
 
 .otherInput{
