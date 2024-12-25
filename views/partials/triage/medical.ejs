@@ -4,7 +4,10 @@
 <div id="content1">
     
     <div class="tables-container">
-        <div class="common-fields-table">
+        <div>
+            <center>
+                <h1>Patient Details:</h1>
+            </center>
             <!-- Common Fields Table -->
             <table>
                 <tr>
@@ -49,10 +52,10 @@
                 </tr>
             </table>
         </div>
-        <div class="emergency-table">
+        <div class="common-fields-table">
+            <h1>Medical Details:</h1>
                 <!-- Emergency Table -->
                 <table>
-
                     <th>Vitals</th>
                     <td>
                         <ul>
@@ -81,26 +84,30 @@
                 </tr>
                 <tr>
                     <th>Surgical History</th>
-                    <ul>
-                        <li>
-                            <%if(triage.surgicalHistory){ %>
-                                <% triage.surgicalHistory.forEach(surgicalHistory => { %>
-                                    <%= surgicalHistory.name %>,
-                                <% }); %>
-                            <% } else { %>
-                                No surgical history
-                            <% } %>
-                        <li>
-                    </ul>
+                    <td>
+                        <ul>
+                            <li>
+                                <%if(triage.surgicalHistory){ %>
+                                    <% triage.surgicalHistory.forEach(surgicalHistory => { %>
+                                       <p> <%= surgicalHistory.name %></p>
+                                    <% }); %>
+                                <% } else { %>
+                                    <p>No surgical history</p>
+                                <% } %>
+                            <li>
+                        </ul>
+                    </td>
                 </tr>
                 <tr>
                     <th>Usage</th>
                     <td>
-                        <ul>
+                        <%if(triage.usage.length > 0){ %>
                             <% triage.usage.forEach(usage => { %>
-                                <li><%= usage._id.name %> - Quantity: <%= usage.quantity %></li>
+                                <p><%= usage._id.name %> - Quantity: <%= usage.quantity %></p>
                             <% }); %>
-                        </ul>
+                        <% } else { %>
+                            <p>No usage</p>
+                        <% } %>
                     </td>
                 </tr>
                 <tr>
@@ -132,30 +139,28 @@
 
 <script>
     function downloadPdf(name, date) {
-        const content = document.getElementById('content1');
-        const downloadBtn = document.getElementById('download');
-        downloadBtn.style.display = 'none';
-        // Replace space with _
-        const sanitizedPatientName = name.replace(/\s/g, '_');
-        const options = {
-            margin: [0, 0, 0, 0], // Set margins for top, right, bottom, left
-            filename: sanitizedPatientName, // Custom filename
-            image: { type: 'jpeg', quality: 0.98 },
-            html2canvas: { scale: 2 }, // Increase scale for better resolution
-            jsPDF: { unit: 'in', format: [8.5, 14], orientation: 'portrait' } // Change format and orientation as needed
-        };
-        const container = document.querySelector('.tables-container');
-        container.style.display = 'block';
-        
-        html2pdf()
-            .from(content).set(options)
-            .toPdf()
-            .get('pdf')
-            .then(pdf => {
-                pdf.save(sanitizedPatientName + '_' + date + '.pdf');
-                window.location.href = '/dashboard';
-            })
-           
-    }
-</script>
+         const content = document.getElementById('content1');
+         const downloadBtn = document.getElementById('download');
+         downloadBtn.style.display = 'none';
+         const sanitizedPatientName = name.replace(/\s/g, '_');
+         
+         const options = {
+             margin: [0.5, 0.5, 0.5, 0.5], // Add margin to the PDF
+             filename: `${sanitizedPatientName}_${date}.pdf`,
+             image: { type: 'jpeg', quality: 0.98 },
+             html2canvas: { scale: 2, letterRendering: true },
+             jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+         };
+         
+         html2pdf()
+             .from(content)
+             .set(options)
+             .toPdf()
+             .get('pdf')
+             .then(pdf => {
+                 pdf.save(`${sanitizedPatientName}_${date}.pdf`);
+                 window.location.href = '/dashboard';  // Redirect after download
+             });
+     }
+ </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>

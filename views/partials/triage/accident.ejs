@@ -3,8 +3,10 @@
 <!-- Html2pdf -->
 <div id="content1">
     <div class="tables-container">
-        <div class="common-fields-table">
-            <!-- Common Fields Table -->
+        <div>
+            <center>
+                <h1>Patient Details:</h1>
+            </center>
             <table>
                 <tr>
                     <th>Time</th>
@@ -46,8 +48,8 @@
                 </tr>
             </table>
         </div>
-        <div class="emergency-table">
-            <!-- Emergency Table -->
+        <div class="common-fields-table">
+            <h1>Medical Details:</h1>
             <table>
                 <tr>
                     <th>AVPU</th>
@@ -85,6 +87,16 @@
                 </tr>
                 <!-- DCAP_BTLS -->
                 <tr>
+                    <% const letters = {
+                        d: 'Deformation',
+                        c: 'Contusion',
+                        a: 'Abrasion',
+                        p: 'Penetration',
+                        b: 'Burn',
+                        t: 'Tenderness',
+                        l: 'Laceration',
+                        s: 'Swelling'
+                    }; %>
                     <th>DCAP_BTLS</th>
                     <% const trueLetters = triage.dcap_btls
                         ? Object.entries(triage.dcap_btls)
@@ -174,26 +186,28 @@
 
 <script>
     function downloadPdf(name, date) {
-        const content = document.getElementById('content1');
-        const downloadBtn = document.getElementById('download');
-        downloadBtn.style.display = 'none';
-        const sanitizedPatientName = name.replace(/\s/g, '_');
-        const options = {
-            margin: [-1, 0, 0, 0],
-            filename: `${sanitizedPatientName}_${date || 'N/A'}.pdf`,
-            image: { type: 'jpeg', quality: 0.98 },
-            html2canvas: { scale: 2 },
-            jsPDF: { unit: 'in', format: [8.5, 14], orientation: 'portrait' }
-        };
-        html2pdf()
-            .from(content)
-            .set(options)
-            .toPdf()
-            .get('pdf')
-            .then(pdf => {
-                pdf.save(options.filename);
-                window.location.href = '/dashboard';
-            });
-    }
-</script>
+         const content = document.getElementById('content1');
+         const downloadBtn = document.getElementById('download');
+         downloadBtn.style.display = 'none';
+         const sanitizedPatientName = name.replace(/\s/g, '_');
+         
+         const options = {
+             margin: [0.5, 0.5, 0.5, 0.5], // Add margin to the PDF
+             filename: `${sanitizedPatientName}_${date}.pdf`,
+             image: { type: 'jpeg', quality: 0.98 },
+             html2canvas: { scale: 2, letterRendering: true },
+             jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+         };
+         
+         html2pdf()
+             .from(content)
+             .set(options)
+             .toPdf()
+             .get('pdf')
+             .then(pdf => {
+                 pdf.save(`${sanitizedPatientName}_${date}.pdf`);
+                 window.location.href = '/dashboard';  // Redirect after download
+             });
+     }
+ </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
