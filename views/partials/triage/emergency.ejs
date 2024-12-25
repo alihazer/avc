@@ -150,7 +150,7 @@
         </div>
     </div>
     <div class="btn">
-        <button class="btn btn-primary" onclick="downloadPdf(`<%= triage.patient_name || 'N/A' %>`, `<%= triage.createdAt ? moment(triage.createdAt).format('DD-MM-YYYY') : 'N/A' %>`)">Download PDF</button>
+        <button id="download" class="btn btn-primary" onclick="downloadPdf(`<%= triage.patient_name || 'N/A' %>`, `<%= triage.createdAt ? moment(triage.createdAt).format('DD-MM-YYYY') : 'N/A' %>`)">Download PDF</button>
     </div>
 </div>
 

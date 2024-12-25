@@ -29,11 +29,11 @@ th, td {
 }
 
 /* Mobile styles */
-@media (max-width: 768px) {
+/* @media (max-width: 768px) {
     .tables-container {
         display: none;
     }
-}
+} */
 
 #img{
     display: flex;

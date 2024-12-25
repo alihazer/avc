@@ -1258,7 +1258,7 @@ textarea:focus {
 }
 
 @media print {
-    #sidebar, nav, .footer, #print {
+    #sidebar, nav, .footer, #print, #download {
         display: none;
     }
     .container {
