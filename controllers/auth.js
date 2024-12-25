@@ -391,6 +391,7 @@ export const getMostParamedic = asyncHandler(async(thisMonth = false)=>{
         }
     ]);
     if(result.length > 0){
+        console.log('Result: ', result);
         const user = await User.findById(result[0]._id).select('username');
         return { user: user.username, caseCount: result[0].caseCount }; ;
     }
