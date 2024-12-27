@@ -18,6 +18,7 @@ import medicalHistoryRoutes from './routes/medicalHistoryRoutes.js'
 import surgicalHistoryRoute from './routes/surgicalHistoryRoutes.js';
 import triageRoutes from './routes/triageRoutes.js';
 import BorrowItemRoutes from './routes/BorrowedItemsRoute.js';
+import axios from 'axios';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename); 
@@ -61,14 +62,14 @@ app.use('/api/hello', (req, res) => {
 });
 
 
-const axios = require('axios');
+
 axios.get('https://httpbin.org/ip')
   .then(response => {
     console.log('Heroku server IP:', response.data.origin);
   })
   .catch(error => {
     console.error('Error fetching IP:', error);
-  });
+});
 
 
 // Error handling
