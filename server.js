@@ -61,6 +61,16 @@ app.use('/api/hello', (req, res) => {
 });
 
 
+const axios = require('axios');
+axios.get('https://httpbin.org/ip')
+  .then(response => {
+    console.log('Heroku server IP:', response.data.origin);
+  })
+  .catch(error => {
+    console.error('Error fetching IP:', error);
+  });
+
+
 // Error handling
 app.use(notFoundErrorHandler);
 app.use(globalErrorHandler);
