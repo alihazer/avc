@@ -1,7 +1,8 @@
 
 
-export default function isActive(req, res, next) {
-    const user = req.cookies.user;
+export default function isActive(req, res, next) 
+{
+    const user = JSON.parse(req.cookies.user);
     if (user.status == "active") {
         next();
     }else {

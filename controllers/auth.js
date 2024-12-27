@@ -11,6 +11,8 @@ import { getBorrowedItemsCount } from "./borrowStock.controller.js";
 import getLayoutName from "../utils/getLayoutName.js";
 import { getItemsThisMonth } from "./materials.controller.js";
 import moment from "moment";
+import jwt from 'jsonwebtoken';
+import LoggedInDevicesModel from "../models/LoggedInDevicesModel.js"; 
 
 export const register = asyncHandler(async (req, res) => {
     try { 
@@ -40,54 +42,93 @@ export const register = asyncHandler(async (req, res) => {
     }
 });
 
-export const login = asyncHandler(async (req, res) => {
+ // Adjust import based on your file structure
 
+export const login = asyncHandler(async (req, res) => {
     try {
         const { username, password } = req.body;
-        const user = await User.findOne({  username } ).populate('role');
+
+        // Find user by username
+        const user = await User.findOne({ username }).populate('role');
         if (!user) {
-            return res.status(401).render('login', 
-                { 
-                    message: 'Invalid credentials',
-                    layout: 'layouts/loginLayout',
-                });
+            return res.status(401).render('login', {
+                message: 'Invalid credentials',
+                layout: 'layouts/loginLayout',
+            });
         }
+
+        // Verify password
         const isPasswordValid = await bcrypt.compare(password, user.password);
         if (!isPasswordValid) {
-            return res.status(401).render('login', 
-                {
-                    message: 'Invalid credentials',
-                    layout: 'layouts/loginLayout',
-                });
+            return res.status(401).render('login', {
+                message: 'Invalid credentials',
+                layout: 'layouts/loginLayout',
+            });
         }
-        // unsign the password from the user object
-        user.password = undefined;
-        const token = createToken(user._id, user.role, user.username);
-        const isProduction = process.env.NODE_ENV === 'production';
-        const date = new Date();
-        console.log('Hello', user.username, 'Logged in at: ', moment(date).format('MMMM Do YYYY, h:mm:ss a'));
 
-        // Set the token cookie
+        // Unsigned password field from the user object
+        user.password = undefined;
+
+        // Create JWT token
+        const token = createToken(user._id, user.role, user.username);
+
+        // Determine the environment for secure cookies
+        const isProduction = process.env.NODE_ENV === 'production';
+
+        // Capture device info (e.g., user-agent)
+        const deviceInfo = req.headers['user-agent'];
+        const ipAddress = req.ip; 
+
+        // Create or update LoggedInDevices record
+        const loggedInDeviceData = {
+            userId: user._id,
+            deviceInfo,
+            os: req.headers['os'], // Capture OS if possible
+            browser: req.headers['browser'], // Capture browser if possible
+            ipAddress,
+            lastLogin: Date.now(),
+            token
+        };
+
+        // Check if the user has an existing active device session
+        const existingDevice = await LoggedInDevicesModel.findOne({ userId: user._id, ipAddress });
+        
+        if (existingDevice) {
+            console.log("There is an existing login")
+            // Mark the existing device as inactive
+            await LoggedInDevicesModel.updateOne({ _id: existingDevice._id }, { $set: { lastLogin: Date.now() } });
+        }
+        else{
+            await LoggedInDevicesModel.create(loggedInDeviceData);
+        }
+
+        // Log login time for debugging
+        console.log(`User ${user.username} logged in at: ${moment().format('MMMM Do YYYY, h:mm:ss a')}`);
+
+        // Set JWT token in cookie
         res.cookie('token', token, {
             httpOnly: true,
             secure: isProduction, // Ensures the cookie is only sent over HTTPS in production
-            sameSite: isProduction ? 'Strict' : 'Lax', // Strict in production, Lax in development
+            sameSite: isProduction ? 'Strict' : 'Lax',
         });
-        
-        // Set the user cookie
-        res.cookie('user', user, {
-            httpOnly: true, // Consistent with the token cookie
+
+        // Set user details in cookie (excluding password)
+        res.cookie('user', JSON.stringify(user), {
+            httpOnly: true,
             secure: isProduction,
             sameSite: isProduction ? 'Strict' : 'Lax',
         });
-        res.status(200).redirect('/dashboard')
+
+        // Redirect to dashboard
+        res.status(200).redirect('/dashboard');
     } catch (error) {
-        console.log(error);
+        console.error(error);
         const err = new Error('Something went wrong');
         error.statusCode = 400;
         throw err;
     }
 });
+
 
 // get login page
 export const getLoginPage = (req, res) => {
@@ -472,5 +513,25 @@ export const getMostParamedicByYear = asyncHandler(async (year) => {
 
     return results;
 });
+
+export const getLoggedInDevices = asyncHandler(async (req, res) => {
+    try {
+        // Fetch the logged-in devices for the authenticated user
+        const loggedInDevices = await LoggedInDevicesModel.find({ userId: req.user.id });
+        const layout = getLayoutName(req);
+        console.log(layout)
+        // Render the EJS page and pass the devices data
+        res.render('loggedInDevices', {
+            devices: loggedInDevices,  // Pass the logged-in devices to the EJS view
+            layout,  
+            moment
+        });
+    } catch (error) {
+        console.error(error);
+        throw new Error('Error fetching logged-in devices');
+    }
+});
+
+
 
 

@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import bcrypt from "bcrypt";
+import LoggedInDevicesModel from "./LoggedInDevicesModel.js";
 
 const userSchema = new mongoose.Schema({
     username: {
@@ -54,7 +54,8 @@ const userSchema = new mongoose.Schema({
         type: Number,
         enum: [0,38, 39, 40, 41, 42, 43, 44, 45, 46, 47],
         default: 0
-    }
+    },
+    loggedInDevices: [LoggedInDevicesModel.schema],
 
 },{timestamps: true});
 

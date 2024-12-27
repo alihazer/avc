@@ -1,0 +1,23 @@
+<div class="table-responsive">
+    <h1>Logged In Devices</h1>
+    <table class="table table-striped table-hover">
+        <thead>
+            <tr>
+                <th>Device Info</th>
+                <th>IP Address</th>
+                <th>Login Time</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% devices.forEach(device => { %>
+                <tr>
+                    <td><%= device.deviceInfo %></td>
+                        <td><%= device.ipAddress %></td>
+                    <td><%= moment(device.lastLogin).format('MMMM DD YYYY, h:mm:ss a') %></td>
+                    <td><%= device.isActive ? 'Active' : 'Inactive' %></td>
+                </tr>
+            <% }) %>
+        </tbody>
+    </table>
+</div>
