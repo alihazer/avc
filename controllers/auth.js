@@ -98,7 +98,7 @@ export const login = asyncHandler(async (req, res) => {
         };
 
         // Check if the user has an existing active device session
-        const existingDevice = await LoggedInDevicesModel.findOne({ userId: user._id, ipAddress });
+        const existingDevice = await LoggedInDevicesModel.findOne({ userId: user._id, deviceInfo });
         
         if (existingDevice) {
             console.log("There is an existing login")
