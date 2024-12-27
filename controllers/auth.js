@@ -42,6 +42,13 @@ export const register = asyncHandler(async (req, res) => {
     }
 });
 
+function getIp(req) {
+    return req.headers['x-forwarded-for']?.split(',').shift() ||
+           req.connection?.remoteAddress ||
+           req.socket?.remoteAddress ||
+           null;
+}
+
  // Adjust import based on your file structure
 
 export const login = asyncHandler(async (req, res) => {
@@ -77,7 +84,7 @@ export const login = asyncHandler(async (req, res) => {
 
         // Capture device info (e.g., user-agent)
         const deviceInfo = req.headers['user-agent'];
-        const ipAddress = req.ip; 
+        const ipAddress = getIp(req); 
 
         // Create or update LoggedInDevices record
         const loggedInDeviceData = {
