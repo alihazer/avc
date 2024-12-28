@@ -637,6 +637,11 @@ main .btn-send:hover {
 	justify-content: center;
 }
 
+.nav-profile-img{
+	margin-bottom: 28px;
+
+}
+
 .profile-info-item{
 	display: flex;
 	align-items: center;
