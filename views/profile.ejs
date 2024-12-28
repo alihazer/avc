@@ -2,10 +2,12 @@
 <div>
     <a href="/dashboard" class="back-arrow1"><i class="fa-solid fa-arrow-left"></i></a>
 <section class="profile-f">
+
     <!-- Profile card -->
     <div class="profile-card">
         <div class="profile-img" id="prof-img">
-                <%if(user.profileImage == undefined || user.profileImage == null){ %>
+                <%console.log(user.profileImage)%>
+                <%if(user.profileImage == undefined || user.profileImage == null || user.profileImage == ''){ %>
                     <i class="fa-solid fa-user"></i>
                 <%}else{ %>
                     <img src="<%= user.profileImage %>" alt="<%= user.username %>">

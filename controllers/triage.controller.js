@@ -11,6 +11,7 @@ import Moi from "../models/Moi.js";
 import CarLog from "../models/CarLog.js";
 import moment from "moment";
 import getLayoutName from "../utils/getLayoutName.js";
+import mongoose from "mongoose";
 
 
 const isMaterialAvailable = async (car, materials, userId) => {
@@ -186,15 +187,11 @@ const renderFirstForm = asyncHandler(async (req, res) => {
 
 
 const fetchMyTriages = async (req) => {
-    let triages = await Triage.find({userId: req.user.id})
-        .populate('moi')
-        .populate({
-            path: 'userId',
-            select: 'username'
-        })
-        .sort({createdAt: -1})
-        .lean()
-        .exec();
+    // Get the user ID from the request object
+    const userId = req.user.id;
+    // Find all triages created by the user or user id is found in the paramedics array
+    const triages = await Triage.find({ $or: [{ userId }, { paramedics: userId }, {driver: userId }] });
+    console.log(triages);
     return triages;
 };
 const getLoggedInUserTriages = asyncHandler(async(req, res)=>{

@@ -30,7 +30,7 @@ const TriageSchema = new mongoose.Schema({
     paramedics: {
         type: [mongoose.Schema.Types.ObjectId],
         ref: "User",
-        default: null,
+        default: [],
         max: 4,
     },
     patient_name: {
