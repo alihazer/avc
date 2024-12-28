@@ -105,9 +105,9 @@ export const login = asyncHandler(async (req, res) => {
         const existingDevice = await LoggedInDevicesModel.findOne({ userId: user._id, deviceInfo });
         
         if (existingDevice) {
-            console.log("There is an existing login")
+            const currentDate = Date.now();
             // Mark the existing device as inactive
-            await LoggedInDevicesModel.updateOne({ _id: existingDevice._id }, { $set: { lastLogin: Date.now(), isActive: true } });
+            await LoggedInDevicesModel.updateOne({ _id: existingDevice._id }, { $set: { lastLogin: currentDate, isActive: true } });
         }
         else{
             await LoggedInDevicesModel.create(loggedInDeviceData);
