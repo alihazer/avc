@@ -87,7 +87,7 @@ export const login = asyncHandler(async (req, res) => {
         const deviceInfo = req.headers['user-agent'];
         const ipAddress = getIp(req); 
         const macAddress = mac((err, addr) => {
-            
+            return addr;
         });
         // Create or update LoggedInDevices record
         const loggedInDeviceData = {
