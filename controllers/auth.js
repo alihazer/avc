@@ -87,16 +87,26 @@ export const login = asyncHandler(async (req, res) => {
         const deviceInfo = req.headers['user-agent'];
         const ipAddress = getIp(req); 
         const macAddress = mac((err, addr) => {
+            if (err) {
+                console.error(err);
+                return "00:00:00:00:00:00";
+            }
             return addr;
         });
+
+        // Capture current date
+        const currentDate = new Date();
+
         // Create or update LoggedInDevices record
+
+
         const loggedInDeviceData = {
             userId: user._id,
             deviceInfo,
             os: req.headers['os'], // Capture OS if possible
             browser: req.headers['browser'], // Capture browser if possible
             ipAddress,
-            lastLogin: Date.now(),
+            lastLogin: currentDate,
             token,
             macAddress,
         };
@@ -105,7 +115,7 @@ export const login = asyncHandler(async (req, res) => {
         const existingDevice = await LoggedInDevicesModel.findOne({ userId: user._id, deviceInfo });
         
         if (existingDevice) {
-            const currentDate = Date.now();
+            console.log('Updating device login time for user:', user._id);
             // Mark the existing device as inactive
             await LoggedInDevicesModel.updateOne({ _id: existingDevice._id }, { $set: { lastLogin: currentDate, isActive: true } });
         }
@@ -536,7 +546,6 @@ export const getLoggedInDevices = asyncHandler(async (req, res) => {
         // Fetch the logged-in devices for the authenticated user
         const loggedInDevices = await LoggedInDevicesModel.find({ userId: req.user.id });
         const layout = getLayoutName(req);
-        console.log(layout)
         // Render the EJS page and pass the devices data
         res.render('loggedInDevices', {
             devices: loggedInDevices,  // Pass the logged-in devices to the EJS view

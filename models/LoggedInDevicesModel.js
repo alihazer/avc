@@ -24,12 +24,9 @@ const LoggedInDevicesSchema = new mongoose.Schema({
         type: String, // Captures MAC address of login
         required: true,
     },
-    loginTime: {
+    lastLogin: {
         type: Date,
         default: Date.now, // Automatically logs login time
-    },
-    lastActivityTime: {
-        type: Date, // Useful for session monitoring
     },
     token: {
         type: String,
