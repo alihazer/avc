@@ -12,11 +12,12 @@
         <tbody>
             <% devices.forEach(device => { %>
                 <tr>
-                    <td><%= device.deviceInfo %></td>
-                        <td><ul>
-                            <li><%= device.ipAddress %></li>
-                            <li><%= device.macAddress %></li>
-                        </ul></td>
+                    <% const slicedDeviceInfo = device.deviceInfo.split(")"); %>
+                    <td><%= slicedDeviceInfo[0] + ")" %></td>
+                    <td><ul>
+                        <li><%= device.ipAddress %></li>
+                        <li><%= device.macAddress %></li>
+                    </ul></td>
                     <td><%= moment(device.lastLogin).format('MM-DD-YYYY, h:mm a') %></td>
                     <td><%= device.isActive ? 'Active' : 'Inactive' %></td>
                 </tr>

@@ -11,7 +11,7 @@ import { getBorrowedItemsCount } from "./borrowStock.controller.js";
 import getLayoutName from "../utils/getLayoutName.js";
 import { getItemsThisMonth } from "./materials.controller.js";
 import moment from "moment";
-import { mac } from "address";
+import getMAC, { isMAC } from 'getmac'
 import LoggedInDevicesModel from "../models/LoggedInDevicesModel.js"; 
 
 
@@ -86,14 +86,7 @@ export const login = asyncHandler(async (req, res) => {
         // Capture device info (e.g., user-agent)
         const deviceInfo = req.headers['user-agent'];
         const ipAddress = getIp(req); 
-        const macAddress = mac((err, addr) => {
-            if (err) {
-                console.error(err);
-                return "00:00:00:00:00:00";
-            }
-            return addr;
-        });
-
+        const macAddress = await getMAC();
         // Capture current date
         const currentDate = new Date();
 
