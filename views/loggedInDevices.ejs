@@ -15,7 +15,7 @@
                     <td><%= device.deviceInfo %></td>
                         <td><ul>
                             <li><%= device.ipAddress %></li>
-                            <%= device.macAddress %>
+                            <li><%= device.macAddress %></li>
                         </ul></td>
                     <td><%= moment(device.lastLogin).format('MM-DD-YYYY, h:mm a') %></td>
                     <td><%= device.isActive ? 'Active' : 'Inactive' %></td>

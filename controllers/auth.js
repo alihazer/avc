@@ -87,10 +87,7 @@ export const login = asyncHandler(async (req, res) => {
         const deviceInfo = req.headers['user-agent'];
         const ipAddress = getIp(req); 
         const macAddress = mac((err, addr) => {
-            if (err) {
-                console.log(err);
-            }
-            return addr;
+            
         });
         // Create or update LoggedInDevices record
         const loggedInDeviceData = {
@@ -110,7 +107,7 @@ export const login = asyncHandler(async (req, res) => {
         if (existingDevice) {
             console.log("There is an existing login")
             // Mark the existing device as inactive
-            await LoggedInDevicesModel.updateOne({ _id: existingDevice._id }, { $set: { lastLogin: Date.now() } });
+            await LoggedInDevicesModel.updateOne({ _id: existingDevice._id }, { $set: { lastLogin: Date.now(), isActive: true } });
         }
         else{
             await LoggedInDevicesModel.create(loggedInDeviceData);
