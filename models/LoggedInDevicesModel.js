@@ -20,6 +20,10 @@ const LoggedInDevicesSchema = new mongoose.Schema({
         type: String,
         required: true, // Captures IP address of login
     },
+    macAddress: {
+        type: String, // Captures MAC address of login
+        required: true,
+    },
     loginTime: {
         type: Date,
         default: Date.now, // Automatically logs login time

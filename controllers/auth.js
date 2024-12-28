@@ -11,8 +11,9 @@ import { getBorrowedItemsCount } from "./borrowStock.controller.js";
 import getLayoutName from "../utils/getLayoutName.js";
 import { getItemsThisMonth } from "./materials.controller.js";
 import moment from "moment";
-import jwt from 'jsonwebtoken';
+import { mac } from "address";
 import LoggedInDevicesModel from "../models/LoggedInDevicesModel.js"; 
+
 
 export const register = asyncHandler(async (req, res) => {
     try { 
@@ -85,7 +86,12 @@ export const login = asyncHandler(async (req, res) => {
         // Capture device info (e.g., user-agent)
         const deviceInfo = req.headers['user-agent'];
         const ipAddress = getIp(req); 
-
+        const macAddress = mac((err, addr) => {
+            if (err) {
+                console.log(err);
+            }
+            return addr;
+        });
         // Create or update LoggedInDevices record
         const loggedInDeviceData = {
             userId: user._id,
@@ -94,7 +100,8 @@ export const login = asyncHandler(async (req, res) => {
             browser: req.headers['browser'], // Capture browser if possible
             ipAddress,
             lastLogin: Date.now(),
-            token
+            token,
+            macAddress,
         };
 
         // Check if the user has an existing active device session
@@ -154,6 +161,12 @@ export const getRegisterPage = asyncHandler(async(req, res) => {
 });
 
 export const logout = asyncHandler(async (req, res) => {
+    // Find the device by the JWT token
+    const loggedInDevice = await LoggedInDevicesModel.findOne({ token: req.cookies.token });
+    if (loggedInDevice) {
+        // Mark the device as inactive
+        await LoggedInDevicesModel.updateOne({ _id: loggedInDevice._id }, { $set: { isActive: false } });
+    }
     res.clearCookie('token');
     res.clearCookie('user');
     res.status(200).redirect('/login');

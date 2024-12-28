@@ -4,7 +4,7 @@
         <thead>
             <tr>
                 <th>Device Info</th>
-                <th>IP Address</th>
+                <th>IP & MAC Address</th>
                 <th>Login Time</th>
                 <th>Status</th>
             </tr>
@@ -13,8 +13,11 @@
             <% devices.forEach(device => { %>
                 <tr>
                     <td><%= device.deviceInfo %></td>
-                        <td><%= device.ipAddress %></td>
-                    <td><%= moment(device.lastLogin).format('MMMM DD YYYY, h:mm:ss a') %></td>
+                        <td><ul>
+                            <li><%= device.ipAddress %></li>
+                            <%= device.macAddress %>
+                        </ul></td>
+                    <td><%= moment(device.lastLogin).format('MM-DD-YYYY, h:mm a') %></td>
                     <td><%= device.isActive ? 'Active' : 'Inactive' %></td>
                 </tr>
             <% }) %>
