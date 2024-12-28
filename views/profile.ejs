@@ -7,7 +7,7 @@
     <div class="profile-card">
         <div class="profile-img" id="prof-img">
                 
-                <%if(user.profileImage == undefined){ %>
+                <%if(user.profileImage == undefined || user.profileImage == null){ %>
                     <i class="fa-solid fa-user"></i>
                 <%}else{ %>
                     <img src="<%= user.profileImage %>" alt="<%= user.username %>">
