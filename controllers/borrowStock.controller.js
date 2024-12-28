@@ -12,7 +12,9 @@ const createBorrowItem = asyncHandler(async (req, res) => {
     const { name, image } = req.body;
     const { id } = req.params;
 
-
+    if(!name || !image) {
+        return res.status(500).render('error', { message: "Something went wrong" });
+    }
     try {
         const category = await BorrowItemCategory.findById(id);
         const code = category.name.split(" ")[0].toUpperCase() + '_' + uuidv4().substring(0, 3);
@@ -29,7 +31,6 @@ const createBorrowItem = asyncHandler(async (req, res) => {
             code,
             barCode: barCode._id
         });
-
         const createdItem = await item.save();
         const itemsInCategory = await BorrowItem.find({ category: id });
         category.quantity =  itemsInCategory.length;
@@ -46,8 +47,8 @@ const createBorrowItem = asyncHandler(async (req, res) => {
 
 
 const renderCreateBorrowItem = asyncHandler(async (req, res) => {
-    const { id } = req.params;
-    res.render('createBorrowItem', { id, haveAccess });
+const { id } = req.params;
+    res.render('createBorrowItem', { id });
 });
 
 const borrowItem = asyncHandler(async (req, res) => {

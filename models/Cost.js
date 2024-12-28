@@ -24,6 +24,12 @@ const CarCostSchema = new mongoose.Schema({
         required: true,
         enum: ['maintenance', 'benzine', 'oilchange']
     },
+    speedoMeterValue:{
+        type: Number,
+    },
+    litersCount:{
+        type: Number
+    },
     paidFor:{
         type: String,
         required: true,

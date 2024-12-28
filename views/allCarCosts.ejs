@@ -16,12 +16,12 @@
                             <tr>
                                 <th>السيارة</th>
                                 <th>السبب</th>
+                                <th>العداد أو الكمية</th>
                                 <th>المسؤول</th>
                                 <th>التكلفة</th>
                                 <th>العملة</th>
                                 <th>المؤسسة</th>
-                                <th>التاريخ</th>
-                                
+                                <th>التاريخ</th>  
                             </tr>
                         </thead>
                         <tbody>
@@ -29,6 +29,13 @@
                                 <tr>
                                     <td><%= carCost.carId.number %></td>
                                     <td><%= carCost.cause %></td>
+                                    <td>
+                                        <% if(carCost.cause === "benzine") { %>
+                                            <%= carCost.litersCount %> ليتر
+                                        <% } else { %>
+                                            <%= carCost.speedoMeterValue %> كم
+                                        <% } %>
+                                    </td>
                                     <td><%= carCost.person.username %></td>
                                     <td><%= carCost.cost %></td>
                                     <td><%= carCost.currency %></td>

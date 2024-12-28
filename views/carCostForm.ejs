@@ -18,11 +18,19 @@
                     </div>
                     <div class="form-group">
                         <label for="cause">السبب</label>
-                        <select name="cause" id="cause">
+                        <select name="cause" id="carCostCause">
                             <option value="maintenance">صيانة</option>
                             <option value="benzine">بنزين</option>
                             <option value="oilchange">غيار زيت</option>
                         </select>
+                    </div>
+                    <div class="form-group" id="speedoMeterValue">
+                        <label>العداد</label>
+                        <input type="number" name="speedoMeterValue">
+                    </div>
+                    <div class="form-group" id="litersCount">
+                        <label>الكمية  /  ليتر</label>
+                        <input type="number" name="litersCount">
                     </div>
                                     <!-- الشخص  -->
                                     <div class="form-group">
@@ -36,6 +44,9 @@
                                             <% }) %>
                                         </select>
                                     </div>
+
+
+                        
                     <div class="form-group">
                         <label for="cost">التكلفة</label>
                         <input type="number" name="cost" id="cost" required>

@@ -215,3 +215,32 @@ $(document).ready(function() {
 		}
 	});
 });
+
+$(document).ready(function() {
+
+	$('#speedoMeterValue').hide();
+	$('#litersCount').hide();
+
+
+	$('#carCostCause').change(function() {
+		console.log($(this).val());
+		if($(this).val()== 'oilchange'){
+			$('#speedoMeterValue').show();
+			// make the field required
+			$('#speedoMeterValue').attr('required', 'required');
+		}else{
+			$('#speedoMeterValue').hide();
+			// remove the required attribute
+			$('#speedoMeterValue').removeAttr('required');
+		}
+
+		if($(this).val()== 'benzine'){
+			$('#litersCount').show();
+			$('#speedoMeterValue').attr('required', 'required');
+
+		}
+		else{
+			$('#litersCount').hide();
+			$('#speedoMeterValue').removeAttr('required');
+		}
+	})});

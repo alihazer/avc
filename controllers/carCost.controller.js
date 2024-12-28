@@ -17,7 +17,7 @@ const renderCostForm = asyncHandler(async (req, res) => {
 
 const createCost = asyncHandler(async (req, res) => {
     try {
-        const { carId, cost, currency, date, cause, paidFor, person, note } = req.body;
+        const { carId, cost, currency, date, cause, paidFor, person, note, speedoMeterValue, litersCount } = req.body;
         const car = await Car.findById(carId);
         const newCost = new Cost({
             carId: car._id,
@@ -28,7 +28,10 @@ const createCost = asyncHandler(async (req, res) => {
             paidFor,
             person,
             note,
+            speedoMeterValue,
+            litersCount
         });
+        console.log(newCost);
         await newCost.save();
         res.redirect("/cars/costs/all");
     } catch (error) {

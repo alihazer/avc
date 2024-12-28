@@ -168,8 +168,9 @@ export const getRegisterPage = asyncHandler(async(req, res) => {
 });
 
 export const logout = asyncHandler(async (req, res) => {
+    const deviceInfo = req.headers['user-agent'];
     // Find the device by the JWT token
-    const loggedInDevice = await LoggedInDevicesModel.findOne({ token: req.cookies.token });
+    const loggedInDevice = await LoggedInDevicesModel.findOne({ deviceInfo });
     if (loggedInDevice) {
         // Mark the device as inactive
         await LoggedInDevicesModel.updateOne({ _id: loggedInDevice._id }, { $set: { isActive: false } });

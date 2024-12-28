@@ -1270,9 +1270,17 @@ textarea:focus {
 }
 
 @media print {
-    #sidebar, nav, .footer, #print, #download {
+    #sidebar, nav, .footer, #print, #download, .btn, .foot-info, #pr-image, #tttt, img{
         display: none;
     }
+
+
+
+	footer{
+		display: none;
+	}
+
+
     .container {
         width: 100%;
     }
