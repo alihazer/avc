@@ -1,7 +1,7 @@
-<div class="container">
+<div>
+    <section class="profile-f">
             <div class="profile-card">
-                <br>
-                <div class="profile-img">
+                <div class="profile-img" id="prof-img">
                     <% if(user.profileImage) { %>
                         <img src="<%=user.profileImage%>"/>
                     <% } else { %>
@@ -114,6 +114,7 @@
                 
                 </div>
             </div>
+    </section>
 
 </div>
 <script type="module" src="/firebase/firebaseConfig.js"></script>
