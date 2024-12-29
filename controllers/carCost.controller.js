@@ -45,7 +45,7 @@ const createCost = asyncHandler(async (req, res) => {
         res.redirect("/cars/costs/all");
     } catch (error) {
         console.error("Error in creating cost:", error.message);
-        res.status(500).json({ error: "Error in creating cost" });
+        res.status(500).render("error", { message: error.message });
     }
 });
 
