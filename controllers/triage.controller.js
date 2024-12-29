@@ -99,7 +99,6 @@ const createEmergencyTriage = asyncHandler(async (req, res) => {
             userId: req.user.id,
             approval_nb
         });
-        console.log(triage);
         return triage ? res.status(201).redirect(`/triage/generate-pdf/${triage._id}`) : res.status(400).render("error", { message: "An error occurred", layout });
     } catch (error) {
         console.error(error);
@@ -191,7 +190,6 @@ const fetchMyTriages = async (req) => {
     const userId = req.user.id;
     // Find all triages created by the user or user id is found in the paramedics array
     const triages = await Triage.find({ $or: [{ userId }, { paramedics: userId }, {driver: userId }] });
-    console.log(triages);
     return triages;
 };
 const getLoggedInUserTriages = asyncHandler(async(req, res)=>{

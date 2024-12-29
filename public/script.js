@@ -216,90 +216,59 @@ $(document).ready(function() {
 	});
 });
 
-$(document).ready(function() {
+$(document).ready(function () {
+    const $speedoMeterValue = $('#speedoMeterValue');
+    const $litersCount = $('#litersCount');
+    const $companyInput = $('#companyInput');
+    const $companyInputOil = $('#companyInputOil');
+    const $companyInputBenzine = $('#companyInputBenzine');
+    const $carCostCause = $('#carCostCause');
 
-	$('#speedoMeterValue').hide();
-	$('#litersCount').hide();
+    // Initially hide all optional fields
+    const hideFields = () => {
+        $speedoMeterValue.hide().removeAttr('required');
+        $litersCount.hide().removeAttr('required');
+        $companyInput.hide().removeAttr('required').removeAttr('name');
+        $companyInputOil.hide().removeAttr('required').removeAttr('name');
+        $companyInputBenzine.hide().removeAttr('required').removeAttr('name');
+    };
 
-	$('#companyInputOil').hide();
-	$('#companyInputBenzine').hide();
+    hideFields();
 
+    const handleCompanyInputChange = ($input, $dependent) => {
+        $input.change(function () {
+            if ($(this).val() === 'other') {
+                $companyInput.show().attr('required', 'required');
+                $dependent.removeAttr('required');
+            } else {
+                $companyInput.hide().removeAttr('required');
+            }
+        });
+    };
 
-	$('#carCostCause').change(function() {
-		if($(this).val()== 'oilchange'){
-			$('#speedoMeterValue').show();
-			// make the field required
-			$('#speedoMeterValue').attr('required', 'required');
-			$('#companyInputOil').show();
-			
-			$('#companyInputOil').attr('required', 'required');
-			$('#companyInput').hide();
-			$('#companyInput').removeAttr('required');
+    $carCostCause.change(function () {
+        const value = $(this).val();
+        hideFields();
 
-			$('#companyInputOil').change(function() {
-				if($(this).val()== 'other'){
-					$('#companyInput').show();
-					$('#companyInput').attr('required', 'required');
-					$('#companyInputOil').removeAttr('required');
-				}
-				else{
-					$('#companyInput').hide();
-					$('#companyInput').removeAttr('required');				}
-			
-			});
+        switch (value) {
+            case 'oilchange':
+                $speedoMeterValue.show().attr('required', 'required');
+                $companyInputOil.show().attr('required', 'required').attr('name', 'paidFor');
+                handleCompanyInputChange($companyInputOil, $companyInputOil);
+                break;
 
-		}else{
-			$('#speedoMeterValue').hide();
-			$('#speedoMeterValue').removeAttr('required');
-			$('#companyInputOil').hide();
-			$('#companyInputOil').removeAttr('required');
-		}
+            case 'benzine':
+                $litersCount.show().attr('required', 'required');
+                $companyInputBenzine.show().attr('required', 'required').attr('name', 'paidFor');
+                handleCompanyInputChange($companyInputBenzine, $companyInputBenzine);
+                break;
 
-		if($(this).val()== 'benzine'){
-			$('#litersCount').show();
-			$('#speedoMeterValue').attr('required', 'required');
-			$('#companyInputBenzine').show();
-			$('#companyInputBenzine').attr('required', 'required');
-			$('#companyInput').hide();
-			$('#companyInput').removeAttr('required');
+            case 'maintenance':
+                $companyInput.show().attr('required', 'required').attr('name', 'paidFor');
+                break;
 
-			$('#companyInputBenzine').change(function() {
-				if($(this).val()== 'other'){
-					$('#companyInput').show();
-					$('#companyInput').attr('required', 'required');
-					$('#companyInputBenzine').removeAttr('required');
-
-				}
-				else{
-					$('#companyInput').hide();
-					$('#companyInput').removeAttr('required');
-				}
-			
-			});
-		}
-		else{
-			$('#litersCount').hide();
-			$('#speedoMeterValue').removeAttr('required');
-			$('#companyInputBenzine').hide();
-			$('#companyInputBenzine').removeAttr('required');
-			$('#companyInputBenzine').removeAttr('name');
-
-		}
-
-		if($(this).val()== 'صيانة'){
-			$('#companyInput').show();
-			$('#companyInput').attr('required', 'required');
-			$('#companyInput').attr('name', 'paidFor');
-			$('#companyInputOil').hide();
-			$('#companyInputOil').removeAttr('required');
-			$('#companyInputOil').removeAttr('name');
-			$('#companyInputBenzine').hide();
-			$('#companyInputBenzine').removeAttr('required');
-			$('#companyInputBenzine').removeAttr('name');
-		}
-		else{
-			$('#companyInput').hide();
-			$('#companyInput').removeAttr('required');
-			$('#companyInput').removeAttr('name');
-		}
-})});
+            default:
+                break;
+        }
+    });
+});

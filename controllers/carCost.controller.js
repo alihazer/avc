@@ -17,11 +17,18 @@ const renderCostForm = asyncHandler(async (req, res) => {
 
 const createCost = asyncHandler(async (req, res) => {
     try {
-        const { carId, cost, currency, date, cause, paidFor, person, note, speedoMeterValue, litersCount } = req.body;
+        const { carId, cost, currency, date, cause, person, note, speedoMeterValue, litersCount } = req.body;
+        let { paidFor } = req.body;
+        // Ensure the car exists before proceeding
         const car = await Car.findById(carId);
+        if (!car) {
+            throw new Error("Car not found");
+        }
+
+        // Create a new Cost entry
         const newCost = new Cost({
             carId: car._id,
-            cost: cost,
+            cost,
             currency,
             date,
             cause,
@@ -31,13 +38,17 @@ const createCost = asyncHandler(async (req, res) => {
             speedoMeterValue,
             litersCount
         });
+
         await newCost.save();
+
+        // Redirect to the costs listing page
         res.redirect("/cars/costs/all");
     } catch (error) {
-        console.log(error);
-        throw new Error("Error in creating cost");
+        console.error("Error in creating cost:", error.message);
+        res.status(500).json({ error: "Error in creating cost" });
     }
 });
+
 
 const getAllCosts = asyncHandler(async (req, res) => {
     const costs = await Cost.find().populate("carId").populate("person");

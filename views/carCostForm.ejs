@@ -19,6 +19,7 @@
                     <div class="form-group">
                         <label for="cause">السبب</label>
                         <select name="cause" id="carCostCause">
+                            <option value="select">اختر</option>
                             <option value="maintenance">صيانة</option>
                             <option value="benzine">بنزين</option>
                             <option value="oilchange">غيار زيت</option>
@@ -53,6 +54,11 @@
                             <option value="lbp">ليرة لبنانية</option>
                         </select>
                     </div>
+
+                    <div class="form-group">
+                        <label for="date">التاريخ</label>
+                        <input type="date" name="date" id="date" required>
+                    </div>
     
                     <div class="form-group">
                         <!-- اسم المؤسسة ل ندفعلها -->
@@ -76,10 +82,6 @@
                             <option value="other">other</option>
                     </div>
                     <br>
-                    <div class="form-group">
-                        <label for="date">التاريخ</label>
-                        <input type="date" name="date" id="date" required>
-                    </div>
                     <div class="form-group">
                         <label for="notes">ملاحظات</label>
                         <textarea name="notes" id="notes" cols="30" rows="10"></textarea>
