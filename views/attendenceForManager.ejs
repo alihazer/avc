@@ -1,0 +1,38 @@
+<div class="container">
+        <h1>Attendance List</h1>
+        <a href="/attendence/add/select-shift" class="btn btn-primary">Add Attendance</a>
+        <% if (attendenceList && attendenceList.length > 0) { %>
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Shift Day</th>
+                            <th>Date</th>
+                            <th>Users</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% attendenceList.forEach(attendance => { %>
+                            <tr>
+                                <td><%= attendance.shiftDay %></td>
+                                <td><%= new Date(attendance.date).toLocaleDateString() %></td>
+                                <td>
+                                    <ul>
+                                        <% attendance.attendedUsers.forEach(userEntry => { %>
+                                            <li>
+                                                <strong>Name:</strong> <%= userEntry.user.username %> 
+                                                | <strong>Arrival Time:</strong> <%= userEntry.arrivalTime %>
+                                            </li>
+                                        <% }) %>
+                                    </ul>
+                                </td>
+                            </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+            </div>
+        <% } else { %>
+            <p>No attendance records found.</p>
+        <% } %>
+
+</div>

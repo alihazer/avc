@@ -4,7 +4,6 @@ import connectDB from './config/dbConfig.js';
 import ejs from 'ejs';
 import notFoundErrorHandler from './utils/notfoundErrorHandler.js';
 import globalErrorHandler from './utils/globalErrorhandler.js';
-import setupRoles from './config/setupRoles.js';
 import cookieParser from 'cookie-parser';
 import authRoutes from './routes/authRoutes.js';
 import path from 'path';
@@ -19,11 +18,10 @@ import surgicalHistoryRoute from './routes/surgicalHistoryRoutes.js';
 import triageRoutes from './routes/triageRoutes.js';
 import BorrowItemRoutes from './routes/BorrowedItemsRoute.js';
 import axios from 'axios';
+import attendenceRoutes from './routes/attendenceRoutes.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename); 
-
-
 
 
 
@@ -56,6 +54,7 @@ app.use('/medical-histories', medicalHistoryRoutes);
 app.use('/surgical-histories', surgicalHistoryRoute);
 app.use('/triage', triageRoutes);
 app.use('/borrowed-items', BorrowItemRoutes);
+app.use('/attendence', attendenceRoutes);
 app.use('/api/hello', (req, res) => {
     console.log('Hello World');
     res.send('Hello World');

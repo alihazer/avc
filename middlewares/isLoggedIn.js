@@ -5,7 +5,6 @@ export default async function isLoggedIn(req, res, next) {
     if (!token) {
         return res.status(401).redirect('/login');
     }
-
     try {
         // Verify the JWT token
         const decoded = jwt.verify(token, process.env.JWT_SECRET);

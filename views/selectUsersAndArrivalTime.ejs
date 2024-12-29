@@ -1,0 +1,30 @@
+
+    <div class="container">
+        <h1>Create Attendance: Step 2</h1>
+
+        <!-- Form for selecting users and specifying arrival times -->
+        <form action="/attendence/create" method="POST">
+            <input type="hidden" name="shiftDay" value="<%= shiftDay %>">
+            <input type="hidden" name="date" value="<%= date %>">
+
+            <div id="userSelection">
+                <% users.forEach((user, index) => { %>
+                    <div class="user-entry">
+                        <label>
+                            <input type="checkbox" name="attendedUsers[<%= index %>][user]" value="<%= user._id %>">
+                            <%= user.username %> (<%= user.phone %>)
+                        </label>
+                        <div class="form-group">
+                            <label for="arrivalTime">Arrival Time:</label>
+                            <input type="time" name="attendedUsers[<%= index %>][arrivalTime]">
+                        </div>
+                    </div>
+                <% }); %>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary">Submit Attendance</button>
+            </div>
+        </form>
+    </div>

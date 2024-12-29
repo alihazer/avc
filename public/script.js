@@ -243,4 +243,4 @@ $(document).ready(function() {
 			$('#litersCount').hide();
 			$('#speedoMeterValue').removeAttr('required');
 		}
-	})});
+})});

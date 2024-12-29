@@ -1,0 +1,27 @@
+<div class="container">
+        <h1>Create Attendance: Step 1</h1>
+
+        <!-- Form for selecting shift day and date -->
+        <form action="/attendence/select-users" method="POST">
+            <!-- Shift Day -->
+            <div class="form-group">
+                <label for="shiftDay">Shift Day:</label>
+                <select id="shiftDay" name="shiftDay" required>
+                    <% shiftDays.forEach(day => { %>
+                        <option value="<%= day %>"><%= day.charAt(0).toUpperCase() + day.slice(1) %></option>
+                    <%}); %>
+                </select>
+            </div>
+
+            <!-- Date -->
+            <div class="form-group">
+                <label for="date">Date:</label>
+                <input type="date" id="date" name="date" required>
+            </div>
+
+            <!-- Next Button -->
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary">Next</button>
+            </div>
+        </form>
+    </div>

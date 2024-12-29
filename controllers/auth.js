@@ -12,18 +12,18 @@ import getLayoutName from "../utils/getLayoutName.js";
 import { getItemsThisMonth } from "./materials.controller.js";
 import moment from "moment";
 import getMAC, { isMAC } from 'getmac'
-import LoggedInDevicesModel from "../models/LoggedInDevicesModel.js"; 
+import LoggedInDevicesModel from "../models/LoggedInDevicesModel.js";
 
 
 export const register = asyncHandler(async (req, res) => {
-    try { 
+    try {
         let { username, password, role, phone, shiftDays } = req.body;
         shiftDays = shiftDays.split(',');
         const alreadyExists = await User.findOne({ username });
         const roles = await Role.find({});
         if (alreadyExists) {
             console.log('User already exists');
-            return res.status(400).render('register', { roles, message: 'User already exists'});
+            return res.status(400).render('register', { roles, message: 'User already exists' });
         }
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
@@ -34,7 +34,7 @@ export const register = asyncHandler(async (req, res) => {
             phone,
             shiftDays
         });
-        return res.status(201).render('register', { roles, message: 'User created successfully'});
+        return res.status(201).render('register', { roles, message: 'User created successfully' });
     } catch (error) {
         console.log(error);
         const err = new Error('Something went wrong');
@@ -45,12 +45,12 @@ export const register = asyncHandler(async (req, res) => {
 
 function getIp(req) {
     return req.headers['x-forwarded-for']?.split(',').shift() ||
-           req.connection?.remoteAddress ||
-           req.socket?.remoteAddress ||
-           null;
+        req.connection?.remoteAddress ||
+        req.socket?.remoteAddress ||
+        null;
 }
 
- // Adjust import based on your file structure
+// Adjust import based on your file structure
 
 export const login = asyncHandler(async (req, res) => {
     try {
@@ -85,14 +85,11 @@ export const login = asyncHandler(async (req, res) => {
 
         // Capture device info (e.g., user-agent)
         const deviceInfo = req.headers['user-agent'];
-        const ipAddress = getIp(req); 
+        const ipAddress = getIp(req);
         const macAddress = await getMAC();
         // Capture current date
         const currentDate = new Date();
-
         // Create or update LoggedInDevices record
-
-
         const loggedInDeviceData = {
             userId: user._id,
             deviceInfo,
@@ -106,13 +103,13 @@ export const login = asyncHandler(async (req, res) => {
 
         // Check if the user has an existing active device session
         const existingDevice = await LoggedInDevicesModel.findOne({ userId: user._id, deviceInfo });
-        
+
         if (existingDevice) {
             console.log('Updating device login time for user:', user._id);
             // Mark the existing device as inactive
             await LoggedInDevicesModel.updateOne({ _id: existingDevice._id }, { $set: { lastLogin: currentDate, isActive: true } });
         }
-        else{
+        else {
             await LoggedInDevicesModel.create(loggedInDeviceData);
         }
 
@@ -146,18 +143,18 @@ export const login = asyncHandler(async (req, res) => {
 
 // get login page
 export const getLoginPage = (req, res) => {
-        // clear thw cookies
-        res.clearCookie('token');
-        res.clearCookie('user');
-    return res.status(200).render('login', { 
+    // clear thw cookies
+    res.clearCookie('token');
+    res.clearCookie('user');
+    return res.status(200).render('login', {
         message: '',
         layout: 'layouts/loginLayout',
     });
 }
 // get register page
-export const getRegisterPage = asyncHandler(async(req, res) => {
+export const getRegisterPage = asyncHandler(async (req, res) => {
     const roles = await Role.find({});
-    res.status(200).render('register', { roles, message: ''});
+    res.status(200).render('register', { roles, message: '' });
 });
 
 export const logout = asyncHandler(async (req, res) => {
@@ -204,28 +201,28 @@ export const getDashboard = asyncHandler(async (req, res) => {
     const accessibles = ['admin', 'superadmin'];
     const noAccess = ['driver', 'stockmanager', 'shiftmanager'];
     const data = await getMyTriagesCount(req, res);
-    if(accessibles.includes(roleName.name)){
+    if (accessibles.includes(roleName.name)) {
         const items = await getItemsThisMonth();
         const borrowedItems = await getBorrowedItemsCount(true);
         let triageOfTheMonth = await getTheMostDayTriagesInTheMonth();
-        if(triageOfTheMonth.length == 0){
-            triageOfTheMonth = [{ _id: { dayOfWeek: 'No shift' }, count: 0,  }];
+        if (triageOfTheMonth.length == 0) {
+            triageOfTheMonth = [{ _id: { dayOfWeek: 'No shift' }, count: 0, }];
         }
         let mostCasesCar = await getMostCasesCar(true);
-        if(!mostCasesCar){
+        if (!mostCasesCar) {
             mostCasesCar = [{ _id: 'No car', caseCount: 0 }];
         }
         let mostParamedic = await getMostParamedic(true);
-        if(!mostParamedic){
+        if (!mostParamedic) {
             mostParamedic = { user: 'No paramedic', caseCount: 0 };
         }
-        res.status(200).render('adminDashboard', {title: "Dashboard", data, items: items.length, mostCasesCar, mostParamedic, borrowedItems: borrowedItems.length, triageOfTheMonth: triageOfTheMonth[0]});
+        res.status(200).render('adminDashboard', { title: "Dashboard", data, items: items.length, mostCasesCar, mostParamedic, borrowedItems: borrowedItems.length, triageOfTheMonth: triageOfTheMonth[0] });
     }
-    else if(noAccess.includes(roleName.name)){
+    else if (noAccess.includes(roleName.name)) {
         res.status(200).render('noAccessDashboard', { layout: 'layouts/noAccessLayout', count: data.count });
     }
-    else{
-        res.status(200).render('userDashboard', { title: 'userDashboard', layout: 'layouts/userLayout', count: data.count});
+    else {
+        res.status(200).render('userDashboard', { title: 'userDashboard', layout: 'layouts/userLayout', count: data.count });
     }
 });
 
@@ -235,42 +232,42 @@ export const getUserProfile = asyncHandler(async (req, res) => {
     const role = req.user.role.name;
     let totalCases = 0;
     const user = await User.findById(req.user.id).populate('role').select('-password');
-    if(role == 'driver'){
+    if (role == 'driver') {
         totalCases = await Triage.find({
             driver: req.user.id
         });
     }
-    else{
+    else {
         totalCases = await Triage.find({
             paramedics: { $in: [req.user.id] }
         });
     }
 
-    return res.status(200).render('profile', {totalCases: totalCases.length, user, layout, moment});
+    return res.status(200).render('profile', { totalCases: totalCases.length, user, layout, moment });
 
 
 });
 
 // get edit profile page
 export const getEditProfile = asyncHandler(async (req, res) => {
-    try{
+    try {
         const user_id = req.user.id;
         const user = await User.findById(user_id).populate('role').select('-password');
-        if(!user){
+        if (!user) {
             return res.status(404).render('error', { message: 'User not found' });
         }
         const accessibles = ['admin', 'superadmin'];
         const noAccess = ['driver', 'stockmanager', 'shiftmanager']
-        
+
         const role = user.role.name;
-        if(accessibles.includes(role)){
+        if (accessibles.includes(role)) {
             return res.status(200).render('editProfile', { user, role });
         }
-        else if(noAccess.includes(role)){
-            return res.status(200).render('editProfile', { user,role: user.role.name, layout: 'layouts/noAccessLayout'});
+        else if (noAccess.includes(role)) {
+            return res.status(200).render('editProfile', { user, role: user.role.name, layout: 'layouts/noAccessLayout' });
         }
-        return res.status(200).render('editProfile', { user,role: user.role.name, layout: 'layouts/userLayout'});
-    }catch(error){
+        return res.status(200).render('editProfile', { user, role: user.role.name, layout: 'layouts/userLayout' });
+    } catch (error) {
         console.log(error);
         const err = new Error('Something went wrong');
         error.statusCode = 400;
@@ -295,13 +292,13 @@ export const editProfile = asyncHandler(async (req, res) => {
         if (phone) {
             user.phone = phone;
         }
-        if(dob){
+        if (dob) {
             user.dob = dob;
         }
-        if(badleSize){
+        if (badleSize) {
             user.badleSize = badleSize;
         }
-        if(kanzeSize){
+        if (kanzeSize) {
             user.kanzeSize = kanzeSize;
         }
         await user.save();
@@ -321,15 +318,21 @@ export const getUsers = asyncHandler(async (req, res) => {
         const layout = getLayoutName(req);
         const user_id = req.user.id;
         const user = await User.findById(user_id).populate('role').select('-password');
-        if(user.role.name == 'admin' || user.role.name == 'superadmin'){
-            const users = await User.find({}).populate('role');
-            return res.status(200).render('allUsers', { users, addUser: true, layout });
+        // check if the user is admin or superadmin
+        if (user.role.name == 'admin' || user.role.name == 'superadmin') {
+            const users = await User.find({}).populate('role')
+            return res.status(200).render('allUsers', { users, addUser: true, layout, addAttendance: true});
         }
+
+    
         const users = await User.find({
             shiftDays: { $in: user.shiftDays }
-        })
-        .populate('role');
-        return res.status(200).render('allUsers', { users, addUser: false, layout });   
+        }).populate('role');
+
+        if(user.role.name == "shiftmanager"){
+            return res.status(200).render('allUsers', { users, addUser: false, layout, addAttendance: true });
+        }
+        return res.status(200).render('allUsers', { users, addUser: false, layout });
     } catch (error) {
         console.log(error);
         const err = new Error('Something went wrong');
@@ -363,7 +366,7 @@ export const deleteUser = asyncHandler(async (req, res) => {
             return res.status(404).render('error', { message: 'User not found' });
         }
         const done = await User.findByIdAndDelete(req.params.id);
-        if(done){
+        if (done) {
             return res.status(200).json({ message: 'User deleted successfully' });
         }
         return res.status(400).json({ message: 'User not deleted' });
@@ -388,7 +391,7 @@ export const editUser = asyncHandler(async (req, res) => {
         console.log('phone: ', phone);
         console.log('status: ', status);
         console.log('shiftDays: ', shiftDays);
-        if(password){
+        if (password) {
             const salt = await bcrypt.genSalt(10);
             const hashedPassword = await bcrypt.hash(password, salt);
             await User.findByIdAndUpdate(req.params.id, {
@@ -415,14 +418,14 @@ export const editUser = asyncHandler(async (req, res) => {
     }
 });
 
-export const getMostParamedic = asyncHandler(async(thisMonth = false)=>{
+export const getMostParamedic = asyncHandler(async (thisMonth = false) => {
     let startOfMonth;
     let endOfMonth;
-    if(thisMonth){
+    if (thisMonth) {
         startOfMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
         endOfMonth = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 1);
     }
-    else{
+    else {
         startOfMonth = new Date(new Date().getFullYear(), 0, 1);
         endOfMonth = new Date(new Date().getFullYear() + 1, 0, 1);
     }
@@ -452,10 +455,10 @@ export const getMostParamedic = asyncHandler(async(thisMonth = false)=>{
             $limit: 1
         }
     ]);
-    if(result.length > 0){
+    if (result.length > 0) {
         console.log('Result: ', result);
         const user = await User.findById(result[0]._id).select('username');
-        return { user: user.username, caseCount: result[0].caseCount }; ;
+        return { user: user.username, caseCount: result[0].caseCount };;
     }
     return null;
 })
@@ -464,12 +467,12 @@ export const getUser = asyncHandler(async (req, res) => {
     try {
         const user = await User.findById(req.params.id).populate('role').select('-password');
         let totalCases = 0;
-        if(user.role.name == 'driver'){
+        if (user.role.name == 'driver') {
             totalCases = await Triage.find({
                 driver: user.id
             });
         }
-        else{
+        else {
             totalCases = await Triage.find({
                 paramedics: { $in: [user.id] }
             });
@@ -543,7 +546,7 @@ export const getLoggedInDevices = asyncHandler(async (req, res) => {
         // Render the EJS page and pass the devices data
         res.render('loggedInDevices', {
             devices: loggedInDevices,  // Pass the logged-in devices to the EJS view
-            layout,  
+            layout,
             moment
         });
     } catch (error) {
