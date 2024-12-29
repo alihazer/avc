@@ -226,7 +226,6 @@ $(document).ready(function() {
 
 
 	$('#carCostCause').change(function() {
-		console.log($(this).val());
 		if($(this).val()== 'oilchange'){
 			$('#speedoMeterValue').show();
 			// make the field required
@@ -234,25 +233,18 @@ $(document).ready(function() {
 			$('#companyInputOil').show();
 			
 			$('#companyInputOil').attr('required', 'required');
-			$('#companyInputOil').attr('name', 'paidFor');
 			$('#companyInput').hide();
 			$('#companyInput').removeAttr('required');
-			$('#companyInput').removeAttr('name');
 
 			$('#companyInputOil').change(function() {
 				if($(this).val()== 'other'){
 					$('#companyInput').show();
 					$('#companyInput').attr('required', 'required');
-					$('#companyInput').attr('name', 'paidFor');
 					$('#companyInputOil').removeAttr('required');
-					$('#companyInputOil').removeAttr('name');
-
 				}
 				else{
 					$('#companyInput').hide();
-					$('#companyInput').removeAttr('required');
-					$('#companyInput').removeAttr('name');
-				}
+					$('#companyInput').removeAttr('required');				}
 			
 			});
 
@@ -261,7 +253,6 @@ $(document).ready(function() {
 			$('#speedoMeterValue').removeAttr('required');
 			$('#companyInputOil').hide();
 			$('#companyInputOil').removeAttr('required');
-			$('#companyInputOil').removeAttr('name');
 		}
 
 		if($(this).val()== 'benzine'){
@@ -269,24 +260,19 @@ $(document).ready(function() {
 			$('#speedoMeterValue').attr('required', 'required');
 			$('#companyInputBenzine').show();
 			$('#companyInputBenzine').attr('required', 'required');
-			$('#companyInputBenzine').attr('name', 'paidFor');
 			$('#companyInput').hide();
 			$('#companyInput').removeAttr('required');
-			$('#companyInput').removeAttr('name');
 
 			$('#companyInputBenzine').change(function() {
 				if($(this).val()== 'other'){
 					$('#companyInput').show();
 					$('#companyInput').attr('required', 'required');
-					$('#companyInput').attr('name', 'paidFor');
 					$('#companyInputBenzine').removeAttr('required');
-					$('#companyInputBenzine').removeAttr('name');
 
 				}
 				else{
 					$('#companyInput').hide();
 					$('#companyInput').removeAttr('required');
-					$('#companyInput').removeAttr('name');
 				}
 			
 			});

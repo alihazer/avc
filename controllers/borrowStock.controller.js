@@ -105,8 +105,6 @@ const renderBorrowForm = asyncHandler(async (req, res) => {
 const getBorrowItems = asyncHandler(async (req, res) => {
     const role = req.user.role.name;
     const haveAccess = (role === 'admin' || role === 'superadmin');
-    console.log(haveAccess);
-    console.log(role);
     const layout = getLayoutName(req);
     const items = await BorrowItemCategory.find();
     const borrowedItems = await BorrowLog.find({ status: "borrowed" }).populate('item');

@@ -71,7 +71,6 @@
             e.preventDefault();
             document.getElementById('alert').style.display = 'block';
             document.getElementById('alertMessage').innerText = 'Please fill in all fields';
-            console.log(document.getElementById('alertMessage').innerHTML);
             return;
         }
         const types = ['Ambulance', 'Fire truck', 'Van','Rescue'];
@@ -79,7 +78,6 @@
             e.preventDefault();
             document.getElementById('alert').style.display = 'block';
             document.getElementById('alertMessage').innerText = 'Invalid type';
-            console.log(document.getElementById('alertMessage').innerHTML);
             return;
         }
         // Submit form

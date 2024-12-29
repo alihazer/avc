@@ -182,15 +182,14 @@
                     });
                     const data = await response.json();
                     if (response.status === 200) {
-                        console.log("deleted successfully");
                         window.location.href = '/users';
                     }
                     else{
-                        console.log("error deleting user");
+                        return;
                     }
                 }
                 else{
-                    console.log("user not deleted");
+                    return;
                 }
             }catch (error) {
                 console.log(error);

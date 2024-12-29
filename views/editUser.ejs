@@ -166,7 +166,6 @@ a{
             checkboxes.forEach(function(checkbox) {
                 checkbox.addEventListener('change', function() {
                     const selectedDays = updateSelectedDays();
-                    console.log(selectedDays);
                 });
             });
     
@@ -221,7 +220,6 @@ a{
             initializeFormValidation(); // Initialize form validation
         });
         async function updateUser(id, form) {
-          console.log(form.role.value);
             fetch(`/users/edit/${id}`, {
                 method: 'PUT',
                 headers: {

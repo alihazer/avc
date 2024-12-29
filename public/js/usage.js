@@ -81,6 +81,5 @@ addBtn.addEventListener('click', (e) => {
 
    
     hiddenInput.value = JSON.stringify(materials);
-    console.log(hiddenInput.value);
 });
 

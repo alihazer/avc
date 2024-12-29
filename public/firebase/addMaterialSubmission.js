@@ -24,8 +24,7 @@ document.getElementById('materialForm').addEventListener('submit', async (event)
                 error.style.display = 'block';
                 return;
             }
-            
-            console.log(name, quantity, imageURL);
+        
             imageInput.value = imageURL;
 
             // Submit the form

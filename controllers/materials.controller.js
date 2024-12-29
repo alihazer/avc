@@ -44,7 +44,6 @@ export const createMaterial = asyncHandler(async (req, res) => {
 export const updateMaterial = asyncHandler(async (req, res) => {
     const { id } = req.params;
     const { name, quantity } = req.body;
-    console.log(req.body);
     if(!name || !quantity) {
         console.log('All fields are required');
         return res.status(400).json({ message: 'All fields are required' });

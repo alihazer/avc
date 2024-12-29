@@ -40,7 +40,6 @@
     const fetchMaterials = async (query) => {
         const response = await fetch(`/materials/get/all?filter=${query}`);
         const data = await response.json();
-        console.log(data);
         return data;
     }
 

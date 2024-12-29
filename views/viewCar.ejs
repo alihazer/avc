@@ -60,7 +60,6 @@
 
         <div class="card-body">
             <% if (logs.length > 0) { %>
-                <% console.log(logs) %>
                 <h3>Logs:</h3>
                 <!-- Table -->
                 <div class="table-responsive">
@@ -114,7 +113,6 @@
 
     async function fetchCarCostStats(carId, year) {
         const response = await fetch(`/cars/${carId}/costs/${year}`);
-        console.log(response);
         return response.json();
     }
 

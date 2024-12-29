@@ -355,7 +355,6 @@ const editTriage = asyncHandler(async (req, res) => {
     try {
         const { id } = req.params;
         const { approval_nb } = req.body;
-        console.log(approval_nb);
         // Find the Triage document by ID
         let triage = await Triage.findById(id);
         // Check if the Triage document exists

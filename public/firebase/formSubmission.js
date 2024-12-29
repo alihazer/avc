@@ -15,16 +15,13 @@ document.querySelector(".profile-f").addEventListener("submit", async (event) =>
       const downloadURL = await uploadImage(file, "profile-images");
       // Set the hidden input's value to the download URL
       hiddenImageInput.value = downloadURL;
-      console.log(hiddenImageInput.value);
     //   Validate phone number and blood type
     if (phone.length !== 8) {
-        console.log(phone.length);
         alertMessage.innerText = "Phone number must be 11 digits";
         error.style.display = "block";
         return;
     }
     if (bloodType === "") {
-        console.log(bloodType);
         alertMessage.innerText = "Please select a blood type";
         error.style.display = "block";
         return;

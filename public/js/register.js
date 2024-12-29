@@ -18,7 +18,6 @@
             checkboxes.forEach(function(checkbox) {
                 checkbox.addEventListener('change', function() {
                     const selectedDays = updateSelectedDays();
-                    console.log(selectedDays);
                 });
             });
     
@@ -49,7 +48,6 @@
                 alert.style.display = "block";
                 return false;
             } else {
-                console.log(username, password, phoneNumber, role, selectedDays);
                 form.action = "/register";
                 form.method = "POST";
                 form.submit();

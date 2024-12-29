@@ -385,12 +385,6 @@ export const editUser = asyncHandler(async (req, res) => {
         }
         const { username, role, password, phone, status, shiftDays } = req.body;
         const roleName = await Role.findById(role);
-        console.log('username: ', username);
-        console.log('role: ', role);
-        console.log('password', password);
-        console.log('phone: ', phone);
-        console.log('status: ', status);
-        console.log('shiftDays: ', shiftDays);
         if (password) {
             const salt = await bcrypt.genSalt(10);
             const hashedPassword = await bcrypt.hash(password, salt);

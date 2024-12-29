@@ -14,7 +14,6 @@
             dcap_btls[this.id] = this.checked;
             const hiddenDcap = document.getElementById('dcap_btls');
             hiddenDcap.value = JSON.stringify(dcap_btls);
-            console.log(dcap_btls);
         });
     });
 

@@ -31,7 +31,6 @@ const createCost = asyncHandler(async (req, res) => {
             speedoMeterValue,
             litersCount
         });
-        console.log(newCost);
         await newCost.save();
         res.redirect("/cars/costs/all");
     } catch (error) {
@@ -105,7 +104,6 @@ const getCarCostById = asyncHandler(async (req, res) => {
         const totalCost = costs.reduce((acc, cost) => {
             return acc + cost.data.reduce((acc, data) => acc + data.totalCost, 0);
         }, 0);
-        console.log(totalCost);
         
 
         res.json({ costs, totalCost });

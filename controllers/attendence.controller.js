@@ -39,9 +39,6 @@ const createAttendence = asyncHandler(async (req, res) => {
     try {
         const { shiftDay, date, attendedUsers } = req.body;
         const createdBy = req.user.id;
-        console.log(req.body);
-        console.log(createdBy);
-
         // Filter out invalid entries
         const validAttendedUsers = attendedUsers.filter(
             // Ensure that the entry has a user and arrivalTime

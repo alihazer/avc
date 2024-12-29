@@ -37,7 +37,6 @@
         e.preventDefault();
         const id = document.getElementById('id').value;
         const approval_number = document.getElementById('approval_number').value;
-        console.log(approval_number);
         const res = await fetch(`/triage/edit/${id}`, {
             method: 'PUT',
             headers: {
