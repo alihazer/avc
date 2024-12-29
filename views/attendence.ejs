@@ -10,36 +10,38 @@
         <option value="saturday" <%= shiftDayFilter === 'saturday' ? 'selected' : '' %>>Saturday</option>
         <option value="sunday" <%= shiftDayFilter === 'sunday' ? 'selected' : '' %>>Sunday</option>
     </select>
-    <button type="submit">Filter</button>
+    <button class="btn btn-primary" type="submit">Filter</button>
 </form>
 
 <h2>Attendance List</h2>
 
-<table>
-    <thead>
-        <tr>
-            <th>Shift Day</th>
-            <th>Date</th>
-            <th>Attended Users</th>
-        </tr>
-    </thead>
-    <tbody>
-        <% if (attendenceList.length > 0) { %>
-            <% attendenceList.forEach((attendance) => { %>
-                <tr>
-                    <td><%= attendance.shiftDay %></td>
-                    <td><%= attendance.date.toDateString() %></td>
-                    <td>
-                        <% attendance.attendedUsers.forEach((entry) => { %>
-                            <p><%= entry.user.username %> - Arrival Time: <%= entry.arrivalTime %></p>
-                        <% }) %>
-                    </td>
-                </tr>
-            <% }) %>
-        <% } else { %>
+<div class="table-responsive">
+    <table>
+        <thead>
             <tr>
-                <td colspan="3">No attendance records found for the selected shift day.</td>
+                <th>Shift Day</th>
+                <th>Date</th>
+                <th>Attended Users</th>
             </tr>
-        <% } %>
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            <% if (attendenceList.length > 0) { %>
+                <% attendenceList.forEach((attendance) => { %>
+                    <tr>
+                        <td><%= attendance.shiftDay %></td>
+                        <td><%= attendance.date.toDateString() %></td>
+                        <td>
+                            <% attendance.attendedUsers.forEach((entry) => { %>
+                                <p><%= entry.user.username %> - Arrival Time: <%= entry.arrivalTime %></p>
+                            <% }) %>
+                        </td>
+                    </tr>
+                <% }) %>
+            <% } else { %>
+                <tr>
+                    <td colspan="3">No attendance records found for the selected shift day.</td>
+                </tr>
+            <% } %>
+        </tbody>
+    </table>
+</div>
