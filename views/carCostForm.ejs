@@ -33,20 +33,14 @@
                         <input type="number" name="litersCount">
                     </div>
                                     <!-- الشخص  -->
-                                    <div class="form-group">
-                                        <label for="person">
-                                            اسم الشخص المسؤول
-                                        
-                                        </label>
-                                        <select name="person" id="person" class="person-select" multiple>
-                                            <% users.forEach(function(person){ %>
-                                                <option value="<%= person.id %>"><%= person.username %></option>
-                                            <% }) %>
-                                        </select>
-                                    </div>
-
-
-                        
+                    <div class="form-group">
+                        <label for="person">اسم الشخص المسؤول</label>
+                        <select name="person" id="person" class="person-select" multiple>
+                        <% users.forEach(function(person){ %>
+                            <option value="<%= person.id %>"><%= person.username %></option>
+                        <% }) %>
+                        </select>
+                    </div>                        
                     <div class="form-group">
                         <label for="cost">التكلفة</label>
                         <input type="number" name="cost" id="cost" required>
@@ -63,7 +57,23 @@
                     <div class="form-group">
                         <!-- اسم المؤسسة ل ندفعلها -->
                         <label for="company">المؤسسة</label>
-                        <input type="text" name="paidFor" id="company" required>
+                        <input type="text" name="paidFor" id="companyInput">
+                        <select id="companyInputOil" name="paidFor" class="company-select" style="display: none;" >
+                            <option value="عباس عاصي">عباس عاصي</option>
+                            <option value="other">other</option>
+                        </select>
+                            
+                        <select id="companyInputBenzine" class="company-select" name="paidFor" style="display: none;">
+                            <option value="محطة حازر"> محطة حازر</option>
+                            <option value="محطة فايز قبيسي">محطة فايز قبيسي</option>
+                            <option value="محطة الشيخ علي">محطة الشيخ علي</option>
+                            <option value="محطة رشاد عاصي">محطة رشاد عاصي</option>
+                            <option value="محطة محمد عاصي">محطة محمد عاصي</option>
+                            <option value="محطة فارس">محطة فارس</option>
+                            <option value="محطة الهادي">محطة الهادي</option>
+                            <option value="محطة أبو كرم">محطة أبو كرم</option>
+                            <option value="محطة خالد فياض">محطة خالد فياض</option>
+                            <option value="other">other</option>
                     </div>
                     <div class="form-group">
                         <label for="date">التاريخ</label>
