@@ -321,18 +321,16 @@ export const getUsers = asyncHandler(async (req, res) => {
         // check if the user is admin or superadmin
         if (user.role.name == 'admin' || user.role.name == 'superadmin') {
             const users = await User.find({}).populate('role')
-            return res.status(200).render('allUsers', { users, addUser: true, layout, addAttendance: true});
+            return res.status(200).render('allUsers', { users, addUser: true, layout, addAttendance: true, sendWhatsappMessage: true});
         }
-
-    
         const users = await User.find({
             shiftDays: { $in: user.shiftDays }
         }).populate('role');
 
         if(user.role.name == "shiftmanager"){
-            return res.status(200).render('allUsers', { users, addUser: false, layout, addAttendance: true });
+            return res.status(200).render('allUsers', { users, addUser: false, layout, addAttendance: true, sendWhatsappMessage: false });
         }
-        return res.status(200).render('allUsers', { users, addUser: false, layout });
+        return res.status(200).render('allUsers', { users, addUser: false, layout, addAttendance: false, sendWhatsappMessage: false });
     } catch (error) {
         console.log(error);
         const err = new Error('Something went wrong');

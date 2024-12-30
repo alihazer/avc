@@ -158,6 +158,14 @@
                                             <a href="/users/view/<%= user._id %>" class="btn btn-primary">View</a>
                                             <a href="/users/edit/<%= user._id %>" class="btn btn-primary">Edit</a>
                                             <button onclick="deleteUser('<%= user._id %>')" class="btn btn-danger">Delete</button>
+                                            <% if (sendWhatsappMessage) { %>
+                                                <a 
+                                                    href="https://wa.me/<%= user.phone %>?text=<%= encodeURIComponent(`رابط سيستيم الدفاع المدني: https://risala-ansar-1af8fc4be34a.herokuapp.com/\n\n*username:* ${user.username}\n*password:* avc@${user.phone}`) %>" 
+                                                    class="btn btn-primary" 
+                                                    target="_blank">
+                                                    Send WhatsApp
+                                                </a>
+                                            <% } %>
                                         </td>
                                     <%} %>
                                 </tr>
