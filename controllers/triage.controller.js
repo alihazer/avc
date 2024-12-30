@@ -11,7 +11,6 @@ import Moi from "../models/Moi.js";
 import CarLog from "../models/CarLog.js";
 import moment from "moment";
 import getLayoutName from "../utils/getLayoutName.js";
-import mongoose from "mongoose";
 
 
 const isMaterialAvailable = async (car, materials, userId) => {
@@ -31,7 +30,9 @@ const isMaterialAvailable = async (car, materials, userId) => {
         materialsUsed.push({ _id: material._id, quantity: material.quantity });
     }
 
-    selectedCar.totalCases += 1;
+    const totalCasesOfTheCar = await Triage.countDocuments({ car_nb: car });
+
+    selectedCar.totalCases = totalCasesOfTheCar + 1;
     await selectedCar.save();
 
     await CarLog.create({
