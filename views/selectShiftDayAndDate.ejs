@@ -7,10 +7,14 @@
             <div class="form-group">
                 <label for="shiftDay">Shift Day:</label>
                 <select id="shiftDay" name="shiftDay" required>
-                    <% shiftDays.forEach(day => { %>
+                    <% 
+                    const shiftDayArray = Object.values(shiftDays)[0].split(", ").map(day => day.trim());
+                    %>
+                    <% shiftDayArray.forEach(day => { %>
                         <option value="<%= day %>"><%= day.charAt(0).toUpperCase() + day.slice(1) %></option>
-                    <%}); %>
+                    <% }); %>
                 </select>
+                
             </div>
 
             <!-- Date -->
