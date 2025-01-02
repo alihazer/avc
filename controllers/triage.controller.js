@@ -34,7 +34,6 @@ const isMaterialAvailable = async (car, materials, userId) => {
 
     selectedCar.totalCases = totalCasesOfTheCar + 1;
     await selectedCar.save();
-
     await CarLog.create({
         action: "Used",
         carId: selectedCar._id,
@@ -508,7 +507,7 @@ const getTriageStats = asyncHandler(async (req, res) => {
                 $lt: new Date(`${year + 1}-01-01`)
             }
         });
-
+        console.log(JSON.stringify(triageData, null, 2));
         return res.status(200).json({
             status: true,
             data: triageData,

@@ -282,7 +282,7 @@ export const editProfile = asyncHandler(async (req, res) => {
         if (!user) {
             return res.status(404).render('error', { message: 'User not found' });
         }
-        const { profileImage, bloodType, phone, dob, badleSize, kanzeSize } = req.body;
+        const { profileImage, bloodType, phone, dob, badleSize, kanzeSize, rangerSize } = req.body;
         if (profileImage[1] !== '') {
             user.profileImage = profileImage[1];
         }
@@ -301,8 +301,16 @@ export const editProfile = asyncHandler(async (req, res) => {
         if (kanzeSize) {
             user.kanzeSize = kanzeSize;
         }
+        if(rangerSize){
+            user.rangerSize = rangerSize;
+        }
         await user.save();
-        res.cookie('user', user, { httpOnly: (process.env.NODE_ENV) === 'production' });
+        const isProduction = process.env.NODE_ENV === 'production';
+        res.cookie('user', JSON.stringify(user), {
+            httpOnly: true,
+            secure: isProduction,
+            sameSite: isProduction ? 'Strict' : 'Lax',
+        });
         res.status(200).redirect('/profile');
     } catch (error) {
         console.log(error)

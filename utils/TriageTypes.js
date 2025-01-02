@@ -28,9 +28,9 @@ const types = [
         "code": "fire",
     },
     {
-        "name": "غارة",
-        "code": "غارة",
-    }
+        "name": "انقاذ",
+        "code": "rescue",
+    },
 ]
 
 export default types;

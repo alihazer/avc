@@ -49,9 +49,12 @@
     let borrowChart = null;
 
     async function fetchTriageStats(year) {
-        const response = await fetch(`/triage/stats/${year}`);
-        return response.json();
+    const response = await fetch(`/triage/stats/${year}`);
+    if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
     }
+    return response.json();
+}
 
     async function fetchBorrowStats(year) {
         const response = await fetch(`/borrowed-items/stats/${year}`);
@@ -59,20 +62,24 @@
     }
 
     function formatTriageData(data) {
-        const categories = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const categories = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
-        return data.map(item => {
-            const seriesData = new Array(12).fill(0);
+    return data.map(item => {
+        const seriesData = new Array(12).fill(0);
+        if (item.data) {
             item.data.forEach(d => {
-                seriesData[d.month - 1] = d.count;
+                if (d && d.month && d.count != null) {
+                    seriesData[d.month - 1] = d.count;
+                }
             });
+        }
+        return {
+            name: item.case_type || 'Unknown',
+            data: seriesData
+        };
+    });
+}
 
-            return {
-                name: item.case_type,
-                data: seriesData
-            };
-        });
-    }
 
     function formatBorrowData(data) {
         const categories = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
