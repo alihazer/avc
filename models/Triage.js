@@ -128,7 +128,7 @@ const TriageSchema = new mongoose.Schema({
     },
     triageLevel:{
         type: String,
-        enum: ["1", "2", "3", "4", "4+", "5"],
+        enum: ["1", "2","3+", "3", "4+", "4", "5"],
 
     }
 }, { timestamps: true });
