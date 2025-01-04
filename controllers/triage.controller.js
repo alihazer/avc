@@ -62,7 +62,7 @@ const assignValues = (details) => {
 
 const createEmergencyTriage = asyncHandler(async (req, res) => {
     try {
-        const { time, type, from, to, driver, paramedics, patient_name, avpu, ppte, moi, preassure, heartRate, spo2, temperature, medicalHistory, surgicalHistory, approval_nb, usage, dcap_btls, toOther, fromOther } = req.body;
+        const { time, type, from, to, driver, paramedics, patient_name, avpu, ppte, moi, preassure, heartRate, spo2, temperature, medicalHistory, surgicalHistory, approval_nb, usage, dcap_btls, toOther, fromOther, triageLevel } = req.body;
         const layout = getLayoutName(req);
 
         if (!time) return res.render("error", { message: "Time is required", layout });
@@ -76,7 +76,7 @@ const createEmergencyTriage = asyncHandler(async (req, res) => {
         const details = assignValues(allDetails);
 
         let materials = [];
-        if (Array.isArray(usage) && usage[1]) {
+        if (Array.isArray(usage) && usage[1].length > 2) {
             materials = await isMaterialAvailable(car, usage[1], req.user.id);
             if (!materials) return res.status(400).render("error", { message: "No enough materials in the car", layout });
         }
@@ -97,7 +97,8 @@ const createEmergencyTriage = asyncHandler(async (req, res) => {
             usage: materials,
             dcap_btls: dcap_btls ? JSON.parse(dcap_btls) : null,
             userId: req.user.id,
-            approval_nb
+            approval_nb,
+            triageLevel
         });
         return triage ? res.status(201).redirect(`/triage/generate-pdf/${triage._id}`) : res.status(400).render("error", { message: "An error occurred", layout });
     } catch (error) {

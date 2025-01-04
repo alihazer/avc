@@ -2,94 +2,94 @@
     <div class="container">
         <div>
             <a href="/cars/costs/all" class="back-arrow1"><i class="fa-solid fa-arrow-left"></i></a>
-        <div class="card">
-            <div class="card-header">
-                <h4>Car Cost Form</h4>
-            </div>
-            <div class="card-body">
-                <form action="/cars/costs/create" method="POST">
-                    <div class="form-group" id="carId">
-                        <label for="carId">رقم السيارة </label>
-                        <select name="carId" id="car">
-                            <% cars.forEach(car => { %>
-                                <option value="<%= car._id %>"><%= car.number %></option>
-                            <% }); %>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="cause">السبب</label>
-                        <select name="cause" id="carCostCause">
-                            <option value="select">اختر</option>
-                            <option value="maintenance">صيانة</option>
-                            <option value="benzine">بنزين</option>
-                            <option value="oilchange">غيار زيت</option>
-                        </select>
-                    </div>
-                    <div class="form-group" id="speedoMeterValue">
-                        <label>العداد</label>
-                        <input type="number" name="speedoMeterValue">
-                    </div>
-                    <div class="form-group" id="litersCount">
-                        <label>الكمية  /  ليتر</label>
-                        <input type="number" name="litersCount">
-                    </div>
-                    <div class="form-group">
-                        <label for="person">اسم الشخص المسؤول</label>
-                        <select name="person" id="person" class="person-select" multiple>
-                            <% users.forEach(function(person){ %>
-                                <option value="<%= person.id %>"><%= person.username %></option>
-                            <% }) %>
-                        </select>
-                    </div>                        
-                    <div class="form-group">
-                        <label for="cost">التكلفة</label>
-                        <input type="number" name="cost" id="cost" required>
-                    </div>
-                    <div class="form-group">
-                        <!-- Currency -->
-                        <label for="currency">العملة</label>
-                        <select name="currency" id="currency">
-                            <option value="usd">دولار</option>
-                            <option value="lbp">ليرة لبنانية</option>
-                        </select>
-                    </div>
+            <div class="card">
+                <div class="card-header">
+                    <h4>Car Cost Form</h4>
+                </div>
+                <div class="card-body">
+                    <form action="/cars/costs/create" method="POST">
+                        <div class="form-group" id="carId">
+                            <label for="carId">رقم السيارة </label>
+                            <select name="carId" id="car">
+                                <% cars.forEach(car => { %>
+                                    <option value="<%= car._id %>"><%= car.number %></option>
+                                <% }); %>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="cause">السبب</label>
+                            <select name="cause" id="carCostCause">
+                                <option value="select">اختر</option>
+                                <option value="maintenance">صيانة</option>
+                                <option value="benzine">بنزين</option>
+                                <option value="oilchange">غيار زيت</option>
+                            </select>
+                        </div>
+                        <div class="form-group" id="speedoMeterValue">
+                            <label>العداد</label>
+                            <input type="number" name="speedoMeterValue">
+                        </div>
+                        <div class="form-group" id="litersCount">
+                            <label>الكمية  /  ليتر</label>
+                            <input type="number" name="litersCount">
+                        </div>
+                        <div class="form-group">
+                            <label for="person">اسم الشخص المسؤول</label>
+                            <select name="person" id="person" class="person-select" multiple>
+                                <% users.forEach(function(person){ %>
+                                    <option value="<%= person.id %>"><%= person.username %></option>
+                                <% }) %>
+                            </select>
+                        </div>                        
+                        <div class="form-group">
+                            <label for="cost">التكلفة</label>
+                            <input type="number" name="cost" id="cost" required>
+                        </div>
+                        <div class="form-group">
+                            <!-- Currency -->
+                            <label for="currency">العملة</label>
+                            <select name="currency" id="currency">
+                                <option value="usd">دولار</option>
+                                <option value="lbp">ليرة لبنانية</option>
+                            </select>
+                        </div>
 
-                    <div class="form-group">
-                        <label for="date">التاريخ</label>
-                        <input type="date" name="date" id="date" required>
-                    </div>
+                        <div class="form-group">
+                            <label for="date">التاريخ</label>
+                            <input type="date" name="date" id="date" required>
+                        </div>
 
-                    <div class="form-group">
-                        <label for="notes">ملاحظات</label>
-                        <textarea name="notes" id="notes" cols="30" rows="10"></textarea>
-                    </div>
-    
-                    <div class="form-group">
-                        <!-- اسم المؤسسة ل ندفعلها -->
-                        <label for="company">المؤسسة</label>
-                        <input type="text" name="paidFor" id="companyInput">
-                        <select id="companyInputOil" name="paidFor" class="company-select" style="display: none;" >
-                            <option value="عباس عاصي">عباس عاصي</option>
-                            <option value="other">other</option>
-                        </select>
-                            
-                        <select id="companyInputBenzine" class="company-select" name="paidFor" style="display: none;">
-                            <option value="محطة حازر"> محطة حازر</option>
-                            <option value="محطة فايز قبيسي">محطة فايز قبيسي</option>
-                            <option value="محطة الشيخ علي">محطة الشيخ علي</option>
-                            <option value="محطة رشاد عاصي">محطة رشاد عاصي</option>
-                            <option value="محطة محمد عاصي">محطة محمد عاصي</option>
-                            <option value="محطة فارس">محطة فارس</option>
-                            <option value="محطة الهادي">محطة الهادي</option>
-                            <option value="محطة أبو كرم">محطة أبو كرم</option>
-                            <option value="محطة خالد فياض">محطة خالد فياض</option>
-                            <option value="other">other</option>
-                    </div>
-                    
-                        <button type="submit" class="btn btn-primary">Submit</button>
-    
-                </form>
-            </div>
+                        <div class="form-group">
+                            <label for="notes">ملاحظات</label>
+                            <textarea name="notes" id="notes" cols="30" rows="10"></textarea>
+                        </div>
+        
+                        <div class="form-group">
+                            <!-- اسم المؤسسة ل ندفعلها -->
+                            <label for="company">المؤسسة</label>
+                            <input type="text" name="paidFor" id="companyInput">
+                            <select id="companyInputOil" name="paidFor" class="company-select" style="display: none;" >
+                                <option value="عباس عاصي">عباس عاصي</option>
+                                <option value="other">other</option>
+                            </select>
+                                
+                            <select id="companyInputBenzine" class="company-select" name="paidFor" style="display: none;">
+                                <option value="محطة حازر"> محطة حازر</option>
+                                <option value="محطة فايز قبيسي">محطة فايز قبيسي</option>
+                                <option value="محطة الشيخ علي">محطة الشيخ علي</option>
+                                <option value="محطة رشاد عاصي">محطة رشاد عاصي</option>
+                                <option value="محطة محمد عاصي">محطة محمد عاصي</option>
+                                <option value="محطة فارس">محطة فارس</option>
+                                <option value="محطة الهادي">محطة الهادي</option>
+                                <option value="محطة أبو كرم">محطة أبو كرم</option>
+                                <option value="محطة خالد فياض">محطة خالد فياض</option>
+                                <option value="other">other</option>
+                        </div>
+                        
+                            <button type="submit" class="btn btn-primary">Submit</button>
+        
+                    </form>
+                </div>
         </div>
     </div>
 </section>

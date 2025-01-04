@@ -125,6 +125,11 @@ const TriageSchema = new mongoose.Schema({
     date: {
         type: Date,
         default: Date.now
+    },
+    triageLevel:{
+        type: String,
+        enum: ["1", "2", "3", "4", "4+", "5"],
+
     }
 }, { timestamps: true });
 

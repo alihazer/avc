@@ -13,6 +13,19 @@
             <%-include('partials/commun/histories') %>
             <%-include('partials/commun/usage') %>
             <%-include('partials/commun/footer') %>
+            <div class="triage-form-group">
+                <label for="triageLevel">Triage Level</label>
+                <select name="triageLevel" id="triageLevel" required>
+                    <option value="" disabled selected>Choose Triage Level</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="4+">4+</option>
+                    <option value="5">5</option>
+                </select>
+            </div>
+
             <input type="hidden" name="dcap_btls" id="dcap_btls">
         </form>
     </div>
