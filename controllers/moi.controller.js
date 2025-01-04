@@ -80,10 +80,10 @@ const deleteMoi = asyncHandler(async (req, res) => {
     try{
         const moi = await Moi.findById(req.params.id);
         if(!moi){
-            res.status(404).json({message: 'Moi not found'});
+            return res.status(404).json({message: 'Moi not found'});
         }
         await Moi.deleteOne({_id: req.params.id});
-        res.status(200).json({message: 'Moi deleted'});
+        return res.status(200).json({message: 'Moi deleted'});
     }catch(error){
         console.log(error);
         res.status(500).json({message: 'An error occurred, please try again later'});
