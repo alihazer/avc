@@ -29,5 +29,69 @@
     </div>
 </div>
 <div class="section-title">
-    <h1> --------------------- </h1>
+    <h1> ------------- </h1>
 </div>
+
+<script>
+    const blood_pressure = document.getElementById('blood_pressure');
+    const heart_rate = document.getElementById('heart_rate');
+    const spo2 = document.getElementById('spo2');
+    const temperature = document.getElementById('temperature');
+
+// Validate blood pressure format and value
+blood_pressure.addEventListener('input', () => {
+    const value = blood_pressure.value;
+
+    // Check if the format matches "a/b"
+    if (!/^\d+\/\d+$/.test(value)) {
+        blood_pressure.setCustomValidity( 'الرجاء ادخال الضغط بالصيغة الصحيحة (مثال: 12/8)');
+    } else {
+        const [systolic, diastolic] = value.split('/').map(Number);
+
+        // Validate that systolic <= 200 and diastolic <= 160
+        if (systolic > 220 || diastolic > 160) {
+            blood_pressure.setCustomValidity('ضغط الدم لا يجب ان يتجاوز 220/160');
+        } else {
+            // Clear any custom validity message if all conditions are met
+            blood_pressure.setCustomValidity('');
+        }
+    }
+
+    // Show validation message (if any)
+    blood_pressure.reportValidity();
+});
+
+
+    heart_rate.addEventListener('input', () => {
+        if (parseInt(heart_rate.value) > 200) {
+            heart_rate.setCustomValidity('النبض لا يجب ان يتجاوز 200');
+        } else {
+            heart_rate.setCustomValidity('');
+        }
+
+        heart_rate.reportValidity();
+    });
+
+    spo2.addEventListener('input', () => {
+        if (parseInt(spo2.value) > 100) {
+            spo2.setCustomValidity('ال ٍSPO2 لا يجب ان يتجاوز 100');
+        } else {
+            spo2.setCustomValidity('');
+        }
+
+        spo2.reportValidity();
+    });
+
+    temperature.addEventListener('input', () => {
+        if (parseInt(temperature.value) > 44) {
+            temperature.setCustomValidity('درجة الحرارة لا يجب ان تتجاوز 44');
+        } else {
+            temperature.setCustomValidity('');
+        }
+
+        temperature.reportValidity();
+    });
+    
+
+
+</script>
