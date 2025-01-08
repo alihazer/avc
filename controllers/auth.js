@@ -118,18 +118,16 @@ export const login = asyncHandler(async (req, res) => {
 
         // Set JWT token in cookie
         res.cookie('token', token, {
-            httpOnly: true,
+            httpOnly: false,
             secure: isProduction, // Ensures the cookie is only sent over HTTPS in production
             sameSite: isProduction ? 'Strict' : 'Lax',
-            domain: isProduction ? ".risalaansar.com" : undefined, // Set the domain for the cookie in production
         });
 
         // Set user details in cookie (excluding password)
         res.cookie('user', JSON.stringify(user), {
-            httpOnly: true,
+            httpOnly: false,
             secure: isProduction,
             sameSite: isProduction ? 'Strict' : 'Lax',
-            domain: isProduction ? ".risalaansar.com" : undefined, 
         });
 
         // Redirect to dashboard
