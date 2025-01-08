@@ -121,6 +121,7 @@ export const login = asyncHandler(async (req, res) => {
             httpOnly: true,
             secure: isProduction, // Ensures the cookie is only sent over HTTPS in production
             sameSite: isProduction ? 'Strict' : 'Lax',
+            domain: isProduction ? ".risalaansar.com" : undefined, // Set the domain for the cookie in production
         });
 
         // Set user details in cookie (excluding password)
