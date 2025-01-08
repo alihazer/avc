@@ -128,6 +128,7 @@ export const login = asyncHandler(async (req, res) => {
             httpOnly: true,
             secure: isProduction,
             sameSite: isProduction ? 'Strict' : 'Lax',
+            domain: isProduction ? ".risalaansar.com" : undefined, 
         });
 
         // Redirect to dashboard
