@@ -19,6 +19,8 @@ import triageRoutes from './routes/triageRoutes.js';
 import BorrowItemRoutes from './routes/BorrowedItemsRoute.js';
 import axios from 'axios';
 import attendenceRoutes from './routes/attendenceRoutes.js';
+import https from 'https';
+import fs from 'fs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename); 
@@ -28,6 +30,18 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 
+// redirect http to https
+const ensureSecure = (req, res, next) => {
+  if(process.env.NODE_ENV !== 'development') {
+    if(req.secure || req.headers['x-forwarded-proto'] === 'https') {
+      return next();
+    }
+    res.redirect('https://' + req.hostname + req.url);
+  }
+  next();
+}
+
+app.use(ensureSecure);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 dotenv.config();
