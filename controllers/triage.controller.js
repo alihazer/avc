@@ -150,7 +150,8 @@ const renderFirstForm = asyncHandler(async (req, res) => {
         {
           $project: {
             _id: 1,          // Include _id
-            username: 1,      // Include username
+            username: 1,  
+            fullNameInArabic: 1    // Include username
           }
         }
       ]);
@@ -244,8 +245,8 @@ const getTriage = asyncHandler(async(req, res)=>{
         .populate('moi')
         .populate({path: 'userId', select: 'username'})
         .populate('usage._id')
-        .populate({path: 'driver', select: 'username'})
-        .populate({path: 'paramedics', select: 'username'})
+        .populate({path: 'driver'})
+        .populate({path: 'paramedics'})
         .populate('moi')
         .populate('medicalHistory')
         .populate('surgicalHistory')
@@ -508,7 +509,6 @@ const getTriageStats = asyncHandler(async (req, res) => {
                 $lt: new Date(`${year + 1}-01-01`)
             }
         });
-        console.log(JSON.stringify(triageData, null, 2));
         return res.status(200).json({
             status: true,
             data: triageData,

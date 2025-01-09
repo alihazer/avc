@@ -31,7 +31,7 @@
                 <label for="rescuer">:اسم المسعفون</label>
                 <select id="rescuer" class="rescuer-select" name="paramedics" multiple>
                     <% paramedics.forEach(function(paramedic) { %>
-                        <option value="<%= paramedic.id %>"><%= paramedic.username %></option>
+                        <option value="<%= paramedic.id %>"><%= paramedic.fullNameInArabic %></option>
                     <% }) %>
                 </select>
             </div>

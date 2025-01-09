@@ -35,7 +35,7 @@
                         <% if (triage.paramedics && triage.paramedics.length) { %>
                             <ul>
                                 <% triage.paramedics.forEach(paramedic => { %>
-                                    <li><%= paramedic.username || 'No Name' %></li>
+                                    <li><%= paramedic.fullNameInArabic || 'No Name' %></li>
                                 <% }); %>
                             </ul>
                         <% } else { %>

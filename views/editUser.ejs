@@ -52,7 +52,7 @@ a{
                         <div data-mdb-input-init class="form-outline">
                           <input type="password" id="password" name="password" class="form-control form-control-lg" />
                         </div>
-      
+    
                       </div>
                     </div>
 
@@ -77,6 +77,12 @@ a{
                         </div> 
                       </div>
                       <div class="row">
+                        <div class="col-md-6 mb-4 pb-2">
+                          <label class="form-label" for="fullName">Full Name in Arabic: </label>
+                        <div data-mdb-input-init class="form-outline">
+                          <input type="text" value="<%=user.fullNameInArabic%>" name="fullNameInArabic" id="fullName" class="form-control form-control-lg" />
+                        </div>
+                      </div>
                         <div class="col-md-6 mb-4 pb-2">
                             <div><label class="form-label select-label">Status</label></div>
                                 <select class="select form-control-lg" name="status">
@@ -182,6 +188,7 @@ a{
             const shifDays = document.getElementById('shifDays');
             const form = document.querySelector('form');
             const alert = document.getElementById('alert');
+            const fullNames = document.getElementById('fullName').value;
 
             
             // Get selected days using updateSelectedDays function
@@ -197,7 +204,7 @@ a{
                 alert.style.display = "block";
                 return false;
             }
-            if(username == "<%=user.username%>" && password == "" && phoneNumber == "<%=user.phone%>" && role == "<%=user.role.id%>" && selectedDays == "<%=user.shiftDays%>" && form.status.value == "<%=user.status%>"){
+            if(username == "<%=user.username%>" && password == "" && phoneNumber == "<%=user.phone%>" && role == "<%=user.role.id%>" && selectedDays == "<%=user.shiftDays%>" && form.status.value == "<%=user.status %>" && form.fullName.value == "<%=user.fullNameInArabic%>"){
                 alert.innerHTML = "No changes made";
                 alert.style.display = "block";
                 return false;
@@ -232,7 +239,8 @@ a{
                     phone: form.phoneNumber.value,
                     role: form.role.value,
                     status: form.status.value,
-                    shiftDays: form.shifDays.value
+                    shiftDays: form.shifDays.value,
+                    fullNameInArabic: form.fullName.value
                 })
             })
             .then(response => response.json())

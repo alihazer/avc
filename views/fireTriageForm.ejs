@@ -47,7 +47,7 @@
                 <div class="field">
                     <select name="driver" id="driver" required>
                         <% drivers.forEach(function(driver){ %>
-                            <option value="<%= driver._id %>"><%= driver.username %></option>
+                            <option value="<%= driver._id %>"><%= driver.fullNameInArabic %></option>
                         <% }) %>
                     </select>
                 </div>
@@ -57,7 +57,7 @@
                 <label for="rescuer">:اسم المسعفون</label>
                 <select id="rescuer" class="rescuer-select" name="paramedics" multiple required>
                     <% paramedics.forEach(function(paramedic) { %>
-                        <option value="<%= paramedic.id %>"><%= paramedic.username %></option>
+                        <option value="<%= paramedic.id %>"><%= paramedic.fullNameInArabic %></option>
                     <% }) %>
                 </select>
             </div>

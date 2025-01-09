@@ -105,7 +105,6 @@ export const login = asyncHandler(async (req, res) => {
         const existingDevice = await LoggedInDevicesModel.findOne({ userId: user._id, deviceInfo });
 
         if (existingDevice) {
-            console.log('Updating device login time for user:', user._id);
             // Mark the existing device as inactive
             await LoggedInDevicesModel.updateOne({ _id: existingDevice._id }, { $set: { lastLogin: currentDate, isActive: true } });
         }
@@ -389,7 +388,7 @@ export const editUser = asyncHandler(async (req, res) => {
         if (!user) {
             return res.status(404).render('error', { message: 'User not found' });
         }
-        const { username, role, password, phone, status, shiftDays } = req.body;
+        const { username, role, password, phone, status, shiftDays, fullNameInArabic } = req.body;
         const roleName = await Role.findById(role);
         if (password) {
             const salt = await bcrypt.genSalt(10);
@@ -409,7 +408,8 @@ export const editUser = asyncHandler(async (req, res) => {
             role,
             phone,
             status,
-            shiftDays
+            shiftDays,
+            fullNameInArabic
         });
         res.status(200).json({ message: 'User updated successfully' });
     } catch (error) {
@@ -456,7 +456,6 @@ export const getMostParamedic = asyncHandler(async (thisMonth = false) => {
         }
     ]);
     if (result.length > 0) {
-        console.log('Result: ', result);
         const user = await User.findById(result[0]._id).select('username');
         return { user: user.username, caseCount: result[0].caseCount };;
     }

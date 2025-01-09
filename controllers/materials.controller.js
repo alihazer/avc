@@ -45,17 +45,14 @@ export const updateMaterial = asyncHandler(async (req, res) => {
     const { id } = req.params;
     const { name, quantity } = req.body;
     if(!name || !quantity) {
-        console.log('All fields are required');
         return res.status(400).json({ message: 'All fields are required' });
 
     }
     try {
         const updatedMaterial = await Material.findByIdAndUpdate(id, { name, quantity }, { new: true });
         if(!updatedMaterial) {
-            console.log('Material not found');
             return res.status(404).json({ message: 'Material not found' });
         }
-        console.log('Material updated successfully');
         return res.status(200).json({
             status: true,
             message: 'Material updated successfully',

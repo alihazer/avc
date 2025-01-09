@@ -26,7 +26,7 @@
                 </tr>
                 <tr>
                     <th>Driver Name</th>
-                    <td><%= triage.driver.username %></td>
+                    <td><%= triage.driver.fullNameInArabic %></td>
                 </tr>
                 <tr>
                     <th>Paramedics</th>
@@ -34,7 +34,7 @@
                         <ul>
                             <li>
                             <% triage.paramedics.forEach(paramedic => { %>
-                                <%= paramedic.username %>,
+                                <%= paramedic.fullNameInArabic %>,
                             <% }); %>
                             </li>
                         </ul>
