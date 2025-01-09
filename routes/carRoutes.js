@@ -7,7 +7,7 @@ import isLoggedIn from "../middlewares/isLoggedIn.js";
 const router = express.Router();
 
 router.get("/", isLoggedIn,checkPermission("manage_ambulances") ,getCars);
-router.get("/add", isLoggedIn, checkPermission("manage_ambulances"), getAddCarForm);
+router.get("/create/new", isLoggedIn, checkPermission("manage_ambulances"), getAddCarForm);
 router.get("/:id",isLoggedIn ,checkPermission("manage_ambulances"), getCarById);
 router.post("/", isLoggedIn ,checkPermission("manage_ambulances"), addCar);
 router.put("/:id", isLoggedIn ,checkPermission("manage_ambulances"), updateCar);

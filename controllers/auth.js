@@ -119,14 +119,14 @@ export const login = asyncHandler(async (req, res) => {
         // Set JWT token in cookie
         res.cookie('token', token, {
             httpOnly: true,
-            secure: false, // Ensures the cookie is only sent over HTTPS in production
+            secure: true, // Ensures the cookie is only sent over HTTPS in production
             sameSite: isProduction ? 'Strict' : 'Lax',
         });
 
         // Set user details in cookie (excluding password)
         res.cookie('user', JSON.stringify(user), {
             httpOnly: true,
-            secure: false,
+            secure: true,
             sameSite: isProduction ? 'Strict' : 'Lax',
         });
 
