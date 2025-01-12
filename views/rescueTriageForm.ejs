@@ -1,0 +1,76 @@
+<div class="container">
+    <div class="card triage" style="padding: 20px;">
+        <h1>انقاذ</h1>
+        <br>
+        <br>
+        <form action="/triage/emergency?car=<%=car%>" method="POST" class="triageForm">
+            <div class="triage-form-group">
+                <label for="time">:وقت الانطلاق</label>
+                <div class="field">
+                    <input type="time" id="time" name="time" required>
+                </div>
+            </div>
+            <div class="triage-form-group">
+                <label for="date">:تاريخ الانطلاق</label>
+                <div class="field">
+                    <input type="date" id="date" name="date" required>
+                </div>
+            </div>
+            <div class="triage-form-group">
+                <input type="hidden" value="<%=type%>" name="type">
+                <label for="from">:المكان</label>
+                <div class="field">
+                    <input type="text" class="fromInput" id="from" name="from" required>
+                </div>
+            </div>
+
+            <!-- Cause -->
+             <div class="triage-form-group">
+                <label for="caus">:السبب</label>
+                <div class="field">
+                    <% const causes = ["فتح بيت", "فتح سيارة","فتح طريق", "سلامة عامة", "انقاذ"] %>
+                    <select name="notes" id="cause" required>
+                        <% causes.forEach(function(cause){ %>
+                            <option value="<%= cause %>"><%= cause %></option>
+                        <% }) %>
+                    </select>
+                </div>
+             </div>
+
+            <div class="triage-form-group">
+                <label for="driver">:اسم الشوفير</label>
+                <div class="field">
+                    <select name="driver" id="driver" required>
+                        <% drivers.forEach(function(driver){ %>
+                            <option value="<%= driver._id %>"><%= driver.fullNameInArabic %></option>
+                        <% }) %>
+                    </select>
+                </div>
+            </div>
+
+            <div class="triage-form-group">
+                <label for="rescuer">:اسم المسعفون</label>
+                <select id="rescuer" class="rescuer-select" name="paramedics" multiple required>
+                    <% paramedics.forEach(function(paramedic) { %>
+                        <option value="<%= paramedic.id %>"><%= paramedic.fullNameInArabic %></option>
+                    <% }) %>
+                </select>
+            </div>
+
+
+
+            <div class="triage-form-group">
+                <label for="ap_nb">:رقم الموافقة</label>
+                <div class="field">
+                    <input type="number" min="0" id="ap_nb" name="approval_nb">
+                </div>
+            </div>
+            <div class="triage-form-group">
+                <div class="field">
+                    <button class="btn btn-primary" type="submit">Done</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<script src="/js/toggleOtherInput.js"></script>

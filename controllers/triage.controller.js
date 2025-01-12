@@ -183,10 +183,12 @@ const renderFirstForm = asyncHandler(async (req, res) => {
     if(type === "fire"){
         return res.status(200).render("fireTriageForm", { type, car, materials, paramedics, layout, drivers, locations });
     }
+    if(type === "rescue"){
+        return res.status(200).render("rescueTriageForm", { type, car, materials, paramedics, layout, drivers, locations });
+    }
     if(type === "غارة"){
         return res.status(200).render("gharaTriageForm", { type, car, materials, paramedics, layout, drivers, locations, mois });
     }
-
 
 });
 
@@ -279,6 +281,8 @@ const getTriage = asyncHandler(async(req, res)=>{
                 return res.status(200).render("partials/triage/inside", {triage, moment, type: "داخل", layout});
             case "fire":
                 return res.status(200).render("partials/triage/fire", {triage, moment, type: "حريق", layout});
+            case "rescue":
+                return res.status(200).render("partials/triage/rescue", {triage, moment, type: "إنقاذ", layout});
             case "غارة":
                 return res.status(200).render("partials/triage/ghara", {triage, moment, type: "غارة", layout});
             default:
