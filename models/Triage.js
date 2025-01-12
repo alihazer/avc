@@ -94,10 +94,17 @@ const TriageSchema = new mongoose.Schema({
         ref: "SurgicalHistory",
         default: null
     },
-    allergies: {
-        type: [mongoose.Schema.Types.ObjectId],
-        ref: "Allergies",
-        default: null
+    foodAllergies: {
+        type: String,
+        default: null // explicitly set default to null
+    },
+    inhalorAllergies: {
+        type: String,
+        default: null // explicitly set default to null
+    },
+    medicationAllergies: {
+        type: String,
+        default: null // explicitly set default to null
     },
     usage: [{
         _id: {

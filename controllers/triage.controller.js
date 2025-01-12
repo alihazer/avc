@@ -62,7 +62,7 @@ const assignValues = (details) => {
 
 const createEmergencyTriage = asyncHandler(async (req, res) => {
     try {
-        const { time, type, from, to, driver, paramedics, patient_name, avpu, ppte, moi, preassure, heartRate, spo2, temperature, medicalHistory, surgicalHistory, approval_nb, usage, dcap_btls, toOther, fromOther, triageLevel, notes } = req.body;
+        const { time, type, from, to, driver, paramedics, patient_name, avpu, ppte, moi, preassure, heartRate, spo2, temperature, medicalHistory, surgicalHistory, approval_nb, usage, dcap_btls, toOther, fromOther, triageLevel, notes, foodAllergies, inhalorAllergies, medicationAllergies } = req.body;
         const layout = getLayoutName(req);
 
         if (!time) return res.render("error", { message: "Time is required", layout });
@@ -99,7 +99,10 @@ const createEmergencyTriage = asyncHandler(async (req, res) => {
             userId: req.user.id,
             approval_nb,
             triageLevel,
-            notes
+            notes,
+            foodAllergies,
+            inhalorAllergies,
+            medicationAllergies
         });
         return triage ? res.status(201).redirect(`/triage/generate-pdf/${triage._id}`) : res.status(400).render("error", { message: "An error occurred", layout });
     } catch (error) {
