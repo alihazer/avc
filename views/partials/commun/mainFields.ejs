@@ -32,6 +32,7 @@
             <% locations.forEach(function(loc){ %>
                 <option value="<%= loc %>"><%= loc %></option>
             <% }) %>
+            <option value="تمت المعالجة ميدانيا">تمت المعالجة ميدانيا</option>
             <option value="Other">Other</option>
         </select>
         <input type="text" id="toOther" name="toOther" style="display: none;" placeholder="Specify 'To'">
@@ -59,7 +60,7 @@
 </div>
 
 <div class="triage-form-group">
-    <label for="patient_name">:اسم المريض</label>
+    <label for="patient_name">:اسم المريض الثلاثي</label>
     <div class="field">
         <input type="text" id="patient_name" name="patient_name">
     </div>

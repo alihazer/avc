@@ -35,25 +35,29 @@
 
 <script>
     const triageType = document.getElementById('triageType');
-    const hiddenSelect = document.getElementById('parent') // Get parent container
-    const car = document.getElementById('selectedCar')
-    const textLabel = document.getElementById('textLabel')
-    const select = document.getElementById('hiddenSelect')
+    const hiddenParent = document.getElementById('parent');
+    const carSelect = document.getElementById('selectedCar');
+    const textLabel = document.getElementById('textLabel');
+    const hiddenSelect = document.getElementById('hiddenSelect');
+
     // Add event listener to triageType dropdown
     triageType.addEventListener('change', (e) => {
         if (e.target.value === "fire" || e.target.value === "rescue") {
-            hiddenSelect.style.display = 'block'; // Show hiddenSelect
-            car.style.display = 'none'; // Hide car
-            textLabel.innerHTML = " رقم الاطفائية: "
-            if(hiddenSelect.hasAttribute('name')) hiddenSelect.attributes.removeNamedItem('name');
-            select.setAttribute('name', 'car');
+            hiddenParent.style.display = 'block'; // Show hiddenSelect
+            carSelect.style.display = 'none'; // Hide carSelect
+            textLabel.innerHTML = " رقم الاطفائية: ";
+
+            // Manage name attributes to avoid duplicate form submissions
+            carSelect.removeAttribute('name');
+            hiddenSelect.setAttribute('name', 'car');
         } else {
-            hiddenSelect.style.display = 'none'; // Hide hiddenSelect
-            car.style.display = 'block'; // Show car
-            textLabel.innerHTML = " رقم الاسعاف: "
-            if(select.hasAttribute('name')) select.attributes.removeNamedItem('name');
-            car.setAttribute('name', 'car');
+            hiddenParent.style.display = 'none'; // Hide hiddenSelect
+            carSelect.style.display = 'block'; // Show carSelect
+            textLabel.innerHTML = " رقم الاسعاف: ";
+
+            // Manage name attributes to avoid duplicate form submissions
+            hiddenSelect.removeAttribute('name');
+            carSelect.setAttribute('name', 'car');
         }
     });
 </script>
-

@@ -17,13 +17,15 @@
                     <td><%= triage.car_nb %></td>
                 </tr>
                 <tr>
-                    <th>From</th>
+                    <th>Place: </th>
                     <td><%= triage.from %></td>
                 </tr>
+
                 <tr>
-                    <th>To</th>
-                    <td><%= triage.to %></td>
+                    <th>Cause</th>
+                    <td><%= triage.notes %></td>
                 </tr>
+
                 <tr>
                     <th>Driver Name</th>
                     <td><%= triage.driver.fullNameInArabic %></td>
@@ -32,15 +34,14 @@
                     <th>Paramedics</th>
                     <td>
                         <ul>
-                            <li>
                             <% triage.paramedics.forEach(paramedic => { %>
-                                <%= paramedic.fullNameInArabic %>,
+                                <li>
+                                    <%= paramedic.fullNameInArabic %>
+                                </li>  
                             <% }); %>
-                            </li>
                         </ul>
                     </td>
                 </tr>
-                
                     <tr>
                         <th>Approval Number:</th>
                         <td>
