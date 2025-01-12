@@ -1,30 +1,59 @@
 <div class="container">
-    <section style="display: flex;align-items: center;justify-content: center;">
-        <div class="card" style="width: 70%;display: flex;align-items: center;justify-content: center; padding: 100px;flex-wrap: wrap;">
-            <div class="card-body" style="display: flex;flex-direction: row-reverse; gap: 10px">   
+    <section style="display: flex; align-items: center; justify-content: center;">
+        <div class="card" style="width: 70%; display: flex; align-items: center; justify-content: center; padding: 100px; flex-wrap: wrap;">
+            <div class="card-body" style="display: flex; flex-direction: row-reverse; gap: 10px;">
                 <form action="/triage/create" method="get">
                     <div class="form-group1">
-                        <label style="display: block;text-align: right; width: 100%;" for="triageType">:نوع الحالة</label>
+                        <label style="display: block; text-align: right; width: 100%;" for="triageType">:نوع الحالة</label>
                         <select class="form-select" id="triageType" name="type">
-                            <%types.forEach(function(type){%>
-                                <option value="<%=type.code%>"><%=type.name%></option>
-                            <%})%>
+                            <% types.forEach(function(type) { %>
+                                <option value="<%= type.code %>"><%= type.name %></option>
+                            <% }) %>
                         </select>
                     </div>
                     <br>
                     <div class="form-group1" id="car">
-                        <label style="display: block;text-align: right; width: 100%" for="carnb">:رقم الاسعاف</label>
-                        <select name="car">
-                            <%cars.forEach(function(car){%>
-                                <option value="<%=car.number%>"><%=car.number%>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</option>
-                            <%})%>
-                            
+                        <label id="textLabel" style="display: block; text-align: right; width: 100%;" for="carnb">:رقم الاسعاف</label>
+                        <div id="parent" style="display: none;">
+                            <select id="hiddenSelect">
+                                <option selected value="923">923 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>
+                                <option value="822">822 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>
+                            </select>
+                        </div>
+                        <select id="selectedCar" name="car">
+                            <% cars.forEach(function(car) { %>
+                                <option value="<%= car.number %>"><%= car.number %>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>
+                            <% }) %>
                         </select>
                     </div>
-                    <!-- Next btn -->
                     <center><button class="primary-btn">Next</button></center>
                 </form>
-                <!-- Next btn -->
             </div>
+        </div>
     </section>
 </div>
+
+<script>
+    const triageType = document.getElementById('triageType');
+    const hiddenSelect = document.getElementById('parent') // Get parent container
+    const car = document.getElementById('selectedCar')
+    const textLabel = document.getElementById('textLabel')
+    const select = document.getElementById('hiddenSelect')
+    // Add event listener to triageType dropdown
+    triageType.addEventListener('change', (e) => {
+        if (e.target.value === "fire" || e.target.value === "rescue") {
+            hiddenSelect.style.display = 'block'; // Show hiddenSelect
+            car.style.display = 'none'; // Hide car
+            textLabel.innerHTML = " رقم الاطفائية: "
+            if(hiddenSelect.hasAttribute('name')) hiddenSelect.attributes.removeNamedItem('name');
+            select.setAttribute('name', 'car');
+        } else {
+            hiddenSelect.style.display = 'none'; // Hide hiddenSelect
+            car.style.display = 'block'; // Show car
+            textLabel.innerHTML = " رقم الاسعاف: "
+            if(select.hasAttribute('name')) select.attributes.removeNamedItem('name');
+            car.setAttribute('name', 'car');
+        }
+    });
+</script>
+
