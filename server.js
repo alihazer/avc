@@ -69,11 +69,6 @@ app.use('/surgical-histories', surgicalHistoryRoute);
 app.use('/triage', triageRoutes);
 app.use('/borrowed-items', BorrowItemRoutes);
 app.use('/attendence', attendenceRoutes);
-app.use('/api/hello', (req, res) => {
-    console.log('Hello World');
-    res.send('Hello World');
-});
-
 
 
 axios.get('https://httpbin.org/ip')
