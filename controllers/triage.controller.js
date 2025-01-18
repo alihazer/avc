@@ -62,7 +62,7 @@ const assignValues = (details) => {
 
 const createEmergencyTriage = asyncHandler(async (req, res) => {
     try {
-        const { time, type, from, to, driver, paramedics, patient_name, avpu, ppte, moi, preassure, heartRate, spo2, temperature, medicalHistory, surgicalHistory, approval_nb, usage, dcap_btls, toOther, fromOther, triageLevel, notes, foodAllergies, inhalorAllergies, medicationAllergies } = req.body;
+        const { time, date, type, from, to, driver, paramedics, patient_name, avpu, ppte, moi, preassure, heartRate, spo2, temperature, medicalHistory, surgicalHistory, approval_nb, usage, dcap_btls, toOther, fromOther, triageLevel, notes, foodAllergies, inhalorAllergies, medicationAllergies } = req.body;
         const layout = getLayoutName(req);
 
         if (!time) return res.render("error", { message: "Time is required", layout });
@@ -90,6 +90,7 @@ const createEmergencyTriage = asyncHandler(async (req, res) => {
 
         const triage = await Triage.create({
             time: time12,
+            date,
             case_type: type,
             car_nb: car,
             ...details,
@@ -314,9 +315,9 @@ const getTheMostDayTriagesInTheMonth = asyncHandler(async()=>{
             $addFields: {
                 shiftStart: {
                     $cond: [
-                        { $lt: [{ $hour: "$createdAt" }, 18] },
-                        { $subtract: ["$createdAt", 24 * 60 * 60 * 1000] },
-                        "$createdAt"
+                        { $lt: [{ $hour: "$date" }, 18] },
+                        { $subtract: ["$date", 24 * 60 * 60 * 1000] },
+                        "$date"
                     ]
                 }
             }

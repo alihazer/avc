@@ -17,7 +17,7 @@
                 <tr>
                     <th>Time</th>
                     <td>
-                        <%= triage.createdAt ? moment(triage.createdAt).format('DD-MM-YYYY') : 'No Date' %> - 
+                        <%= triage.createdAt ? moment(triage.date).format('DD-MM-YYYY') : 'No Date' %> - 
                         <%= triage.time || 'No Time' %>
                     </td>
                 </tr>

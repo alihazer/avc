@@ -12,7 +12,7 @@
                 </tr>
                 <tr>
                     <th>Time</th>
-                    <td><%= triage.createdAt ? moment(triage.createdAt).format('DD-MM-YYYY') : "N/A" %> - <%= triage.time || "N/A" %></td>
+                    <td><%= triage.createdAt ? moment(triage.date).format('DD-MM-YYYY') : "N/A" %> - <%= triage.time || "N/A" %></td>
                 </tr>
                 <tr>
                     <th>Car Number</th>
