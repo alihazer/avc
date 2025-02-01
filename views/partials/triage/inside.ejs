@@ -80,8 +80,14 @@
                             <li>Blood Pressure: <%= triage.vitals?.bloodPressure || 'No Blood Pressure' %></li>
                             <li>SPO2: <%= triage.vitals?.spo2 || 'No SPO2' %></li>
                             <li>Temperature: <%= triage.vitals?.temperature || 'No Temperature' %></li>
+
                         </ul>
                     </td>
+
+                </tr>
+                <tr>
+                    <th>Blood Glucose Level</th>
+                    <td><%= triage.bloodglucoseLevel || 'No Blood Glucose' %></td>
                 </tr>
                 <tr>
                     <th>Medical History</th>

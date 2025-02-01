@@ -84,6 +84,10 @@ const TriageSchema = new mongoose.Schema({
             default: null
         }
     },
+    bloodglucoseLevel: {
+        type: Number,
+        default: null
+    },
     medicalHistory: {
         type: [mongoose.Schema.Types.ObjectId],
         ref: "MedicalHistory",

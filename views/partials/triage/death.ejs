@@ -41,7 +41,7 @@
                         <ul>
                             <li>
                             <% triage.paramedics.forEach(paramedic => { %>
-                                <%= paramedic.username %>,
+                                <%= paramedic.fullNameInArabic %>,
                             <% }); %>
                             </li>
                         </ul>
@@ -67,7 +67,7 @@
         </div>
 
     </div>
-    <button id="download" class="btn btn-primary" onclick="downloadPdf(`<%=triage.date%>`,`<%=moment(triage.date).format('DD-MM-YYYY') %>`)">Download PDF</button>
+    <button id="download" class="btn btn-primary" onclick="downloadPdf(`<%=triage.patient_name%>`,`<%=moment(triage.date).format('DD-MM-YYYY') %>`)">Download PDF</button>
 </div>
 
 <script>
