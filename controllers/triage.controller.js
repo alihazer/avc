@@ -234,7 +234,7 @@ const getMyTriagesCount = asyncHandler(async(req, res)=>{
 const getThisMonthsTriages = asyncHandler(async(req, res)=>{
     const layout = getLayoutName(req);
     const thisMonth = new Date().getMonth();
-    const thisMonthTriages = await Triage.find({createdAt: {$gte: new Date(new Date().getFullYear(), thisMonth, 1), $lt: new Date(new Date().getFullYear(), thisMonth + 1, 0)}})
+    const thisMonthTriages = await Triage.find({date: {$gte: new Date(new Date().getFullYear(), thisMonth, 1), $lt: new Date(new Date().getFullYear(), thisMonth + 1, 0)}})
     .populate('moi')
     .lean()
     .sort({createdAt: -1})
@@ -298,15 +298,16 @@ const getTriage = asyncHandler(async(req, res)=>{
 });
 
 
-const getTheMostDayTriagesInTheMonth = asyncHandler(async()=>{
+const getTheMostDayTriagesInTheMonth = asyncHandler(async () => {
     const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-    const startOfMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
-    const endOfMonth = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 1);
-    
+    const now = new Date();
+    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+    const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+
     const triages = await Triage.aggregate([
         {
             $match: {
-                createdAt: {
+                date: {
                     $gte: startOfMonth,
                     $lt: endOfMonth
                 }
@@ -314,23 +315,57 @@ const getTheMostDayTriagesInTheMonth = asyncHandler(async()=>{
         },
         {
             $addFields: {
-                shiftStart: {
+                // Adjust UTC date to local time (e.g., UTC+6)
+                localDate: {
+                    $add: ["$date", 6 * 60 * 60 * 1000] // Replace 6 with your timezone offset
+                }
+            }
+        },
+        {
+            $addFields: {
+                // Determine if the local time is before 6 PM
+                isBefore6PM: {
+                    $lt: [{ $hour: "$localDate" }, 18]
+                }
+            }
+        },
+        {
+            $addFields: {
+                // Calculate shiftDay in local time (previous day if before 6 PM)
+                shiftDayLocal: {
                     $cond: [
-                        { $lt: [{ $hour: "$date" }, 18] },
-                        { $subtract: ["$date", 24 * 60 * 60 * 1000] },
-                        "$date"
+                        "$isBefore6PM",
+                        { $subtract: ["$localDate", 24 * 60 * 60 * 1000] }, // Subtract 1 day
+                        "$localDate"
                     ]
                 }
             }
         },
         {
             $addFields: {
-                dayOfWeek: { $dayOfWeek: { $subtract: ["$shiftStart", 6 * 60 * 60 * 1000] } }
+                // Truncate to the start of the day in local time
+                shiftDayStart: {
+                    $dateTrunc: {
+                        date: "$shiftDayLocal",
+                        unit: "day"
+                    }
+                }
+            }
+        },
+        {
+            $addFields: {
+                // Get the day of the week in the local timezone
+                shiftDayOfWeek: {
+                    $dayOfWeek: {
+                        date: "$shiftDayStart",
+                        timezone: "Asia/Dhaka" // Replace with your timezone
+                    }
+                }
             }
         },
         {
             $group: {
-                _id: { dayOfWeek: "$dayOfWeek" },
+                _id: "$shiftDayOfWeek",
                 count: { $sum: 1 }
             }
         },
@@ -338,20 +373,15 @@ const getTheMostDayTriagesInTheMonth = asyncHandler(async()=>{
             $sort: { count: -1 }
         }
     ]);
-    
 
-    
-    
-    // Map day numbers to day names
+    // Convert day numbers (1-7, Sunday=1) to names
     const triagesWithDayNames = triages.map(triage => ({
         ...triage,
-        _id: {
-            ...triage._id,
-            dayOfWeek: dayNames[triage._id.dayOfWeek - 1] // dayOfWeek is 1-based, array is 0-based
-        }
+        day: dayNames[triage._id - 1] // Adjust index to start from 0
     }));
+
     return triagesWithDayNames;
-})
+});
 
 
 const renderEditTriage = asyncHandler(async(req, res)=>{
