@@ -42,7 +42,7 @@
 
     // Add event listener to triageType dropdown
     triageType.addEventListener('change', (e) => {
-        if (e.target.value === "fire" || e.target.value === "rescue") {
+        if (e.target.value === "fire") {
             hiddenParent.style.display = 'block'; // Show hiddenSelect
             carSelect.style.display = 'none'; // Hide carSelect
             textLabel.innerHTML = " رقم الاطفائية: ";
