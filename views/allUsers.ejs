@@ -116,6 +116,12 @@
             <div class="card-header">
                 All Users
             </div>
+            <div style="display: flex; align-items: center; justify-content: center; gap: 10px; padding: 10px;">
+                <form action="/users" method="GET" style="display: flex; align-items: center; justify-content: center; width: 30%; gap:4px; flex-direction: column;">
+                    <input style="width: 200px;" type="text" name="search" placeholder="Search users..." value="<%= (searchQuery) ? searchQuery : '' %>">
+                    <button type="submit" class="btn btn-primary">Search</button>
+                </form>
+            </div>
             <div class="card-body">
                 <div class="table-responsive">
                     <table>
@@ -136,43 +142,49 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <% users.forEach(user => { %>
-                                <tr>
-                                    <td>
-                                        <%if(user.profileImage) { %>
-                                            <img src="<%= user.profileImage %>" alt="<%= user.username %>">
-                                        <% } else { %>
-                                            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSLXo6LfQJxT7rwfxICo-bv78lud6UdSxlVvA&s" alt="<%= user.username %>">
-                                        <% } %>
-                                    </td>
-                                    <td><%= user.username %></td>
-                                    <td><%= user.role.name %></td>
-                                    <td><%= user.phone %></td>
-                                    <% if (user.status === 'active') { %>
-                                        <td style="background-color: #378746; color: white;"><%= user.status %></td>
-                                    <% } else { %>
-                                        <td style="background-color: rgb(229, 68, 68); color: white;"><%= user.status %></td>
-                                    <% } %>
-                                    <td><%= user.shiftDays %></td>
-                                    <td><%= user.bloodType %></td>
-                                    <%if(addUser) {%>
-                                        <td><%= user.triageCount %></td>
+                            <% if(users.length > 0){ %>
+                                <% users.forEach(user => { %>
+                                    <tr>
                                         <td>
-                                            <a href="/users/view/<%= user._id %>" class="btn btn-primary">View</a>
-                                            <a href="/users/edit/<%= user._id %>" class="btn btn-primary">Edit</a>
-                                            <button onclick="deleteUser('<%= user._id %>')" class="btn btn-danger">Delete</button>
-                                            <% if (sendWhatsappMessage) { %>
-                                                <a 
-                                                    href="https://wa.me/<%= user.phone %>?text=<%= encodeURIComponent(`رابط سيستيم الدفاع المدني: \n https://risalaansar.com\n\n*username:* ${user.username}\n*password:* avc@${user.phone}`) %>" 
-                                                    class="btn btn-primary" 
-                                                    target="_blank">
-                                                    Send WhatsApp
-                                                </a>
+                                            <%if(user.profileImage) { %>
+                                                <img src="<%= user.profileImage %>" alt="<%= user.username %>">
+                                            <% } else { %>
+                                                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSLXo6LfQJxT7rwfxICo-bv78lud6UdSxlVvA&s" alt="<%= user.username %>">
                                             <% } %>
                                         </td>
-                                    <%} %>
+                                        <td><%= user.username %></td>
+                                        <td><%= user.role.name %></td>
+                                        <td><%= user.phone %></td>
+                                        <% if (user.status === 'active') { %>
+                                            <td style="background-color: #378746; color: white;"><%= user.status %></td>
+                                        <% } else { %>
+                                            <td style="background-color: rgb(229, 68, 68); color: white;"><%= user.status %></td>
+                                        <% } %>
+                                        <td><%= user.shiftDays %></td>
+                                        <td><%= user.bloodType %></td>
+                                        <%if(addUser) {%>
+                                            <td><%= user.triageCount %></td>
+                                            <td>
+                                                <a href="/users/view/<%= user._id %>" class="btn btn-primary">View</a>
+                                                <a href="/users/edit/<%= user._id %>" class="btn btn-primary">Edit</a>
+                                                <button onclick="deleteUser('<%= user._id %>')" class="btn btn-danger">Delete</button>
+                                                <% if (sendWhatsappMessage) { %>
+                                                    <a 
+                                                        href="https://wa.me/<%= user.phone %>?text=<%= encodeURIComponent(`رابط سيستيم الدفاع المدني: \n https://risalaansar.com\n\n*username:* ${user.username}\n*password:* avc@${user.phone}`) %>" 
+                                                        class="btn btn-primary" 
+                                                        target="_blank">
+                                                        Send WhatsApp
+                                                    </a>
+                                                <% } %>
+                                            </td>
+                                        <% } %>
+                                    </tr>
+                                <% }) %>
+                          <%  } else{ %>
+                                <tr>
+                                    <td colspan="8">No users found</td>
                                 </tr>
-                            <% }) %>
+                            <% } %>
                         </tbody>
                     </table>
                 </div>

@@ -40,6 +40,21 @@
         </tbody>
     </table>
 </div>
+<h1>Most Active Drivers by Month</h1>
+<div id="driverStats">
+    <table>
+        <thead>
+            <tr>
+                <th>Month</th>
+                <th>Driver</th>
+                <th>Cases</th>
+            </tr>
+        </thead>
+        <tbody id="driverStatsBody">
+            <!-- Dynamic content will be inserted here -->
+        </tbody>
+    </table>
+</div>
 
 </div>
 
@@ -224,40 +239,109 @@
 
         // Render the paramedic stats
         await renderMostParamedic(currentYear);
+        await renderMostDriver(currentYear);
     } catch (error) {
         console.error('Error fetching stats:', error);
     }
 })();
 
-
-    async function fetchMostParamedic(year) {
+async function fetchMostParamedic(year) {
+  try {
     const response = await fetch(`/most-paramedic/${year}`);
-    return response.json();
+    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+    return await response.json();
+  } catch (error) {
+    console.error('Fetch failed:', error);
+    return null;
+  }
 }
 
 async function renderMostParamedic(year) {
-    try {
-        const data = await fetchMostParamedic(year);
-        const tbody = document.getElementById('paramedicStatsBody');
-        tbody.innerHTML = '';
+  try {
+    const tbody = document.getElementById('paramedicStatsBody');
+    if (!tbody) throw new Error('Table element not found');
 
-        if (data.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="3">No data available</td></tr>';
-            return;
-        }
+    tbody.innerHTML = '<tr><td colspan="3">Loading...</td></tr>';
 
-        data.forEach((item) => {
-            const row = document.createElement('tr');
-            row.innerHTML = `
-                <td>${item.month}</td>
-                <td>${item.paramedic}</td>
-                <td>${item.caseCount}</td>
-            `;
-            tbody.appendChild(row);
-        });
-    } catch (error) {
-        console.error('Error fetching paramedic stats:', error);
+    const data = await fetchMostParamedic(year);
+    console.log('Data:', data);
+    
+    if (!data || data.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="3">No data available</td></tr>';
+      return;
     }
+
+    tbody.innerHTML = ''; // Clear loading state
+    data.results.forEach((item) => {
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td>${item.month}</td>
+        <td>${item.paramedic || 'Unknown'}</td>
+        <td>${item.caseCount}</td>
+      `;
+      tbody.appendChild(row);
+    });
+  } catch (error) {
+    console.error('Error:', error);
+    const tbody = document.getElementById('paramedicStatsBody');
+    if (tbody) {
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="3" class="error">Error: ${error.message}</td>
+        </tr>
+      `;
+    }
+  }
 }
 
+
+
+async function fetchMostDriver(year) {
+  try {
+    const response = await fetch(`/most-driver/${year}`);
+    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+    return await response.json();
+  } catch (error) {
+    console.error('Fetch failed:', error);
+    return null;
+  }
+}
+
+async function renderMostDriver(year) {
+  try {
+    const tbody = document.getElementById('driverStatsBody');
+    if (!tbody) throw new Error('Driver table element not found');
+
+    tbody.innerHTML = '<tr><td colspan="3">Loading...</td></tr>';
+
+    const data = await fetchMostDriver(year);
+    console.log('DataD:', data);
+    
+    if (!data || data.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="3">No data available</td></tr>';
+      return;
+    }
+
+    tbody.innerHTML = '';
+    data.results.forEach((item) => {
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td>${item.month}</td>
+        <td>${item.driver || 'Unknown'}</td>
+        <td>${item.caseCount}</td>
+      `;
+      tbody.appendChild(row);
+    });
+  } catch (error) {
+    console.error('Error:', error);
+    const tbody = document.getElementById('driverStatsBody');
+    if (tbody) {
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="3" class="error">Error: ${error.message}</td>
+        </tr>
+      `;
+    }
+  }
+}
 </script>

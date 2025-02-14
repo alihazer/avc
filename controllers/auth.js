@@ -328,7 +328,22 @@ export const getUsers = asyncHandler(async (req, res) => {
 
         // Check if the user is admin or superadmin
         if (user.role.name == 'admin' || user.role.name == 'superadmin') {
-            const users = await User.find({}).populate('role');
+            const searchQuery = req.query.search;
+            let users;
+
+            if (searchQuery) {
+                users = await User.find({
+                    $or: [
+                        { username: { $regex: searchQuery, $options: 'i' } }, // Case-insensitive search
+                        { phone: { $regex: searchQuery, $options: 'i' } },
+                        { "role.name": { $regex: searchQuery, $options: 'i' } },
+                        { status: { $regex: searchQuery, $options: 'i' } },
+                        { bloodType: { $regex: searchQuery, $options: 'i' } }
+                    ]
+                }).populate('role');
+            } else {
+                users = await User.find().populate('role'); // Fetch all users if no search query
+            }
 
             // Get triage counts for each user (checking both paramedics array and driver attribute)
             const usersWithTriageCounts = await Promise.all(users.map(async (u) => {
@@ -344,7 +359,7 @@ export const getUsers = asyncHandler(async (req, res) => {
                 };
             }));
 
-            return res.status(200).render('allUsers', { users: usersWithTriageCounts, addUser: true, layout, addAttendance: true, sendWhatsappMessage: true });
+            return res.status(200).render('allUsers', { users: usersWithTriageCounts, addUser: true, layout, addAttendance: true, sendWhatsappMessage: true, searchQuery });
         }
 
         // Fetch users based on shift days
@@ -367,7 +382,7 @@ export const getUsers = asyncHandler(async (req, res) => {
                 };
             }));
 
-            return res.status(200).render('allUsers', { users: usersWithTriageCounts, addUser: false, layout, addAttendance: true, sendWhatsappMessage: false });
+            return res.status(200).render('allUsers', { users: usersWithTriageCounts, addUser: false, layout, addAttendance: true, sendWhatsappMessage: false, searchQuery: '' });
         }
 
         // For other users, add triage count
@@ -384,7 +399,7 @@ export const getUsers = asyncHandler(async (req, res) => {
             };
         }));
 
-        return res.status(200).render('allUsers', { users: usersWithTriageCounts, addUser: false, layout, addAttendance: false, sendWhatsappMessage: false });
+        return res.status(200).render('allUsers', { users: usersWithTriageCounts, addUser: false, layout, addAttendance: false, sendWhatsappMessage: false, searchQuery: '' });
     } catch (error) {
         console.log(error);
         const err = new Error('Something went wrong');
@@ -538,52 +553,146 @@ export const getUser = asyncHandler(async (req, res) => {
     }
 });
 
-export const getMostParamedicByYear = asyncHandler(async (year) => {
-    const currentYear = new Date().getFullYear();
-    const maxMonth = year === currentYear ? new Date().getMonth() : 11; // If current year, up to last completed month
+export const getMostDriverByYear = asyncHandler (async(req, res) => {
+    const year = parseInt(req.params.year);
+    const currentDate = new Date();
+    const currentYear = currentDate.getUTCFullYear();
+    const currentMonth = currentDate.getUTCMonth();
+  
+    let maxMonth;
+    if (year === currentYear) {
+      maxMonth = currentMonth - 1;
+      maxMonth = maxMonth < 0 ? -1 : maxMonth;
+    } else {
+      maxMonth = 11;
+    }
+  
+    const results = [];
+  
+    for (let month = 0; month <= maxMonth; month++) {
+      const startOfMonth = new Date(Date.UTC(year, month, 1));
+      const endOfMonth = new Date(Date.UTC(year, month + 1, 1));
+  
+      const aggregationResult = await Triage.aggregate([
+        {
+          $match: {
+            date: { $gte: startOfMonth, $lt: endOfMonth },
+            driver: { $exists: true, $ne: null } // Only documents with drivers
+          }
+        },
+        {
+          $group: {
+            _id: "$driver",
+            caseCount: { $sum: 1 }
+          }
+        },
+        { $sort: { caseCount: -1 } },
+        { $limit: 1 },
+        {
+          $lookup: {
+            from: "users",
+            localField: "_id",
+            foreignField: "_id",
+            as: "userDetails"
+          }
+        },
+        { $unwind: { path: "$userDetails", preserveNullAndEmptyArrays: true } },
+        {
+          $project: {
+            driver: { $ifNull: ["$userDetails.username", "Unknown"] },
+            caseCount: 1
+          }
+        }
+      ]);
+  
+      if (aggregationResult.length > 0) {
+        results.push({
+          month: month + 1,
+          driver: aggregationResult[0].driver,
+          caseCount: aggregationResult[0].caseCount
+        });
+      } else {
+        results.push({
+          month: month + 1,
+          driver: "No Data",
+          caseCount: 0
+        });
+      }
+    }
+  
+    return res.status(200).json({ results });
+  });
+
+export const getMostParamedicByYear = asyncHandler(async (req, res)=> {
+    let year = parseInt(req.params.year);
+    const currentDate = new Date();
+    const currentYear = currentDate.getUTCFullYear();
+    const currentMonth = currentDate.getUTCMonth(); // Get current month in UTC
+
+    let maxMonth;
+    if (year === currentYear) {
+        maxMonth = currentMonth - 1; // Only include up to last completed month
+        maxMonth = maxMonth < 0 ? -1 : maxMonth; // Handle January (no completed months)
+    } else {
+        maxMonth = 11; // All months for non-current years
+    }
+
     const results = [];
 
     for (let month = 0; month <= maxMonth; month++) {
-        const startOfMonth = new Date(year, month, 1);
-        const endOfMonth = new Date(year, month + 1, 1);
+        // Use UTC to construct start and end of month
+        const startOfMonth = new Date(Date.UTC(year, month, 1));
+        const endOfMonth = new Date(Date.UTC(year, month + 1, 1));
 
-        const result = await Triage.aggregate([
+        const aggregationResult = await Triage.aggregate([
             {
                 $match: {
-                    createdAt: {
-                        $gte: startOfMonth,
-                        $lt: endOfMonth,
-                    },
-                },
+                    date: { $gte: startOfMonth, $lt: endOfMonth }
+                }
             },
-            {
-                $unwind: "$paramedics",
-            },
+            { $unwind: "$paramedics" },
             {
                 $group: {
                     _id: "$paramedics",
-                    caseCount: { $sum: 1 },
-                },
+                    caseCount: { $sum: 1 }
+                }
             },
+            { $sort: { caseCount: -1 } },
+            { $limit: 1 },
             {
-                $sort: { caseCount: -1 },
+                $lookup: {
+                    from: "users", // Ensure this matches your User collection name
+                    localField: "_id",
+                    foreignField: "_id",
+                    as: "userDetails"
+                }
             },
+            { $unwind: { path: "$userDetails", preserveNullAndEmptyArrays: true } },
             {
-                $limit: 1,
-            },
+                $project: {
+                    paramedic: { $ifNull: ["$userDetails.username", "Unknown"] },
+                    caseCount: 1
+                }
+            }
         ]);
 
-        if (result.length > 0) {
-            const user = await User.findById(result[0]._id).select('username');
+        if (aggregationResult.length > 0) {
             results.push({
                 month: month + 1,
-                paramedic: user.username,
-                caseCount: result[0].caseCount,
+                paramedic: aggregationResult[0].paramedic,
+                caseCount: aggregationResult[0].caseCount
+            });
+        } else {
+            results.push({
+                month: month + 1,
+                paramedic: "No Data",
+                caseCount: 0
             });
         }
     }
 
-    return results;
+    return res.status(200).json({ results });
+
 });
 
 export const getLoggedInDevices = asyncHandler(async (req, res) => {
