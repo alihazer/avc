@@ -119,6 +119,7 @@
                             <tr>
                                 <th>Number</th>
                                 <th>Type</th>
+                                <th>This Month Cases</th>
                                 <th>Total Cases</th>
                                 <th>Actions</th>
                             </tr>
@@ -129,6 +130,7 @@
                                     <tr>
                                         <td><%= car.number %></td>
                                         <td><%= car.type %></td>
+                                        <td><%= car.triages.length %></td>
                                         <td><%= car.totalCases %></td>
                                         <td>
                                             <a href="/cars/<%= car._id %>" class="btn btn-primary">View</a>

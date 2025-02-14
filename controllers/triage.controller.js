@@ -30,10 +30,6 @@ const isMaterialAvailable = async (car, materials, userId) => {
         materialsUsed.push({ _id: material._id, quantity: material.quantity });
     }
 
-    const totalCasesOfTheCar = await Triage.countDocuments({ car_nb: car });
-
-    selectedCar.totalCases = totalCasesOfTheCar + 1;
-    await selectedCar.save();
     await CarLog.create({
         action: "Used",
         carId: selectedCar._id,
@@ -106,6 +102,11 @@ const createEmergencyTriage = asyncHandler(async (req, res) => {
             medicationAllergies,
             bloodglucoseLevel
         });
+
+        const selectedCar = await Car.findOne({ number: parseInt(car) });
+        const totalCasesOfTheCar = await Triage.countDocuments({ car_nb: car });
+        selectedCar.totalCases = totalCasesOfTheCar + 1;
+        await selectedCar.save();
         return triage ? res.status(201).redirect(`/triage/generate-pdf/${triage._id}`) : res.status(400).render("error", { message: "An error occurred", layout });
     } catch (error) {
         console.error(error);

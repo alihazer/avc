@@ -54,20 +54,43 @@ const getAddCarForm = asyncHandler(async (req, res) => {
 // Get all cars
 // GET /api/cars
 // Private/Admin
-
 const getCars = asyncHandler(async (req, res) => {
     try {
         const role = req.user.role.name;
         const haveAccess = (role === 'admin' || role === 'superadmin');
+
+        
+        // Get current month and year
+        const now = new Date();
+        const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+        const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59, 999);
+
+        // Fetch all cars
         const cars = await Car.find();
+
+        // Fetch triages for this month
+        const triages = await Triage.find({
+            date: { $gte: startOfMonth, $lte: endOfMonth }
+        });
+
+        // Attach triages to each car
+        const carsWithTriages = cars.map(car => {
+            return {
+                ...car.toObject(),
+                triages: triages.filter(t => t.car_nb === car.number)
+            };
+        });
+
         const layout = getLayoutName(req);
-        res.render("allCars", {cars, layout, haveAccess});
+        res.render("allCars", { cars: carsWithTriages, layout, haveAccess });
+
     } catch (error) {
         console.log(error);
         res.status(400);
         throw new Error(error.message);
     }
 });
+
 
 // Get car by id
 // GET /api/cars/:id

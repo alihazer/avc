@@ -325,19 +325,66 @@ export const getUsers = asyncHandler(async (req, res) => {
         const layout = getLayoutName(req);
         const user_id = req.user.id;
         const user = await User.findById(user_id).populate('role').select('-password');
-        // check if the user is admin or superadmin
+
+        // Check if the user is admin or superadmin
         if (user.role.name == 'admin' || user.role.name == 'superadmin') {
-            const users = await User.find({}).populate('role')
-            return res.status(200).render('allUsers', { users, addUser: true, layout, addAttendance: true, sendWhatsappMessage: true});
+            const users = await User.find({}).populate('role');
+
+            // Get triage counts for each user (checking both paramedics array and driver attribute)
+            const usersWithTriageCounts = await Promise.all(users.map(async (u) => {
+                const triageCount = await Triage.countDocuments({
+                    $or: [
+                        { paramedics: u._id }, // Check if the user ID is in the paramedics array
+                        { driver: u._id }      // Check if the user ID is the driver
+                    ]
+                });
+                return {
+                    ...u.toObject(),
+                    triageCount,
+                };
+            }));
+
+            return res.status(200).render('allUsers', { users: usersWithTriageCounts, addUser: true, layout, addAttendance: true, sendWhatsappMessage: true });
         }
+
+        // Fetch users based on shift days
         const users = await User.find({
             shiftDays: { $in: user.shiftDays }
         }).populate('role');
 
-        if(user.role.name == "shiftmanager"){
-            return res.status(200).render('allUsers', { users, addUser: false, layout, addAttendance: true, sendWhatsappMessage: false });
+        // For shift manager, add triage count
+        if (user.role.name == "shiftmanager") {
+            const usersWithTriageCounts = await Promise.all(users.map(async (u) => {
+                const triageCount = await Triage.countDocuments({
+                    $or: [
+                        { paramedics: u._id },
+                        { driver: u._id }
+                    ]
+                });
+                return {
+                    ...u.toObject(),
+                    triageCount,
+                };
+            }));
+
+            return res.status(200).render('allUsers', { users: usersWithTriageCounts, addUser: false, layout, addAttendance: true, sendWhatsappMessage: false });
         }
-        return res.status(200).render('allUsers', { users, addUser: false, layout, addAttendance: false, sendWhatsappMessage: false });
+
+        // For other users, add triage count
+        const usersWithTriageCounts = await Promise.all(users.map(async (u) => {
+            const triageCount = await Triage.countDocuments({
+                $or: [
+                    { paramedics: u._id },
+                    { driver: u._id }
+                ]
+            });
+            return {
+                ...u.toObject(),
+                triageCount,
+            };
+        }));
+
+        return res.status(200).render('allUsers', { users: usersWithTriageCounts, addUser: false, layout, addAttendance: false, sendWhatsappMessage: false });
     } catch (error) {
         console.log(error);
         const err = new Error('Something went wrong');
@@ -345,6 +392,8 @@ export const getUsers = asyncHandler(async (req, res) => {
         throw err;
     }
 });
+
+
 
 // Admin edit user
 export const getEditUser = asyncHandler(async (req, res) => {

@@ -5,6 +5,12 @@
         <br>
         <form action="/triage/emergency?car=<%=car%>" method="POST" class="triageForm">
             <div class="triage-form-group">
+                <label for="date">تاريخ الانطلاق:</label>
+                <div class="field">
+                    <input type="time" id="date" name="date" required>
+                </div>
+            </div>
+            <div class="triage-form-group">
                 <label for="time">:وقت الانطلاق</label>
                 <div class="field">
                     <input type="time" id="time" name="time" required>
