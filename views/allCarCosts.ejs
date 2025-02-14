@@ -22,6 +22,9 @@
                                 <th>العملة</th>
                                 <th>المؤسسة</th>
                                 <th>التاريخ</th>  
+                                <th>ملاحظات</th>
+                                <th>Action</th>
+                                
                             </tr>
                         </thead>
                         <tbody>
@@ -41,7 +44,19 @@
                                     <td><%= carCost.currency %></td>
                                     <td><%= carCost.paidFor %></td>
                                     <td><%= moment(carCost.date).format('DD-MM-YYYY') %></td>
-                                
+                                    <td>
+                                        <% if(carCost.note) { %>
+                                            <% const nots = carCost.note.split(' ') %>
+                                            <ul>
+                                                <% nots.forEach(function(note){ %>
+                                                    <li><%= note %></li>
+                                                <% }) %>
+                                            </ul>
+                                        <% } else { %>
+                                            -
+                                        <% } %>
+                                    </td>
+                                    <td><a  class="btn btn-primary" href="/cars/costs/edit-cost/<%=carCost._id%>">Edit</a></td>
                                 </tr>
                             <% }) %>
                         </tbody>

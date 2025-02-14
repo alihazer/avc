@@ -124,4 +124,48 @@ const getCarCostById = asyncHandler(async (req, res) => {
     }
 });
 
-export { renderCostForm, createCost, getAllCosts, getCostById, getCostByCar, getCarCostById };
+const getEditForm = asyncHandler(async (req, res) => {
+    const cost = await Cost.findById(req.params.id).populate("carId")
+    const allusers = await User.find().populate("role");
+    const drivers = allusers.filter(user => {
+        return user.role.name === "driver" || user.role.name === "shiftmanager";
+    });
+    const person = await User.findById(cost.person);
+    const cars = await Car.find();
+    const layout = getLayoutName(req);
+    res.render("editCost", { layout, cost, cars, users: drivers, moment, person });
+});
+
+
+const updateCost = asyncHandler(async (req, res) => {
+    try {
+        const { carId, cost, currency, date, cause, person, note, speedoMeterValue, litersCount } = req.body;
+        // Ensure the car exists before proceeding
+        const car = await Car.findById(carId);
+        if (!car) {
+            throw new Error("Car not found");
+        }
+        const carcost = await Cost.findById(req.params.id);
+        if(!carcost){
+            throw new Error("Cost not found");
+        }
+        const updatedCost = {
+            carId: car._id,
+            cost,
+            currency,
+            date,
+            cause,
+            person,
+            note,
+            speedoMeterValue,
+            litersCount
+        };
+        await Cost.findByIdAndUpdate(req.params.id, updatedCost);
+        res.redirect("/cars/costs/all");
+    } catch (error) {
+        console.error("Error in creating cost:", error.message);
+        res.status(500).render("error", { message: error.message });
+    }
+});
+
+export { renderCostForm, createCost, getAllCosts, getCostById, getCostByCar, getCarCostById, getEditForm, updateCost };

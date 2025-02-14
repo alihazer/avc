@@ -1,6 +1,6 @@
 import express from "express";
 import { addCar, updateCar, deleteCar, getCars, getCarById, getAddCarForm, getEditCarForm} from "../controllers/car.contoller.js";
-import {renderCostForm, createCost, getAllCosts, getCostById, getCarCostById} from "../controllers/carCost.controller.js";
+import {renderCostForm, createCost, getAllCosts, getCostById, getCarCostById, getEditForm, updateCost} from "../controllers/carCost.controller.js";
 import checkPermission from "../middlewares/checkPermission.js";
 import isLoggedIn from "../middlewares/isLoggedIn.js";
 
@@ -18,6 +18,8 @@ router.get("/costs/add", isLoggedIn ,checkPermission("manage_ambulances"), rende
 router.post("/costs/create", isLoggedIn ,checkPermission("manage_ambulances"), createCost);
 router.get("/costs/:id", isLoggedIn ,checkPermission("manage_ambulances"), getCostById);
 router.get("/:carId/costs/:year", isLoggedIn ,checkPermission("manage_ambulances"), getCarCostById);
+router.get("/costs/edit-cost/:id", isLoggedIn ,checkPermission("manage_ambulances"), getEditForm);
+router.post("/costs/edit-cost/:id", isLoggedIn ,checkPermission("manage_ambulances"), updateCost);
 
 
 export default router;

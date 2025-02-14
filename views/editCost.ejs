@@ -1,0 +1,105 @@
+<section>
+     <div class="container">
+         <div>
+             <a href="/cars/costs/all" class="back-arrow1"><i class="fa-solid fa-arrow-left"></i></a>
+             <div class="card">
+                 <div class="card-header">
+                     <h4>Car Cost Form</h4>
+                 </div>
+                 <div class="card-body">
+                     <form action="/cars/costs/edit-cost/<%=cost._id%>" method="POST">
+                         <div class="form-group" id="carId">
+                             <label for="carId">رقم السيارة </label>
+                             <select name="carId" id="car">
+                                 <% cars.forEach(car => { %>
+                                     <%if(cost.carId.number === car.number){%>
+                                         <option value="<%= car._id %>" selected><%= car.number %></option>
+                                        <%}else{%>
+                                             <option value="<%= car._id %>"><%= car.number %></option>
+                                        <%}%>
+                                 <% }); %>
+                             </select>
+                         </div>
+                         <div class="form-group">
+                             <label for="cause">السبب</label>
+                             <select name="cause" id="carCostCause">
+                              <% const causes = {
+                                     maintenance: "صيانة",
+                                     benzine: "بنزين",
+                                     oilchange: "غيار زيت"
+                              }
+
+                              %>
+                               <option value="select">اختر</option>
+                                   <% for (const cause in causes) { %>
+                                        <% if(cost.cause === cause){ %>
+                                        <option value="<%= cause %>" selected><%= causes[cause] %></option>
+                                        <% }else{ %>
+                                        <option value="<%= cause %>"><%= causes[cause] %></option>
+                                        <% } %>
+                                   <% } %>
+                              
+
+                             </select>
+                         </div>
+                         <div class="form-group" id="speedoMeterValue">
+                             <label>العداد</label>
+                             <input type="number" name="speedoMeterValue">
+                         </div>
+                         <div class="form-group" id="litersCount">
+                             <label>الكمية  /  ليتر</label>
+                             <input type="number" name="litersCount">
+                         </div>
+                         <div class="form-group">
+                             <label for="person">اسم الشخص المسؤول</label>
+                             <select name="person" id="person" class="person-select" multiple>
+                                 <% users.forEach(function(p){ %>
+                                       <% if(person._id.toString() == p._id.toString()){ %>
+                                        
+                                        <option value="<%= p._id %>" selected><%= p.fullNameInArabic %></option>
+                                        <% }else{ %>
+                                        <option value="<%= p._id %>"><%= p.fullNameInArabic %></option>
+                                        <% } %>
+
+                                     
+                                 <% }) %>
+                             </select>
+                         </div>                        
+                         <div class="form-group">
+                             <label for="cost">التكلفة</label>
+                             <input type="number" name="cost" id="cost" value="<%=cost.cost %>" required>
+                         </div>
+                         <div class="form-group">
+                             <!-- Currency -->
+                             <label for="currency">العملة</label>
+                             <% const currencies = {
+                                   usd: "دولار",
+                                   lbp: "ليرة لبنانية"
+                             } %>
+                             <select name="currency" id="currency">
+                                   <% for (const currency in currencies) { %>
+                                        <% if(cost.currency === currency){ %>
+                                        <option value="<%= currency %>" selected><%= currencies[currency] %></option>
+                                        <% }else{ %>
+                                        <option value="<%= currency %>"><%= currencies[currency] %></option>
+                                        <% } %>
+                                   <% } %>   
+                             </select>
+                         </div>
+ 
+                         <div class="form-group">
+                             <label for="date">التاريخ</label>
+                             <input type="date" name="date" id="date" value="<%= cost.date ? cost.date.toISOString().split('T')[0] : '' %>" required>
+                         </div>
+ 
+                         <div class="form-group">
+                             <label for="notes">ملاحظات</label>
+                             <textarea name="note" id="notes" cols="30" rows="10"><%=cost.note%></textarea>
+                         </div>
+                             <button type="submit" class="btn btn-primary">Submit</button>
+         
+                     </form>
+                 </div>
+         </div>
+     </div>
+ <!-- </section> -->
