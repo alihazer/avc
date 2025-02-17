@@ -12,6 +12,7 @@ const renderCostForm = asyncHandler(async (req, res) => {
     const layout = getLayoutName(req);
     const cars = await Car.find({ user: req.user._id });
     const users = await User.find();
+    console.log("Render Cost Form");
     res.render("carCostForm", { layout, cars, users });
 });
 
