@@ -434,7 +434,7 @@ const getTriageByMonth = async (year, month, page = 1, limit = 5) => {
             endDate = new Date(`${nextYear}-${nextMonth.toString().padStart(2, '0')}-01`);
 
             if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
-                throw new Error("Invalid date range");
+                return null;
             }
         }
 
