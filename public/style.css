@@ -1388,3 +1388,7 @@ footer .foot-info .foot-details{
     width: 100px; /* Adjust the size of the spinner as needed */
     height: 100px; /* Adjust the size of the spinner as needed */
 }
+
+.secondary-link{
+	color: var(--blue) !important;
+}

@@ -427,44 +427,30 @@ const getTriageByMonth = async (year, month, page = 1, limit = 5) => {
         let startDate = null;
         let endDate = null;
 
-        // Only apply date filter if year and month are provided and valid
         if (year && month && !isNaN(year) && !isNaN(month) && month >= 1 && month <= 12) {
-            // Ensure the year and month are zero-padded correctly
             startDate = new Date(`${year}-${month.toString().padStart(2, '0')}-01`);
-            
-            // Handle the case when the month is December (12) to avoid invalid month
-            const nextMonth = parseInt(month) === 12 ? 1 : parseInt(month) + 1;
-            const nextYear = parseInt(month) === 12 ? parseInt(year) + 1 : year;
-
+            const nextMonth = month === 12 ? 1 : month + 1;
+            const nextYear = month === 12 ? year + 1 : year;
             endDate = new Date(`${nextYear}-${nextMonth.toString().padStart(2, '0')}-01`);
 
-            // Check if the dates are valid
             if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
                 throw new Error("Invalid date range");
             }
         }
 
-        // Build the query based on the date range
-        const query = startDate && endDate ? {
-            date: {
-                $gte: startDate,
-                $lt: endDate
-            }
-        } : {};  // If no date range, fetch all triages
+        const query = startDate && endDate ? { date: { $gte: startDate, $lt: endDate } } : {};
 
         const triages = await Triage.find(query)
             .populate('moi')
             .sort({ createdAt: -1 })
             .skip(skip)
             .limit(limitNum);
+        console.log(pageNum);
 
         const totalTriages = await Triage.countDocuments(query);
+        const totalPages = Math.ceil(totalTriages / limitNum);
 
-        return {
-            triages,
-            totalPages: Math.ceil(totalTriages / limitNum),
-            currentPage: pageNum
-        };
+        return { triages, totalPages, currentPage: pageNum };
     } catch (error) {
         console.error(error);
         return null;
@@ -475,9 +461,10 @@ const getTriageByMonth = async (year, month, page = 1, limit = 5) => {
 
 const getTriageWithPagination = asyncHandler(async (req, res) => {
     const { year, month } = req.query;
+    const { page } = req.query;
 
     try {
-        const data = await getTriageByMonth(year, month, 1, 5);
+        const data = await getTriageByMonth(year, month, page, 20);
         
         // Check if data is null (likely due to invalid date range)
         if (!data) {
