@@ -468,7 +468,15 @@ const getTriageWithPagination = asyncHandler(async (req, res) => {
         
         // Check if data is null (likely due to invalid date range)
         if (!data) {
-            return res.status(400).json({ message: 'Invalid date range' });
+            return res.status(400).render('allTriagesWithFilter', {
+                triages: [],
+                selectedYear: year,
+                selectedMonth: month,
+                currentPage: 1,
+                totalPages: 1,
+                moment
+            }
+            );
         }
 
         if (req.xhr || req.headers.accept.indexOf('json') > -1) {
