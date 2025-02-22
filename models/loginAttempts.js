@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 
 const loginAttemptSchema = new mongoose.Schema({
+    deviceInfo : { type: String, required: true },
     ipAddress: { type: String, required: true },
     timestamp: { type: Date, default: Date.now }
 });

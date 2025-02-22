@@ -57,13 +57,13 @@ export const login = asyncHandler(async (req, res) => {
     try {
         const { username, password } = req.body;
         const ip = getIp(req);
-        const maxAttempts = 5;
+        const deviceInfo = req.headers['user-agent'] || 'Unknown';
 
         // Find user by username
         const user = await User.findOne({ username }).populate('role');
         if (!user) {
             // Record login attempt
-            await LoginAttempt.create({ ipAddress: ip });
+            await LoginAttempt.create({ ipAddress: ip, deviceInfo });
             return res.status(401).render('login', {
                 message: 'Invalid credentials',
                 layout: 'layouts/loginLayout',
@@ -74,7 +74,7 @@ export const login = asyncHandler(async (req, res) => {
         const isPasswordValid = await bcrypt.compare(password, user.password);
         if (!isPasswordValid) {
             // Record login attempt
-            await LoginAttempt.create({ ipAddress: ip });
+            await LoginAttempt.create({ ipAddress: ip, deviceInfo });
             return res.status(401).render('login', {
                 message: 'Invalid credentials',
                 layout: 'layouts/loginLayout',
@@ -89,9 +89,6 @@ export const login = asyncHandler(async (req, res) => {
 
         // Determine the environment for secure cookies
         const isProduction = process.env.NODE_ENV === 'production';
-
-        // Capture device info (e.g., user-agent)
-        const deviceInfo = req.headers['user-agent'];
         const ipAddress = getIp(req);
         const macAddress = await getMAC();
         // Capture current date
