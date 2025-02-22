@@ -416,7 +416,9 @@ const editTriage = asyncHandler(async (req, res) => {
 });
 
 
-
+function isLeapYear(year) {
+    return (year % 4 === 0 && (year % 100 !== 0 || year % 400 === 0));
+}
 
 const getTriageByMonth = async (year, month, page = 1, limit = 5) => {
     const pageNum = parseInt(page);
@@ -427,11 +429,20 @@ const getTriageByMonth = async (year, month, page = 1, limit = 5) => {
         let startDate = null;
         let endDate = null;
 
-        if (year && month && !isNaN(year) && !isNaN(month) && month >= 1 && month <= 12) {
+        if (year && month && !isNaN(year) && !isNaN(month) && month >= 1 && month <= 12) {  
             startDate = new Date(`${year}-${month.toString().padStart(2, '0')}-01`);
-            const nextMonth = month === 12 ? 1 : month + 1;
-            const nextYear = month === 12 ? year + 1 : year;
-            endDate = new Date(`${nextYear}-${nextMonth.toString().padStart(2, '0')}-01`);
+            if (parseInt(month) === 2) {
+                if (isLeapYear(year)) {
+                    endDate = new Date(`${year}-${month.toString().padStart(2, '0')}-29`); // Leap year (29 days)
+                } else {
+                    endDate = new Date(`${year}-${month.toString().padStart(2, '0')}-28`); // Non-leap year (28 days)
+                }
+            } else if ([4, 6, 9, 11].includes(month)) {
+                endDate = new Date(`${year}-${month.toString().padStart(2, '0')}-30`);
+            } else {
+
+                endDate = new Date(`${year}-${month.toString().padStart(2, '0')}-31`);
+            }
 
             if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
                 return null;
@@ -445,12 +456,11 @@ const getTriageByMonth = async (year, month, page = 1, limit = 5) => {
             .sort({ createdAt: -1 })
             .skip(skip)
             .limit(limitNum);
-        console.log(pageNum);
 
         const totalTriages = await Triage.countDocuments(query);
         const totalPages = Math.ceil(totalTriages / limitNum);
 
-        return { triages, totalPages, currentPage: pageNum };
+        return { triages, totalPages, currentPage: pageNum, totalTriages };
     } catch (error) {
         console.error(error);
         return null;
@@ -489,7 +499,8 @@ const getTriageWithPagination = asyncHandler(async (req, res) => {
                 selectedMonth: month,
                 currentPage: data.currentPage,
                 totalPages: data.totalPages,
-                moment
+                moment,
+                total: data.totalTriages
             });
         }
 
