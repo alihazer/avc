@@ -553,7 +553,7 @@ export const getUser = asyncHandler(async (req, res) => {
         if (!user) {
             return res.status(404).render('error', { message: 'User not found' });
         }
-        return res.status(200).render('user', { user, totalCases: totalCases.length });
+        return res.status(200).render('user', { user, totalCases: totalCases.length, moment });
     } catch (error) {
         console.log(error);
         const err = new Error('Something went wrong');

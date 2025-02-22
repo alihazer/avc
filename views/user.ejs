@@ -8,10 +8,10 @@
         
         <div class="profile-img" id="prof-img">
                 
-                <%if(user.profileImage == undefined){ %>
-                    <i class="fa-solid fa-user"></i>
-                <%}else{ %>
+                <%if(user.profileImage){ %>
                     <img src="<%= user.profileImage %>" alt="<%= user.username %>">
+                <%}else{ %>
+                    <i class="fa-solid fa-user"></i>
                 <% } %>
         </div>
         <div class="profile-info">
