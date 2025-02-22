@@ -134,7 +134,7 @@ export const login = asyncHandler(async (req, res) => {
         });
 
         // clear previous login attempts
-        await LoginAttempt.deleteMany({ ipAddress: ip });
+        await LoginAttempt.deleteMany({ ipAddress: ip, deviceInfo });
 
         // Redirect to dashboard
         res.status(200).redirect('/dashboard');
