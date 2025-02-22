@@ -7,17 +7,15 @@ const loginRateLimiter = async (req, res, next) => {
     const blockTime = 30 * 60 * 1000; 
 
     try {
-     console.log(ip);
         const attemptsCount = await LoginAttempt.countDocuments({
           deviceInfo,
           ipAddress: ip,
           timestamp: { $gte: new Date(Date.now() - blockTime) }
         });
-        console.log(attemptsCount);
         if (attemptsCount >= maxAttempts) {
             return res.status(429).render('login', {message: "Too many login attempts. Try again in 30 minutes.", layout: 'layouts/loginLayout'});
         }
-
+        req.loginAttempts = attemptsCount;
         next();
     } catch (error) {
         console.error("Rate limiter error:", error);

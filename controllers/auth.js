@@ -58,6 +58,8 @@ export const login = asyncHandler(async (req, res) => {
         const { username, password } = req.body;
         const ip = getIp(req);
         const deviceInfo = req.headers['user-agent'] || 'Unknown';
+        const attepts = req.loginAttempts;
+        const remainingAttempts = 5 - attepts;
 
         // Find user by username
         const user = await User.findOne({ username }).populate('role');
@@ -65,7 +67,7 @@ export const login = asyncHandler(async (req, res) => {
             // Record login attempt
             await LoginAttempt.create({ ipAddress: ip, deviceInfo });
             return res.status(401).render('login', {
-                message: 'Invalid credentials',
+                message: 'Invalid credentials, You still have ' + remainingAttempts + ' attempts',
                 layout: 'layouts/loginLayout',
             });
         }
@@ -76,7 +78,7 @@ export const login = asyncHandler(async (req, res) => {
             // Record login attempt
             await LoginAttempt.create({ ipAddress: ip, deviceInfo });
             return res.status(401).render('login', {
-                message: 'Invalid credentials',
+                message: 'Invalid credentials, You still have ' + remainingAttempts + ' attempts',
                 layout: 'layouts/loginLayout',
             });
         }
