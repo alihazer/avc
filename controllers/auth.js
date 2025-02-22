@@ -13,6 +13,7 @@ import { getItemsThisMonth } from "./materials.controller.js";
 import moment from "moment";
 import getMAC, { isMAC } from 'getmac'
 import LoggedInDevicesModel from "../models/LoggedInDevicesModel.js";
+import LoginAttempt from "../models/loginAttempts.js";
 
 
 export const register = asyncHandler(async (req, res) => {
@@ -55,10 +56,14 @@ function getIp(req) {
 export const login = asyncHandler(async (req, res) => {
     try {
         const { username, password } = req.body;
+        const ip = getIp(req);
+        const maxAttempts = 5;
 
         // Find user by username
         const user = await User.findOne({ username }).populate('role');
         if (!user) {
+            // Record login attempt
+            await LoginAttempt.create({ ipAddress: ip });
             return res.status(401).render('login', {
                 message: 'Invalid credentials',
                 layout: 'layouts/loginLayout',
@@ -68,6 +73,8 @@ export const login = asyncHandler(async (req, res) => {
         // Verify password
         const isPasswordValid = await bcrypt.compare(password, user.password);
         if (!isPasswordValid) {
+            // Record login attempt
+            await LoginAttempt.create({ ipAddress: ip });
             return res.status(401).render('login', {
                 message: 'Invalid credentials',
                 layout: 'layouts/loginLayout',
@@ -128,6 +135,9 @@ export const login = asyncHandler(async (req, res) => {
             secure: true,
             sameSite: isProduction ? 'Strict' : 'Lax',
         });
+
+        // clear previous login attempts
+        await LoginAttempt.deleteMany({ ipAddress: ip });
 
         // Redirect to dashboard
         res.status(200).redirect('/dashboard');
