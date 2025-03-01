@@ -1,4 +1,4 @@
-import {renderFirstForm, createEmergencyTriage, getLoggedInUserTriages, getThisMonthsTriages, generatePdf, getTriage, renderEditTriage, editTriage, getTriageWithPagination, getTriageStats, renderTriageStatsPage } from "../controllers/triage.controller.js";
+import {renderFirstForm, createEmergencyTriage, getLoggedInUserTriages, getThisMonthsTriages, generatePdf, getTriage, renderEditTriage, editTriage, getTriageWithPagination, getTriageStats, renderTriageStatsPage, deleteTriage } from "../controllers/triage.controller.js";
 import isLoggedIn from "../middlewares/isLoggedIn.js";
 import checkPermission from "../middlewares/checkPermission.js";
 import express from "express";
@@ -15,5 +15,6 @@ router.put('/edit/:id', isLoggedIn, checkPermission('create_triage'), editTriage
 router.get('/all', isLoggedIn, checkPermission('view_analytics'), getTriageWithPagination);
 router.get('/stats/:year', isLoggedIn, checkPermission('view_analytics'), getTriageStats);
 router.get('/stats', isLoggedIn, checkPermission('view_analytics'), renderTriageStatsPage);
+router.post('/delete/:id', isLoggedIn, checkPermission('create_triage'), deleteTriage);
 
 export default router;

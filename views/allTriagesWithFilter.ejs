@@ -59,6 +59,9 @@
                                 <td>
                                     <a href="/triage/edit/<%= triage._id %>" class="btn btn-primary">Edit</a>
                                     <a href="/triage/generate-pdf/<%= triage._id %>" class="btn btn-primary">View</a>
+                                    <form id="deleteForm" action="/triage/delete/<%= triage._id %>" method="POST" style="display: inline">
+                                        <button type="submit" class="btn btn-danger">Delete</button>
+                                    </form>
                                 </td>
                             </tr>
                         <% }) %>
@@ -78,3 +81,15 @@
         </div>
     </div>
 </div>
+<script>
+    const deleteForms = document.querySelectorAll('#deleteForm');
+    deleteForms.forEach(form => {
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const confirmDelete = confirm('Are you sure you want to delete this triage?');
+            if(confirmDelete) {
+                form.submit();
+            }
+        });
+    });
+</script>

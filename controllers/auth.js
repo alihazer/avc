@@ -335,7 +335,6 @@ export const getUsers = asyncHandler(async (req, res) => {
         const user_id = req.user.id;
         const user = await User.findById(user_id).populate('role').select('-password');
 
-        // Check if the user is admin or superadmin
         if (user.role.name == 'admin' || user.role.name == 'superadmin') {
             const searchQuery = req.query.search;
             let users;
@@ -343,7 +342,7 @@ export const getUsers = asyncHandler(async (req, res) => {
             if (searchQuery) {
                 users = await User.find({
                     $or: [
-                        { username: { $regex: searchQuery, $options: 'i' } }, // Case-insensitive search
+                        { username: { $regex: searchQuery, $options: 'i' } },
                         { phone: { $regex: searchQuery, $options: 'i' } },
                         { "role.name": { $regex: searchQuery, $options: 'i' } },
                         { status: { $regex: searchQuery, $options: 'i' } },
@@ -351,15 +350,14 @@ export const getUsers = asyncHandler(async (req, res) => {
                     ]
                 }).populate('role');
             } else {
-                users = await User.find().populate('role'); // Fetch all users if no search query
+                users = await User.find().populate('role');
             }
 
-            // Get triage counts for each user (checking both paramedics array and driver attribute)
             const usersWithTriageCounts = await Promise.all(users.map(async (u) => {
                 const triageCount = await Triage.countDocuments({
                     $or: [
-                        { paramedics: u._id }, // Check if the user ID is in the paramedics array
-                        { driver: u._id }      // Check if the user ID is the driver
+                        { paramedics: u._id }, 
+                        { driver: u._id }      
                     ]
                 });
                 return {
@@ -368,7 +366,28 @@ export const getUsers = asyncHandler(async (req, res) => {
                 };
             }));
 
-            return res.status(200).render('allUsers', { users: usersWithTriageCounts, addUser: true, layout, addAttendance: true, sendWhatsappMessage: true, searchQuery });
+            const thisMonth = new Date().getMonth();
+            const usersWithThisMonthTriageCounts = await Promise.all(users.map(async (u) => {
+                const triageCount = await Triage.countDocuments({
+                    $or: [
+                        { paramedics: u._id },
+                        { driver: u._id }
+                    ],
+                    date: { $gte: new Date(new Date().getFullYear(), thisMonth, 1) }
+                });
+                return {
+                    ...u.toObject(),
+                    triageCount,
+                };
+            }));
+
+            // join the two arrays
+            const combinedUsers = usersWithTriageCounts.map((user, index) => ({
+                ...user,
+                thisMonthTriageCount: usersWithThisMonthTriageCounts[index].triageCount
+            }));
+
+            return res.status(200).render('allUsers', { users: combinedUsers, addUser: true, layout, addAttendance: true, sendWhatsappMessage: true, searchQuery });
         }
 
         // Fetch users based on shift days
@@ -378,37 +397,9 @@ export const getUsers = asyncHandler(async (req, res) => {
 
         // For shift manager, add triage count
         if (user.role.name == "shiftmanager") {
-            const usersWithTriageCounts = await Promise.all(users.map(async (u) => {
-                const triageCount = await Triage.countDocuments({
-                    $or: [
-                        { paramedics: u._id },
-                        { driver: u._id }
-                    ]
-                });
-                return {
-                    ...u.toObject(),
-                    triageCount,
-                };
-            }));
-
-            return res.status(200).render('allUsers', { users: usersWithTriageCounts, addUser: false, layout, addAttendance: true, sendWhatsappMessage: false, searchQuery: '' });
+            return res.status(200).render('allUsers', { users, addUser: false, layout, addAttendance: true, sendWhatsappMessage: false, searchQuery: '' });
         }
-
-        // For other users, add triage count
-        const usersWithTriageCounts = await Promise.all(users.map(async (u) => {
-            const triageCount = await Triage.countDocuments({
-                $or: [
-                    { paramedics: u._id },
-                    { driver: u._id }
-                ]
-            });
-            return {
-                ...u.toObject(),
-                triageCount,
-            };
-        }));
-
-        return res.status(200).render('allUsers', { users: usersWithTriageCounts, addUser: false, layout, addAttendance: false, sendWhatsappMessage: false, searchQuery: '' });
+        return res.status(200).render('allUsers', { users, addUser: false, layout, addAttendance: false, sendWhatsappMessage: false, searchQuery: '' });
     } catch (error) {
         console.log(error);
         const err = new Error('Something went wrong');

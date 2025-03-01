@@ -136,6 +136,7 @@
                                 <th>Blood Type</th>
                                 
                                 <%if(addUser) {%>
+                                    <th>This Month Cases</th>
                                     <th>Total Cases</th>
                                     <th>Actions</th>
                                 <%} %>
@@ -163,6 +164,7 @@
                                         <td><%= user.shiftDays %></td>
                                         <td><%= user.bloodType %></td>
                                         <%if(addUser) {%>
+                                            <td><%= user.thisMonthTriageCount%></td>
                                             <td><%= user.triageCount %></td>
                                             <td>
                                                 <a href="/users/view/<%= user._id %>" class="btn btn-primary">View</a>

@@ -476,7 +476,6 @@ const getTriageWithPagination = asyncHandler(async (req, res) => {
     try {
         const data = await getTriageByMonth(year, month, page, 20);
         
-        // Check if data is null (likely due to invalid date range)
         if (!data) {
             return res.status(400).render('allTriagesWithFilter', {
                 triages: [],
@@ -577,5 +576,22 @@ const renderTriageStatsPage = asyncHandler(async (req, res) => {
 });
 
 
+const deleteTriage = asyncHandler(async (req, res) => {
+    try {
+        const { id } = req.params;
+        const triage = await Triage.findById(id);
+        if (!triage) {
+            return res.redirect('/triage/all');
+        }
+        await Triage.findByIdAndDelete(id);
+        return res.redirect('/triage/all');
+    } catch (error) {
+        console.error(error);
+        return res.redirect('/triage/all');
+    }
+});
 
-export { renderFirstForm, createEmergencyTriage, getLoggedInUserTriages, getMyTriagesCount, getThisMonthsTriages, generatePdf, getTriage, getTheMostDayTriagesInTheMonth, renderEditTriage, editTriage, getTriageByMonth, getTriageWithPagination, getTriageStats, renderTriageStatsPage};
+
+
+
+export { renderFirstForm, createEmergencyTriage, getLoggedInUserTriages, getMyTriagesCount, getThisMonthsTriages, generatePdf, getTriage, getTheMostDayTriagesInTheMonth, renderEditTriage, editTriage, getTriageByMonth, getTriageWithPagination, getTriageStats, renderTriageStatsPage, deleteTriage};
