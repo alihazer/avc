@@ -3,7 +3,7 @@
         <h1>انقاذ</h1>
         <br>
         <br>
-        <form action="/triage/emergency?car=<%=car%>" method="POST" class="triageForm">
+        <form id="triageForm"  action="/triage/emergency?car=<%=car%>" method="POST" class="triageForm">
             <div class="triage-form-group">
                 <label for="time">:وقت الانطلاق</label>
                 <div class="field">
@@ -67,7 +67,7 @@
             </div>
             <div class="triage-form-group">
                 <div class="field">
-                    <button class="btn btn-primary" type="submit">Done</button>
+                    <button id="submitBtn" class="btn btn-primary" type="submit">Done</button>
                 </div>
             </div>
         </form>

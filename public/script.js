@@ -272,3 +272,22 @@ $(document).ready(function () {
         }
     });
 });
+
+
+const triageForm = document.getElementById('triageForm');
+if(triageForm){
+	triageForm.addEventListener("submit", function(e) {
+		let form = e.target;
+		let submitBtn = document.getElementById("submitBtn");
+	 
+		// Check if form is valid using HTML5 validation
+		if (!form.checkValidity()) {
+		    e.preventDefault(); // Stop submission
+		    form.reportValidity(); // Show built-in validation messages
+		    submitBtn.disabled = false; // Re-enable the button
+		} else {
+		    submitBtn.disabled = true; // Disable only if valid
+		}
+		console.log(submitBtn.disabled);
+	 });
+}
