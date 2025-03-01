@@ -191,7 +191,7 @@ $(document).ready(function() {
 	$('.rescuer-select').select2({
 		placeholder: "Select..",
 		allowClear: true,
-		maximumSelectionLength: 3
+		maximumSelectionLength: 6
 	});
 
 	$('.moi-select').select2({
