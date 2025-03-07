@@ -31,6 +31,10 @@ const types = [
         "name": "انقاذ",
         "code": "rescue",
     },
+    {
+        "name": "نشاط",
+        "code": "activity",
+    }
 ]
 
 export default types;

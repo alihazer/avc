@@ -8,7 +8,7 @@ const TriageSchema = new mongoose.Schema({
     case_type: {
         type: String,
         // removed required to make it nullable
-        enum: ["emergency", "medical", "death", "accident", "change", "inside", "fire", "غارة", "rescue", "other"],
+        enum: ["emergency", "medical", "death", "accident", "change", "inside", "fire", "غارة", "rescue", "other", "activity"],
     },
     car_nb: {
         type: Number,

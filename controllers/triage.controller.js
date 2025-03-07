@@ -189,8 +189,14 @@ const renderFirstForm = asyncHandler(async (req, res) => {
     if(type === "rescue"){
         return res.status(200).render("rescueTriageForm", { type, car, materials, paramedics, layout, drivers, locations });
     }
+    if(type === "activity"){
+        return res.status(200).render("activityTriageForm", { type, car, paramedics, layout, drivers });
+    }
     if(type === "غارة"){
         return res.status(200).render("gharaTriageForm", { type, car, materials, paramedics, layout, drivers, locations, mois });
+    }
+    else{
+        return res.status(400).render("error", { message: "Invalid Triage type", layout });
     }
 
 });
@@ -288,6 +294,8 @@ const getTriage = asyncHandler(async(req, res)=>{
                 return res.status(200).render("partials/triage/rescue", {triage, moment, type: "إنقاذ", layout});
             case "غارة":
                 return res.status(200).render("partials/triage/ghara", {triage, moment, type: "غارة", layout});
+            case "activity":
+                return res.status(200).render("partials/triage/activity", {triage, moment, type: "نشاط", layout});
             default:
                 return res.status(200).render("error", {message: "Something went wrong", layout});
         }

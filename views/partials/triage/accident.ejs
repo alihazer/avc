@@ -32,13 +32,9 @@
                     <th>Paramedics</th>
                     <td>
                         <ul>
-                            <% if (triage.paramedics?.length) { %>
-                                <% triage.paramedics.forEach(paramedic => { %>
-                                    <li><%= paramedic.fullNameInArabic || 'N/A' %></li>
-                                <% }); %>
-                            <% } else { %>
-                                <li>N/A</li>
-                            <% } %>
+                            <% triage.paramedics.forEach(paramedic => { %>
+                                <li><%= paramedic.fullNameInArabic %></li>
+                            <% }); %>
                         </ul>
                     </td>
                 </tr>

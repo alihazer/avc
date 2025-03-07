@@ -38,11 +38,9 @@
                     <th>Paramedics</th>
                     <td>
                         <ul>
-                            <li>
                             <% triage.paramedics.forEach(paramedic => { %>
-                                <%= paramedic.fullNameInArabic %>,
+                                <li><%= paramedic.fullNameInArabic %></li>
                             <% }); %>
-                            </li>
                         </ul>
                     </td>
                 </tr>

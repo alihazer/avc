@@ -126,6 +126,7 @@ export const login = asyncHandler(async (req, res) => {
             httpOnly: true,
             secure: true, // Ensures the cookie is only sent over HTTPS in production
             sameSite: isProduction ? 'Strict' : 'Lax',
+            maxAge: 1000 * 60 * 60 * 24 * 7, 
         });
 
         // Set user details in cookie (excluding password)
@@ -133,6 +134,7 @@ export const login = asyncHandler(async (req, res) => {
             httpOnly: true,
             secure: true,
             sameSite: isProduction ? 'Strict' : 'Lax',
+            maxAge: 1000 * 60 * 60 * 24 * 7,
         });
 
         // clear previous login attempts
