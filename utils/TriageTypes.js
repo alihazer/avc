@@ -34,6 +34,22 @@ const types = [
     {
         "name": "نشاط",
         "code": "activity",
+    },
+    {
+        "name": "تأمين مستلزمات",
+        "code": "borrow",
+    },
+    {
+        "name": "نشاط كشاف",
+        "code": "scout",
+    },
+    {
+        "name": "تغطية مباراة كرة قدم",
+        "code": "football", 
+    },
+    {
+        "name": "تغطية مجلس عزاء",
+        "code": "husseiniya",
     }
 ]
 

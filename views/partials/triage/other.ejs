@@ -1,0 +1,97 @@
+<div id="content1">
+    
+     <div class="tables-container">
+         <div>
+
+             <table>
+                 <tr>
+                     <th>Type</th>
+                     <td><%=type%></td>
+                    
+                 </tr>
+                 <tr>
+                     <th>Time</th>
+                     <td><%= moment(triage.date).format('DD-MM-YYYY')%> - <%= triage.time %></td>
+                 </tr>
+ 
+                 <tr>
+                     <th>Car Number</th>
+                     <td><%= triage.car_nb %></td>
+                 </tr>
+                 <tr>
+                     <th>From</th>
+                     <td><%= triage.from %></td>
+                 </tr>
+                 <tr>
+                     <th>To</th>
+                     <td><%= triage.to %></td>
+                 </tr>
+                 <tr>
+                     <th>Driver Name</th>
+                     <td><%= triage.driver.fullNameInArabic %></td>
+                 </tr>
+                 <tr>
+                     <th>Paramedics</th>
+                     <td>
+                         <ul>
+                             <% triage.paramedics.forEach(paramedic => { %>
+                                 <li><%= paramedic.fullNameInArabic %></li>
+                             <% }); %>
+                         </ul>
+                     </td>
+                 </tr>
+                 <% if (triage.patient_name != null) { %>
+                    <tr>
+                         <th>Details</th>
+                         <td id="name"><%= triage.patient_name %></td>
+                     </tr>
+                 <% } %>
+                 
+                     <tr>
+                         <th>Approval Number:</th>
+                         <td>
+                             <%if(triage.approval_nb === null){ %>
+                                 <span style="color: red;">No Approval Number</span>
+                             <%} else { %>
+                                 <%=triage.approval_nb %>
+                             <%} %>
+                         </td>
+                     </tr>
+                 </tr>
+             </table>
+         </div>
+ 
+     </div>
+     <button id="download" class="btn btn-primary" onclick="downloadPdf(`<%=type%>` ,`<%=triage.patient_name%>`,`<%=moment(triage.date).format('DD-MM-YYYY') %>`)">Download PDF</button>
+ </div>
+ 
+ <script>
+     function downloadPdf(type, name, date) {
+          const content = document.getElementById('content1');
+          const downloadBtn = document.getElementById('download');
+          downloadBtn.style.display = 'none';
+          const sanitizedPatientName = name.replace(/\s/g, '_');
+
+          console.log(type);
+          
+          const options = {
+              margin: [0.5, 0.5, 0.5, 0.5], // Add margin to the PDF
+              filename: `${type}_{sanitizedPatientName}_${date}.pdf`,
+              image: { type: 'jpeg', quality: 0.98 },
+              html2canvas: { scale: 2, letterRendering: true },
+              jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+          };
+          
+          html2pdf()
+              .from(content)
+              .set(options)
+              .toPdf()
+              .get('pdf')
+              .then(pdf => {
+                  pdf.save(`${type}_${sanitizedPatientName}_${date}.pdf`);
+                  window.location.href = '/dashboard';  // Redirect after download
+              });
+      }
+  </script>
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+ 

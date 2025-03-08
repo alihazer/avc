@@ -195,6 +195,18 @@ const renderFirstForm = asyncHandler(async (req, res) => {
     if(type === "غارة"){
         return res.status(200).render("gharaTriageForm", { type, car, materials, paramedics, layout, drivers, locations, mois });
     }
+    if(type === "borrow"){
+        return res.status(200).render("borrowTriageForm", { type, car, paramedics, layout, drivers, locations });
+    }
+    if(type === "scout"){
+        return res.status(200).render("scoutTriageForm", { type, car, paramedics, layout, drivers, locations });
+    }
+    if(type === "football"){
+        return res.status(200).render("footballTriageForm", { type, car, materials, paramedics, layout, drivers, locations });
+    }
+    if(type === "husseiniya"){
+        return res.status(200).render("husseiniyaTriageForm", { type, car, materials, paramedics, layout, drivers, locations });
+    }
     else{
         return res.status(400).render("error", { message: "Invalid Triage type", layout });
     }
@@ -296,6 +308,12 @@ const getTriage = asyncHandler(async(req, res)=>{
                 return res.status(200).render("partials/triage/ghara", {triage, moment, type: "غارة", layout});
             case "activity":
                 return res.status(200).render("partials/triage/activity", {triage, moment, type: "نشاط", layout});
+            case "borrow":
+            case "scout":
+            case "football":
+            case "husseiniya":
+                const casType = types.find(t => t.code.toString() === triage.case_type.toString());
+                return res.status(200).render("partials/triage/other", {triage, moment, type: casType.name, layout});
             default:
                 return res.status(200).render("error", {message: "Something went wrong", layout});
         }

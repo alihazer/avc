@@ -1,6 +1,6 @@
 <div class="container">
      <div class="card triage" style="padding: 20px;">
-         <h1>نشاط</h1>
+         <h1>تغطية مباراة كرة قدم</h1>
          <br>
          <br>
          <form action="/triage/emergency?car=<%=car%>" method="POST" class="triageForm">
@@ -21,7 +21,7 @@
                  <label for="from">:من</label>
                  <div class="field">
                     <input class="form-control" type="text" name="from" id="from" required>
-                 </div>
+               </div>
              </div>
  
              <div class="triage-form-group">
@@ -50,24 +50,10 @@
                  </select>
              </div>
  
-             <div class="triage-form-group">
-                 <label for="patient_name"> اسم النشاط: </label>
-                 <div class="field">
-                     <input type="text" id="patient_name" name="patient_name" required>
-                 </div>
-             </div>
- 
              <div class="section-title"><label for="notes">:ملاحظات</label></div>
              <div class="triage-form-group">
                  <div class="field">
                      <textarea name="notes" id="notes" cols="30" rows="10"></textarea>
-                 </div>
-             </div>
- 
-             <div class="triage-form-group">
-                 <label for="ap_nb">:رقم الموافقة</label>
-                 <div class="field">
-                     <input type="number" min="0" id="ap_nb" name="approval_nb">
                  </div>
              </div>
              <div class="triage-form-group">
