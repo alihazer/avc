@@ -44,7 +44,7 @@ const types = [
         "code": "scout",
     },
     {
-        "name": "تغطية مباراة كرة قدم",
+        "name": "تغطية نشاط رياضي",
         "code": "football", 
     },
     {
