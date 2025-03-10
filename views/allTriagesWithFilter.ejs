@@ -18,6 +18,17 @@
                     <% } %>
                 </select>
                 <button type="submit" class="btn btn-primary">Apply</button>
+                <a href="/triage/all" class="btn btn-primary">Reset</a>
+            </form>
+            <form id="filter-form" action="/triage/all">
+                    <label for="moi">MOI:</label>
+                    <select id="moi" class="moi-select" name="moi[]" multiple>
+                        <% mois.forEach(function(moi) { %>
+                            <option value="<%= moi.id %>" <%= selectedMoi.includes(moi.id) ? 'selected' : '' %>><%= moi.name %></option>
+                        <% }) %>
+                    </select>
+                <button type="submit" class="btn btn-primary">Apply</button>
+                <a href="/triage/all" class="btn btn-primary">Reset</a>
             </form>
         </div>
         <div class="table-responsive">    
@@ -75,10 +86,19 @@
         </div>
         <div class="pagination">
             <% for (let i = 1; i <= totalPages; i++) { %>
-                <a href="/triage/all?year=<%= selectedYear %>&month=<%= selectedMonth %>&page=<%= i %>" 
+                <% 
+                    let url = `/triage/all?year=${selectedYear}&month=${selectedMonth}&page=${i}`;
+                    if (selectedMoi.length > 0) {
+                        selectedMoi.forEach(moi => {
+                            url += `&moi=${moi}`;
+                        });
+                    }
+                %>
+                <a href="<%= url %>" 
                    class="btn <%= i === parseInt(currentPage) ? 'btn-primary' : 'secondary-link' %>"><%= i %></a>
             <% } %>
         </div>
+        
     </div>
 </div>
 <script>

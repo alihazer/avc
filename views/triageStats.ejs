@@ -265,7 +265,6 @@ async function renderMostParamedic(year) {
     tbody.innerHTML = '<tr><td colspan="3">Loading...</td></tr>';
 
     const data = await fetchMostParamedic(year);
-    console.log('Data:', data);
     
     if (!data || data.length === 0) {
       tbody.innerHTML = '<tr><td colspan="3">No data available</td></tr>';
@@ -316,7 +315,6 @@ async function renderMostDriver(year) {
     tbody.innerHTML = '<tr><td colspan="3">Loading...</td></tr>';
 
     const data = await fetchMostDriver(year);
-    console.log('DataD:', data);
     
     if (!data || data.length === 0) {
       tbody.innerHTML = '<tr><td colspan="3">No data available</td></tr>';

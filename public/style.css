@@ -969,6 +969,7 @@ img {
 .moi-select {
     border-radius: 4px;
     padding: 10px;
+    height: 20px;
     width: 100%; /* Full width for mobile */
     max-width: 400px; /* Ensure select elements don't exceed this width */
 }

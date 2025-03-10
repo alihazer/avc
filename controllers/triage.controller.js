@@ -137,7 +137,7 @@ const renderFirstForm = asyncHandler(async (req, res) => {
     const medicalHistories = await MedicalHistory.find({});
     const surgicalHistories = await SurgicalHistory.find({});
     const mois = await Moi.find({});
-    const drivers = await User.aggregate([
+    let drivers = await User.aggregate([
         {
           $lookup: {
             from: 'roles',
@@ -151,7 +151,7 @@ const renderFirstForm = asyncHandler(async (req, res) => {
         },
         {
           $match: {
-            'role.name': { $in: ['driver', 'shiftmanager'] }
+            'role.name': { $in: ['driver', 'shiftmanager', 'superadmin'] }
           }
         },
         {
@@ -162,11 +162,12 @@ const renderFirstForm = asyncHandler(async (req, res) => {
           }
         }
       ]);
-
-    const paramedics = await User.find({});
     
+    const paramedics = await User.find({});
+    // execlude alihazer from drivers
+    drivers = drivers.filter(driver => driver.username !== "alihazer");
     if(type === "emergency"){
-        return res.status(200).render("emergencyTriageForm", {type, car, materials, medicalHistories, surgicalHistories, drivers, paramedics, locations, mois, layout });
+        return res.status(200).render("em   ergencyTriageForm", {type, car, materials, medicalHistories, surgicalHistories, drivers, paramedics, locations, mois, layout });
     }
     if(type === "medical"){
         return res.status(200).render("medicalTriageForm", { type, car, materials, medicalHistories, surgicalHistories, drivers, paramedics,locations, layout });
@@ -446,14 +447,14 @@ function isLeapYear(year) {
     return (year % 4 === 0 && (year % 100 !== 0 || year % 400 === 0));
 }
 
-const getTriageByMonth = async (year, month, page = 1, limit = 5) => {
+const getTriageByMonth = async (year, month, page = 1, limit = 5, moi = null) => {
     const pageNum = parseInt(page);
     const limitNum = parseInt(limit);
     const skip = (pageNum - 1) * limitNum;
 
     try {
-        let startDate = null;
-        let endDate = null;
+        let startDate = new Date(`2025-01-01`);
+        let endDate = new Date();
 
         if (year && month && !isNaN(year) && !isNaN(month) && month >= 1 && month <= 12) {  
             startDate = new Date(`${year}-${month.toString().padStart(2, '0')}-01`);
@@ -475,7 +476,15 @@ const getTriageByMonth = async (year, month, page = 1, limit = 5) => {
             }
         }
 
-        const query = startDate && endDate ? { date: { $gte: startDate, $lt: endDate } } : {};
+        let query = startDate && endDate ? { date: { $gte: startDate, $lt: endDate } } : {};
+        if (moi && moi.length > 0) {
+            if (moi.length > 1) {
+            query.moi = { $all: moi };
+            } else {
+            query.moi = { $in: moi };
+            }
+        }
+        console.log(query);
 
         const triages = await Triage.find(query)
             .populate('moi')
@@ -496,12 +505,13 @@ const getTriageByMonth = async (year, month, page = 1, limit = 5) => {
 
 
 const getTriageWithPagination = asyncHandler(async (req, res) => {
-    const { year, month } = req.query;
+    const { year, month, moi} = req.query;
     const { page } = req.query;
+    const isMoiArray = Array.isArray(moi);
 
     try {
-        const data = await getTriageByMonth(year, month, page, 20);
-        
+        const data = await getTriageByMonth(year, month, page, 5, moi);
+        const mois = await Moi.find({}).exec();
         if (!data) {
             return res.status(400).render('allTriagesWithFilter', {
                 triages: [],
@@ -509,7 +519,10 @@ const getTriageWithPagination = asyncHandler(async (req, res) => {
                 selectedMonth: month,
                 currentPage: 1,
                 totalPages: 1,
-                moment
+                moment,
+                total: 0,
+                mois,
+                selectedMoi: moi ? isMoiArray ? moi : [moi] : "",
             }
             );
         }
@@ -525,7 +538,9 @@ const getTriageWithPagination = asyncHandler(async (req, res) => {
                 currentPage: data.currentPage,
                 totalPages: data.totalPages,
                 moment,
-                total: data.totalTriages
+                total: data.totalTriages,
+                mois,
+                selectedMoi: moi ? isMoiArray ? moi : [moi] : "",
             });
         }
 
