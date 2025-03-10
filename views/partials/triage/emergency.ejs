@@ -87,6 +87,38 @@
                         </ul>
                     </td>
                 </tr>
+                <% console.log(triage.dcap_btls) %>
+                <% if(Object.values(triage.dcap_btls).some(value => value === true)) {%>
+                    <tr>
+                        <% const letters = {
+                            d: 'Deformation',
+                            c: 'Contusion',
+                            a: 'Abrasion',
+                            p: 'Penetration',
+                            b: 'Burn',
+                            t: 'Tenderness',
+                            l: 'Laceration',
+                            s: 'Swelling'
+                        }; %>
+                        <th>DCAP_BTLS</th>
+                        <% const trueLetters = triage.dcap_btls
+                            ? Object.entries(triage.dcap_btls)
+                                  .filter(([key, value]) => value)
+                                  .map(([key]) => letters[key])
+                            : []; %>
+                        <td>
+                            <ul>
+                                <% if (trueLetters.length) { %>
+                                    <% trueLetters.forEach(letter => { %>
+                                        <li><%= letter %></li>
+                                    <% }); %>
+                                <% } else { %>
+                                    <li>N/A</li>
+                                <% } %>
+                            </ul>
+                        </td>
+                    </tr>
+                <% } %>
                 <tr>
                     <th>Vitals</th>
                     <td>

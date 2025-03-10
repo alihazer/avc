@@ -291,3 +291,18 @@ if(triageForm){
 		console.log(submitBtn.disabled);
 	 });
 }
+
+if(document.getElementById('isTrauma')){
+	const isTraumaSelect = document.getElementById('isTrauma');
+	const dcap_btls = document.getElementById('dcap-btls');
+	isTraumaSelect.addEventListener('change', function() {
+		if(this.value === 'true') {
+			dcap_btls.style.display = 'block';
+		} else {
+			const hiddenDcap = document.getElementById('dcap_btls');
+			hiddenDcap.value = JSON.stringify({}); // Reset the hidden input value
+			dcap_btls.style.display = 'none';
+		}
+	}
+	);
+}

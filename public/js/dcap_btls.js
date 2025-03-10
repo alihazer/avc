@@ -8,6 +8,9 @@
         l: false,
         s: false
     }
+
+if(document.getElementById("dcap-btls") !== null){
+
     const checkboxes = document.querySelectorAll('.dcap-btls-letter input[type="checkbox"]');
     checkboxes.forEach(checkbox => {
         checkbox.addEventListener('change', function() {
@@ -16,5 +19,6 @@
             hiddenDcap.value = JSON.stringify(dcap_btls);
         });
     });
+}
 
 
