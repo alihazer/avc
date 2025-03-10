@@ -5,6 +5,7 @@ import checkPermission from '../middlewares/checkPermission.js';
 import isLoggedIn from '../middlewares/isLoggedIn.js';
 import isActive from '../middlewares/isActive.js';
 import loginRateLimiter from '../middlewares/LoginAttempts.js';
+import { getTriagesForUser } from '../controllers/triage.controller.js';
 
 router.get('/', (req, res) => {
     res.redirect('/login');
@@ -26,4 +27,5 @@ router.put('/users/edit/:id', isLoggedIn, checkPermission("manage_users"), editU
 router.get('/most-paramedic/:year', isLoggedIn , getMostParamedicByYear);
 router.get('/most-driver/:year', isLoggedIn , getMostDriverByYear);
 router.get('/logged-in-devices', isLoggedIn, getLoggedInDevices);
+router.get('/users/triages/:id', isLoggedIn, checkPermission("manage_users"), getTriagesForUser);
 export default router;

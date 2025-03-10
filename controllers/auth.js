@@ -242,16 +242,16 @@ export const getUserProfile = asyncHandler(async (req, res) => {
     const role = req.user.role.name;
     let totalCases = 0;
     const user = await User.findById(req.user.id).populate('role').select('-password');
-    if (role == 'driver') {
-        totalCases = await Triage.find({
+    
+        const drivingCases = await Triage.find({
             driver: req.user.id
         });
-    }
-    else {
-        totalCases = await Triage.find({
+
+        const paramedicCases = await Triage.find({
             paramedics: { $in: [req.user.id] }
         });
-    }
+
+        totalCases = drivingCases.length + paramedicCases.length;
 
     return res.status(200).render('profile', { totalCases: totalCases.length, user, layout, moment });
 

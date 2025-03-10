@@ -11,6 +11,7 @@ import Moi from "../models/Moi.js";
 import CarLog from "../models/CarLog.js";
 import moment from "moment";
 import getLayoutName from "../utils/getLayoutName.js";
+import { identcode } from "bwip-js/node";
 
 
 const isMaterialAvailable = async (car, materials, userId) => {
@@ -484,7 +485,6 @@ const getTriageByMonth = async (year, month, page = 1, limit = 5, moi = null) =>
             query.moi = { $in: moi };
             }
         }
-        console.log(query);
 
         const triages = await Triage.find(query)
             .populate('moi')
@@ -620,19 +620,33 @@ const renderTriageStatsPage = asyncHandler(async (req, res) => {
 const deleteTriage = asyncHandler(async (req, res) => {
     try {
         const { id } = req.params;
+        const { user } = req.body;
         const triage = await Triage.findById(id);
         if (!triage) {
             return res.redirect('/triage/all');
         }
         await Triage.findByIdAndDelete(id);
-        return res.redirect('/triage/all');
+        return user ? res.redirect(`/users/triages/${user}`) : res.redirect('/triage/all');
     } catch (error) {
         console.error(error);
         return res.redirect('/triage/all');
     }
 });
 
+const getTriagesForUser = asyncHandler(async (req, res) => {
+    const { id } = req.params;
+    const user = await User.findById(id);
+    if(!user){
+        return res.status(404).render("error", {message: "User not found"});
+    }
+    const driverTriages = await Triage.find({ driver: id }).sort({ createdAt: -1 }).exec();
+    const paramedicTriages = await Triage.find({
+        paramedics: { $in: [id] }
+    }).sort({ createdAt: -1 }).exec();
+    const allTriages = [...driverTriages, ...paramedicTriages];
+    return res.status(200).render('allTiagesForUser', {total: allTriages.length, triages:  allTriages, moment, user });
+})
 
 
 
-export { renderFirstForm, createEmergencyTriage, getLoggedInUserTriages, getMyTriagesCount, getThisMonthsTriages, generatePdf, getTriage, getTheMostDayTriagesInTheMonth, renderEditTriage, editTriage, getTriageByMonth, getTriageWithPagination, getTriageStats, renderTriageStatsPage, deleteTriage};
+export { renderFirstForm, createEmergencyTriage, getLoggedInUserTriages, getMyTriagesCount, getThisMonthsTriages, generatePdf, getTriage, getTheMostDayTriagesInTheMonth, renderEditTriage, editTriage, getTriageByMonth, getTriageWithPagination, getTriageStats, renderTriageStatsPage, deleteTriage, getTriagesForUser};
