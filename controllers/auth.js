@@ -532,21 +532,17 @@ export const getUser = asyncHandler(async (req, res) => {
     try {
         const user = await User.findById(req.params.id).populate('role').select('-password');
         let totalCases = 0;
-        if (user.role.name == 'driver') {
-            totalCases = await Triage.find({
-                driver: user.id
-            });
-        }
-        else {
-            totalCases = await Triage.find({
-                paramedics: { $in: [user.id] }
-            });
-        }
-
         if (!user) {
             return res.status(404).render('error', { message: 'User not found' });
         }
-        return res.status(200).render('user', { user, totalCases: totalCases.length, moment });
+        const drivingCases = await Triage.find({
+            driver: req.params.id
+        });
+        const paramedicCases = await Triage.find({
+            paramedics: { $in: [req.params.id] }
+        });
+        totalCases = drivingCases.length + paramedicCases.length;
+        return res.status(200).render('user', { user, totalCases, moment });
     } catch (error) {
         console.log(error);
         const err = new Error('Something went wrong');
