@@ -168,7 +168,7 @@ const renderFirstForm = asyncHandler(async (req, res) => {
     // execlude alihazer from drivers
     drivers = drivers.filter(driver => driver.username !== "alihazer");
     if(type === "emergency"){
-        return res.status(200).render("em   ergencyTriageForm", {type, car, materials, medicalHistories, surgicalHistories, drivers, paramedics, locations, mois, layout });
+        return res.status(200).render("emergencyTriageForm", {type, car, materials, medicalHistories, surgicalHistories, drivers, paramedics, locations, mois, layout });
     }
     if(type === "medical"){
         return res.status(200).render("medicalTriageForm", { type, car, materials, medicalHistories, surgicalHistories, drivers, paramedics,locations, layout });
