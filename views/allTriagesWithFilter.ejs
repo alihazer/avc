@@ -87,7 +87,13 @@
         <div class="pagination">
             <% for (let i = 1; i <= totalPages; i++) { %>
                 <% 
-                    let url = `/triage/all?year=${selectedYear}&month=${selectedMonth}&page=${i}`;
+                    let url = `/triage/all?page=${i}`;
+                    if (selectedYear) {
+                        url += `&year=${selectedYear}`;
+                    }
+                    if (selectedMonth) {
+                        url += `&month=${selectedMonth}`;
+                    }
                     if (selectedMoi.length > 0) {
                         selectedMoi.forEach(moi => {
                             url += `&moi=${moi}`;
