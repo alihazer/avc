@@ -510,7 +510,7 @@ const getTriageWithPagination = asyncHandler(async (req, res) => {
     const isMoiArray = Array.isArray(moi);
 
     try {
-        const data = await getTriageByMonth(year, month, page, 5, moi);
+        const data = await getTriageByMonth(year, month, page, 30, moi);
         const mois = await Moi.find({}).exec();
         if (!data) {
             return res.status(400).render('allTriagesWithFilter', {
