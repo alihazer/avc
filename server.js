@@ -30,7 +30,6 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 
-// redirect http to https
 const ensureSecure = (req, res, next) => {
   if(process.env.NODE_ENV !== 'development') {
     if(req.secure || req.headers['x-forwarded-proto'] === 'https') {
@@ -39,6 +38,15 @@ const ensureSecure = (req, res, next) => {
     res.redirect('https://' + req.hostname + req.url);
   }
   next();
+}
+
+const MAINTENANCE_MODE = process.env.MAINTENANCE || false;
+console.log('MAINTENANCE_MODE:', MAINTENANCE_MODE);
+
+if (MAINTENANCE_MODE) {
+  app.use((req, res, next)=>{
+    res.status(503).render('maintenance');
+  })
 }
 
 app.use(ensureSecure);
