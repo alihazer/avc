@@ -216,15 +216,18 @@ const renderFirstForm = asyncHandler(async (req, res) => {
 });
 
 
-const fetchMyTriages = async (req) => {
-    // Get the user ID from the request object
-    const userId = req.user.id;
-    // Find all triages created by the user or user id is found in the paramedics array
-    const triages = await Triage.find({ $or: [{ userId }, { paramedics: userId }, {driver: userId }] });
+const fetchMyTriages = async (userId, thisMonth = false) => {
+    let triages = [];
+    if(!thisMonth){
+        triages = await Triage.find({ $or: [{ userId }, { paramedics: userId }, {driver: userId }] }).sort({date: -1});
+    }else{
+        const currentMonth = new Date().getMonth();
+        triages = await Triage.find({ $or: [{ userId }, { paramedics: userId }, {driver: userId }], date: {$gte: new Date(new Date().getFullYear(), currentMonth, 1), $lt: new Date(new Date().getFullYear(), currentMonth + 1, 0)} }).sort({date: -1});
+    }
     return triages;
 };
 const getLoggedInUserTriages = asyncHandler(async(req, res)=>{
-    const triages = await fetchMyTriages(req);
+    const triages = await fetchMyTriages(req.user.id);
     const layout = getLayoutName(req);
     if(!triages){
         return res.status(404).render("error", {message: "No triages found", layout});
@@ -234,7 +237,7 @@ const getLoggedInUserTriages = asyncHandler(async(req, res)=>{
 
 const getMyTriagesCount = asyncHandler(async(req, res)=>{
     try {
-        const triages = await fetchMyTriages(req);
+        const triages = await fetchMyTriages(req.user.id);
         const thisMonth = new Date().getMonth();
         const allTriages = await Triage.find({}).exec();
         const thisMonthTriages = await Triage.find({createdAt: {$gte: new Date(new Date().getFullYear(), thisMonth, 1), $lt: new Date(new Date().getFullYear(), thisMonth + 1, 0)}}).exec();
@@ -649,4 +652,4 @@ const getTriagesForUser = asyncHandler(async (req, res) => {
 
 
 
-export { renderFirstForm, createEmergencyTriage, getLoggedInUserTriages, getMyTriagesCount, getThisMonthsTriages, generatePdf, getTriage, getTheMostDayTriagesInTheMonth, renderEditTriage, editTriage, getTriageByMonth, getTriageWithPagination, getTriageStats, renderTriageStatsPage, deleteTriage, getTriagesForUser};
+export { renderFirstForm, createEmergencyTriage, getLoggedInUserTriages, getMyTriagesCount, getThisMonthsTriages, generatePdf, getTriage, getTheMostDayTriagesInTheMonth, renderEditTriage, editTriage, getTriageByMonth, getTriageWithPagination, getTriageStats, renderTriageStatsPage, deleteTriage, getTriagesForUser, fetchMyTriages};

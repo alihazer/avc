@@ -3,7 +3,7 @@ import Role from "../models/Roles.js";
 import bcrypt from "bcrypt";
 import asyncHandler from "express-async-handler";
 import createToken from "../utils/createToken.js";
-import { getMyTriagesCount, getTheMostDayTriagesInTheMonth } from "./triage.controller.js";
+import { fetchMyTriages, getMyTriagesCount, getTheMostDayTriagesInTheMonth } from "./triage.controller.js";
 import { getItemsUsed } from "./materials.controller.js";
 import { getMostCasesCar } from "./car.contoller.js";
 import Triage from "../models/Triage.js";
@@ -232,7 +232,8 @@ export const getDashboard = asyncHandler(async (req, res) => {
         res.status(200).render('noAccessDashboard', { layout: 'layouts/noAccessLayout', count: data.count });
     }
     else {
-        res.status(200).render('userDashboard', { title: 'userDashboard', layout: 'layouts/userLayout', count: data.count });
+        const thisMonthTriages = await fetchMyTriages(req.user.id, true);
+        res.status(200).render('userDashboard', { title: 'userDashboard', layout: 'layouts/userLayout', count: data.count, thisMonthTriages: thisMonthTriages.length });
     }
 });
 
