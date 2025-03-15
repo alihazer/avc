@@ -7,7 +7,6 @@
             <%-include('partials/commun/mainFields', {type: 'emergency'}) %>
             <%-include('partials/commun/avpu') %>
             <%-include('partials/commun/moi') %>
-            <%-include('partials/commun/vitals') %>
             <div class="triage-form-group">
                 <label for="chiefComplaint">DCAP_BTLS??</label>
                 <select name="isTrauma" id="isTrauma">
@@ -49,6 +48,7 @@
                         <label for="s">Swelling - احتقان </label>
                     </div>
                 </div>
+            <%-include('partials/commun/vitals') %>
             <%-include('partials/commun/histories') %>
             <%-include('partials/commun/allergies') %>
             <div class="triage-form-group">
