@@ -229,7 +229,8 @@ export const getDashboard = asyncHandler(async (req, res) => {
         res.status(200).render('adminDashboard', { title: "Dashboard", data, items: items.length, mostCasesCar, mostParamedic, borrowedItems: borrowedItems.length, triageOfTheMonth: triageOfTheMonth[0] });
     }
     else if (noAccess.includes(roleName.name)) {
-        res.status(200).render('noAccessDashboard', { layout: 'layouts/noAccessLayout', count: data.count });
+        const thisMonthTriages = await fetchMyTriages(req.user.id, true);
+        res.status(200).render('noAccessDashboard', { layout: 'layouts/noAccessLayout', count: data.count, thisMonthTriages: thisMonthTriages.length});
     }
     else {
         const thisMonthTriages = await fetchMyTriages(req.user.id, true);

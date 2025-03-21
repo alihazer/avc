@@ -457,7 +457,7 @@ const getTriageByMonth = async (year, month, page = 1, limit = 5, moi = null) =>
     const skip = (pageNum - 1) * limitNum;
 
     try {
-        let startDate = new Date(`2025-01-01`);
+        let startDate = new Date(`2024-01-01`);
         let endDate = new Date();
 
         if (year && month && !isNaN(year) && !isNaN(month) && month >= 1 && month <= 12) {  
@@ -488,7 +488,7 @@ const getTriageByMonth = async (year, month, page = 1, limit = 5, moi = null) =>
             query.moi = { $in: moi };
             }
         }
-
+        console.log(query);
         const triages = await Triage.find(query)
             .populate('moi')
             .sort({ createdAt: -1 })
@@ -514,7 +514,7 @@ const getTriageWithPagination = asyncHandler(async (req, res) => {
 
     try {
         const data = await getTriageByMonth(year, month, page, 30, moi);
-        const mois = await Moi.find({}).exec();
+        const mois = await Moi.find().exec();
         if (!data) {
             return res.status(400).render('allTriagesWithFilter', {
                 triages: [],
