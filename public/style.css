@@ -1393,3 +1393,10 @@ footer .foot-info .foot-details{
 .secondary-link{
 	color: var(--blue) !important;
 }
+
+    .page-break {
+        page-break-after: always;
+        break-after: page;
+    }
+
+

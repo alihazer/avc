@@ -1,0 +1,103 @@
+<!-- views/triage/emergency.ejs -->
+
+<!-- Html2pdf -->
+<div id="content1">
+     <div class="tables-container">
+          <div class="header" style="display: flex; align-items: center; justify-content: right">
+                 <div style="text-align: right; margin-left: 10px;">
+                          <p>جمعية الرسالة للاسعاف الصحي</p>
+                          <p>مركز أنصار التطوعي</p>
+                 </div>
+                 <div class="logo">
+                          <img style="border: none;" src="/images/logo1.png" alt="logo">
+                 </div>
+          </div>
+         <div>
+             <center>
+                 <h1>ملخص نشاط دوام <%=shiftDay%></h1>
+                 <h3><%=moment(startShiftDate).format('DD-MM-YYYY')%> - <%=moment(endShiftDate).format('DD-MM-YYYY')%></h3>
+             </center>
+           <div style="text-align: right; margin-bottom: 20px; margin-right: 20px;">
+             <div>
+                    <h3>  المجموع   <%=triages.length %></h3>
+             </div>
+           </div>
+           <div class="table-responsive">
+               <table class="table-responsive">
+                    <th>#</th>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Type</th>
+                    <th>Car nb</th>
+                    <th>From</th>
+                    <th>To</th>
+                    
+                    <% triages.forEach((triage, index) => { %>
+                         <tr>
+                             <td><%= index + 1 %></td>
+                             <td><%= triage.date ? moment(triage.date).format('DD-MM-YYYY') : 'N/A' %></td>
+                             <td><%= triage.time || 'N/A' %></td>
+                             <td>
+                                 <% 
+                                     for(let i = 0; i < types.length; i++){
+                                         if(types[i].code == triage.case_type){
+                                             %> <%= types[i].name %> <% 
+                                         }
+                                     }    
+                                 %>
+                             </td>
+                             <td><%= triage.car_nb || 'N/A' %></td>
+                             <td><%= triage.from || 'N/A' %></td>
+                             <td><%= triage.to || 'N/A' %></td>
+                         </tr>
+                     
+                         <% if ((index + 1) % 12 === 0) { %>
+                             </table>
+                             <div class="page-break"></div>
+                             <table>
+                                 <tr>
+                                     <th>#</th>
+                                     <th>Date</th>
+                                     <th>Time</th>
+                                     <th>Type</th>
+                                     <th>Car nb</th>
+                                     <th>From</th>
+                                     <th>To</th>
+                                 </tr>
+                         <% } %>
+                     <% }) %>                     
+
+                  </table>
+           </div>
+     <button id="download" class="btn btn-primary" onclick="downloadPdf(`<%= shiftDay || 'N/A' %>`, `<%= date ? moment(date).format('DD-MM-YYYY') : 'N/A' %>`)">
+         Download PDF
+     </button>
+ </div>
+ 
+ <script>
+     function downloadPdf(name, date) {
+          const content = document.getElementById('content1');
+          const downloadBtn = document.getElementById('download');
+          downloadBtn.style.display = 'none';
+          
+          const options = {
+              margin: [0, 0, 0, 0], // Add margin to the PDF
+              filename: `${date}_ملخص_نشاط_دوام_${name}.pdf`,
+              image: { type: 'jpeg', quality: 0.98 },
+              html2canvas: { scale: 2, letterRendering: true },
+              jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+          };
+          
+          html2pdf()
+              .from(content)
+              .set(options)
+              .toPdf()
+              .get('pdf')
+              .then(pdf => {
+                  pdf.save(`${date}_ملخص_نشاط_دوام._${name}.pdf`);
+                  window.location.href = '/dashboard';  // Redirect after download
+              });
+      }
+  </script>
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+ 

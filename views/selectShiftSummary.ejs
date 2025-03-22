@@ -1,0 +1,57 @@
+<div class="container">
+     <h1>Create Summary</h1>
+     <form action="/attendence/select-users" method="POST">
+         <div class="form-group">
+             <label for="shiftDay">Shift Day:</label>
+             <select id="shiftDay" name="shiftDay" required>
+                 <% 
+                 const shiftDayArray = Object.values(shiftDays)[0].split(", ").map(day => day.trim());
+                 %>
+                 <% shiftDayArray[0].split(',').forEach(day => { %>
+                     <option value="<%= day %>"><%= day.charAt(0).toUpperCase() + day.slice(1) %></option>
+                 <% }); %>
+             </select>  
+         </div>
+         <div class="form-group">
+             <label for="date">Date:</label>
+             <input type="date" id="date" name="date" required>
+         </div>
+         <div class="form-group">
+             <button type="submit" class="btn btn-primary">Next</button>
+         </div>
+     </form>
+ </div>
+
+ <script>
+     const form = document.querySelector('form');
+     form.addEventListener('submit', (e) => {
+         e.preventDefault();
+         const shiftDay = document.querySelector('#shiftDay').value;
+         const date = document.querySelector('#date').value;
+          // check if the date is in the future
+          const today = new Date();
+          const selectedDate = new Date(date);
+          if (selectedDate > today) {
+              Swal.fire({
+                  icon: 'error',
+                  title: 'Error',
+                  text: 'Please select a date in the past',
+              });
+              return;
+          }
+          // check if the date week day is the same as the selected shift day
+          const weekDays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+          const selectedWeekDay = weekDays[selectedDate.getDay()];
+          console.log(selectedWeekDay);
+          console.log(shiftDay);
+          if (selectedWeekDay.toLocaleLowerCase() !== shiftDay) {
+              Swal.fire({
+                  icon: 'error',
+                  title: 'Error',
+                  text: `Please select a ${shiftDay} date`,
+              });
+              return;
+          }
+         window.location.href = `/create-shift-summary?shiftDay=${shiftDay}&date=${date}`;
+     });
+ </script>

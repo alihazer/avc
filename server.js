@@ -79,13 +79,13 @@ app.use('/borrowed-items', BorrowItemRoutes);
 app.use('/attendence', attendenceRoutes);
 
 
-axios.get('https://httpbin.org/ip')
-  .then(response => {
-    console.log('Heroku server IP:', response.data.origin);
-  })
-  .catch(error => {
-    console.error('Error fetching IP:', error);
-});
+// axios.get('https://httpbin.org/ip')
+//   .then(response => {
+//     console.log('Heroku server IP:', response.data.origin);
+//   })
+//   .catch(error => {
+//     console.error('Error fetching IP:', error);
+// });
 
 
 // Error handling

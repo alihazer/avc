@@ -4,7 +4,6 @@ import bcrypt from "bcrypt";
 import asyncHandler from "express-async-handler";
 import createToken from "../utils/createToken.js";
 import { fetchMyTriages, getMyTriagesCount, getTheMostDayTriagesInTheMonth } from "./triage.controller.js";
-import { getItemsUsed } from "./materials.controller.js";
 import { getMostCasesCar } from "./car.contoller.js";
 import Triage from "../models/Triage.js";
 import { getBorrowedItemsCount } from "./borrowStock.controller.js";
@@ -14,6 +13,7 @@ import moment from "moment";
 import getMAC, { isMAC } from 'getmac'
 import LoggedInDevicesModel from "../models/LoggedInDevicesModel.js";
 import LoginAttempt from "../models/loginAttempts.js";
+import types from "../utils/TriageTypes.js";
 
 
 export const register = asyncHandler(async (req, res) => {
@@ -712,6 +712,89 @@ export const getLoggedInDevices = asyncHandler(async (req, res) => {
     }
 });
 
+export const renderShiftSummary = asyncHandler(async (req, res) => {
+    const layout = getLayoutName(req);
+    const user = await User.findById(req.user.id);
+    const shiftDays = user.shiftDays;
+    return res.render('selectShiftSummary', {layout, shiftDays});
+});
+
+const isTriageIncluded = (triage, shiftStartDate, shiftEndDate)=>{
+    const time = triage.time;
+    let hours = time.split(" ")[0].split(":")[0];
+    const period = time.split(" ")[1];
+    const triageDate = new Date(triage.date)
+    hours = parseInt(hours);
+    let hoursIn24 = hours;
+    if (period === "PM" && hours !== 12) hoursIn24 += 12;
+    if (period === "AM" && hours === 12) hoursIn24 = 0;
+
+    // console.log("Hours in 12: ", hours);
+    // console.log("Hours in 24: ", hoursIn24);
+
+    // console.log(`Triage Date: ${triageDate}`);
+    // console.log(`Shift Start: ${shiftStartDate}`);
+    // console.log(`Hours in 24: ${hoursIn24}`);
+    // console.log(triageDate.toDateString() == shiftStartDate.toDateString());
+    
+
+
+    // if the triage is in the first day but before 6pm
+    if(triageDate.toDateString() === shiftStartDate.toDateString() && hoursIn24 < 18){
+        // console.log(`${triage.date.toDateString()} = ${shiftStartDate.toDateString()} and ${hoursIn24} < 18`);
+        return false;
+    }
+    // if the triage is in the second day but after 6pm
+    if(triageDate.toDateString() === shiftEndDate.toDateString() && hoursIn24 > 18){
+        // console.log(`${triage.date.toDateString()} = ${shiftEndDate.toDateString()} and ${hoursIn24} > 18`);
+        return false
+    }
+    return true;
+
+
+}
+
+export const createShiftSummary = asyncHandler(async (req, res) => {
+    try {
+        const { shiftDay, date } = req.query;
+        const layout = getLayoutName(req);
+        const weekDays = {
+            'monday': "الإثنين",
+            'tuesday': "الثلاثاء",
+            'wednesday': "الأربعاء",
+            'thursday': "الخميس",
+            'friday': "الجمعة",
+            'saturday': "السبت",
+            'sunday': "الأحد"
+        };
+
+    let shiftStart = new Date(date);
+    shiftStart.setDate(shiftStart.getDate());
+    let shiftEnd = new Date(shiftStart);
+    shiftEnd.setDate(shiftEnd.getDate() + 1);
+
+    const allTriages = await Triage.find({
+        date: {
+            $gte: shiftStart,
+            $lte: shiftEnd
+        }
+    }).sort({date: 1})
+
+    let triages = [];
+    allTriages.forEach((triage)=>{
+        const isIncluded = isTriageIncluded(triage, shiftStart, shiftEnd);
+        if(isIncluded){
+            triages.push(triage);
+        }
+    })
+    return res.render('shiftSummary', {shiftDay: weekDays[shiftDay], date, layout, triages, date, moment, types, startShiftDate: shiftStart.toDateString(), endShiftDate: shiftEnd.toString()});
+    } catch (error) {
+        console.error(error);
+        throw new Error('Error fetching shift summary');
+    }
+}
+);
 
 
 
+ 

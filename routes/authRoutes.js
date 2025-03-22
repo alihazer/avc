@@ -1,6 +1,6 @@
 import express from 'express';
 const router = express.Router();
-import { login, register, getLoginPage, getRegisterPage, logout, getDashboard, getUserProfile, getEditProfile, editProfile, getUsers, deleteUser, getEditUser, editUser, getUser, getMostParamedicByYear, getLoggedInDevices, getMostDriverByYear  } from '../controllers/auth.js';
+import { login, register, getLoginPage, getRegisterPage, logout, getDashboard, getUserProfile, getEditProfile, editProfile, getUsers, deleteUser, getEditUser, editUser, getUser, getMostParamedicByYear, getLoggedInDevices, getMostDriverByYear, createShiftSummary, renderShiftSummary  } from '../controllers/auth.js';
 import checkPermission from '../middlewares/checkPermission.js';
 import isLoggedIn from '../middlewares/isLoggedIn.js';
 import isActive from '../middlewares/isActive.js';
@@ -28,4 +28,6 @@ router.get('/most-paramedic/:year', isLoggedIn , getMostParamedicByYear);
 router.get('/most-driver/:year', isLoggedIn , getMostDriverByYear);
 router.get('/logged-in-devices', isLoggedIn, getLoggedInDevices);
 router.get('/users/triages/:id', isLoggedIn, checkPermission("manage_users"), getTriagesForUser);
+router.get('/create-shift-summary', isLoggedIn, checkPermission("manage_shifts"), createShiftSummary)
+router.get('/shift-summary', isLoggedIn, checkPermission("manage_shifts"), renderShiftSummary);
 export default router;
